@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="cel.dev.restaurants.MainActivity">
+
+    <FrameLayout
+        android:id="@+id/content"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+    </FrameLayout>
+
+    <android.support.design.widget.BottomNavigationView
+        android:id="@+id/navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        app:itemIconTint="@color/colorNavBarItem"
+        app:itemTextColor="@color/colorNavBarItem"
+        app:itemBackground="@color/colorNavBar"
+        app:menu="@menu/navigation" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:src="@drawable/ic_add_black_24dp"
+        android:tint="@color/white"
+        app:backgroundTint="@color/colorAccent"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="60dp"
+        app:elevation="4dp"
+        app:rippleColor="@color/colorAccentRipple"
+        app:useCompatPadding="false" />
+
+</android.support.design.widget.CoordinatorLayout>
