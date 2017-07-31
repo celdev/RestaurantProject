@@ -38,9 +38,11 @@ class CreateRestaurantRepositoryImpl implements CreateRestaurantMVP.Repository {
     }
 
     @Override
-    public void chooseFoodType(FoodType foodType) {
-        if (!chosenTypes.contains(foodType)) {
+    public void chooseFoodType(FoodType foodType, boolean chosen) {
+        if (!chosenTypes.contains(foodType) && chosen) {
             chosenTypes.add(foodType);
+        } else if(!chosen) {
+            chosenTypes.remove(foodType);
         }
     }
 }

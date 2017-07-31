@@ -17,16 +17,20 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.Arrays;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cel.dev.restaurants.ChooseKitchenDialog.ChooseKitchenDialogFragment;
+import cel.dev.restaurants.ChooseKitchenDialog.FoodTypeToTextRenderer;
+import cel.dev.restaurants.ChooseKitchenDialog.OnChooseKitchenCallback;
+import cel.dev.restaurants.Model.FoodType;
 import cel.dev.restaurants.R;
 import cel.dev.restaurants.Utils.PermissionUtils;
 import cel.dev.restaurants.Utils.PictureUtils;
 
-public class CreateRestaurantActivity extends AppCompatActivity implements CreateRestaurantMVP.View {
+public class CreateRestaurantActivity extends AppCompatActivity implements CreateRestaurantMVP.View, OnChooseKitchenCallback {
 
 
     private static final int REQUEST_IMAGE_CAPTURE = 1;
@@ -44,6 +48,9 @@ public class CreateRestaurantActivity extends AppCompatActivity implements Creat
 
     @BindView(R.id.image_control_layout)
     LinearLayout imageControlLayout;
+
+    @BindView(R.id.chosen_kitchen_text)
+    TextView chosenKitchenText;
 
     private CreateRestaurantMVP.Presenter presenter;
 
@@ -142,5 +149,21 @@ public class CreateRestaurantActivity extends AppCompatActivity implements Creat
         ChooseKitchenDialogFragment.newInstance(presenter.getKitchens(), presenter.getChosenKitchen())
                 .show(getSupportFragmentManager(), "fragment_choose_kitchen");
     }
+
+    @Override
+    public void chooseKitchen(FoodType foodType, boolean chosen) {
+        presenter.chooseFoodType(foodType,chosen);
+    }
+
+    @Override
+    public void updateChosenKitchens(List<FoodType> foodTypes) {
+        if (foodTypes.size() == 0) {
+            chosenKitchenText.setText(R.string.no_kitchen_chosen);
+        } else {
+            chosenKitchenText.setText(FoodTypeToTextRenderer.foodTypesToString(foodTypes));
+        }
+    }
+
+
 }
 

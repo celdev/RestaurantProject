@@ -52,8 +52,8 @@ class CreateRestaurantPresenterImpl implements CreateRestaurantMVP.Presenter {
     }
 
     @Override
-    public void chooseFoodType(FoodType foodType) {
-        repository.chooseFoodType(foodType);
+    public void chooseFoodType(FoodType foodType, boolean chosen) {
+        repository.chooseFoodType(foodType, chosen);
     }
 
     @Override

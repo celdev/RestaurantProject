@@ -11,6 +11,7 @@ public interface ChooseKitchenDialogFragmentMVP {
     interface View {
 
         void injectArrayAdapter(List<FoodTypeAndChosenStatus> statusList);
+        void onFoodTypeChosenChange(FoodTypeAndChosenStatus foodTypeAndChosenStatus);
 
     }
 

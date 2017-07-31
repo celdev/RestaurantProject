@@ -27,6 +27,8 @@ public interface CreateRestaurantMVP {
         boolean hasCameraPermissions();
 
         void showSelectKitchenDialog();
+
+        void updateChosenKitchens(List<FoodType> foodTypes);
     }
 
     interface Presenter {
@@ -42,7 +44,7 @@ public interface CreateRestaurantMVP {
 
         List<FoodType> getKitchens();
 
-        void chooseFoodType(FoodType foodType);
+        void chooseFoodType(FoodType foodType, boolean chosen);
 
         List<FoodType> getChosenKitchen();
 
@@ -56,7 +58,7 @@ public interface CreateRestaurantMVP {
 
         List<FoodType> chosenFoodTypes();
 
-        void chooseFoodType(FoodType foodType);
+        void chooseFoodType(FoodType foodType, boolean chosen);
 
 
     }

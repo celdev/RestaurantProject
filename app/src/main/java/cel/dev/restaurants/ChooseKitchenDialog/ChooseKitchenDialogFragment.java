@@ -1,6 +1,7 @@
 package cel.dev.restaurants.ChooseKitchenDialog;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
@@ -28,6 +29,7 @@ public class ChooseKitchenDialogFragment extends DialogFragment implements Choos
     }
 
     private ChooseKitchenDialogFragmentMVP.Presenter presenter;
+    private OnChooseKitchenCallback onChooseKitchenCallback;
 
     @BindView(R.id.kitchen_type_list_view)
     ListView kitchenList;
@@ -35,7 +37,6 @@ public class ChooseKitchenDialogFragment extends DialogFragment implements Choos
     public static ChooseKitchenDialogFragment newInstance(List<FoodType> all, List<FoodType> chosen) {
         ChooseKitchenDialogFragment f = new ChooseKitchenDialogFragment();
         Bundle args = new Bundle();
-        Log.d(TAG, "newInstance: putting " + all.size() + " foodtypes in all and " + chosen.size() + " foodtypes that is chosen in bundle" );
         args.putParcelableArray(ALL_FOOD_TYPE_ARG, CollectionUtils.listToParceableArray(all));
         args.putParcelableArray(CHOSEN_FOOD_TYPE_ARG, CollectionUtils.listToParceableArray(chosen));
         f.setArguments(args);
@@ -48,12 +49,11 @@ public class ChooseKitchenDialogFragment extends DialogFragment implements Choos
         View view = inflater.inflate(R.layout.fragment_choose_kitchen, container);
         getDialog().setTitle(R.string.choose_kitchen);
         ButterKnife.bind(this, view);
-        List<FoodType> all = CollectionUtils.parceableToList(getArguments().getParcelableArray(ALL_FOOD_TYPE_ARG), FoodType.class);
-        List<FoodType> chosen = CollectionUtils.parceableToList(getArguments().getParcelableArray(CHOSEN_FOOD_TYPE_ARG), FoodType.class);
-        presenter = new ChooseKitchenTypePresenterImpl(this, all, chosen);
+        presenter = new ChooseKitchenTypePresenterImpl(this,
+                CollectionUtils.parceableToList(getArguments().getParcelableArray(ALL_FOOD_TYPE_ARG), FoodType.class),
+                CollectionUtils.parceableToList(getArguments().getParcelableArray(CHOSEN_FOOD_TYPE_ARG), FoodType.class));
         presenter.createArrayAdapter();
         return view;
-
     }
 
     @Override
@@ -62,5 +62,26 @@ public class ChooseKitchenDialogFragment extends DialogFragment implements Choos
         kitchenList.setAdapter(foodTypeArrayAdapter);
     }
 
+    @Override
+    public void onFoodTypeChosenChange(FoodTypeAndChosenStatus foodTypeAndChosenStatus) {
+        if (onChooseKitchenCallback != null) {
+            onChooseKitchenCallback.chooseKitchen(foodTypeAndChosenStatus.getFoodType(),foodTypeAndChosenStatus.isChosen());
+        }
+    }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof OnChooseKitchenCallback) {
+            onChooseKitchenCallback = (OnChooseKitchenCallback) context;
+        } else {
+            throw new RuntimeException("Activity must implement onChooseKitchenCallback");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        onChooseKitchenCallback = null;
+    }
 }
