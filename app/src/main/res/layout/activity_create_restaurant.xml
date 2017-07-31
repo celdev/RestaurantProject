@@ -14,7 +14,7 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="250dp"
+            android:layout_height="@dimen/create_restaurant_image_height"
             android:id="@+id/image_layout">
             <ImageView
                 android:id="@+id/restaurant_image"
@@ -51,12 +51,49 @@
                 android:src="@drawable/ic_photo_camera_black_24dp"
                 android:tint="@color/white"
                 android:background="?android:selectableItemBackground"
+                android:id="@+id/take_restaurant_picture_btn"
                 android:contentDescription="@string/take_photo"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"
                 android:layout_marginEnd="@dimen/activity_horizontal_margin"
                 android:layout_marginTop="@dimen/activity_horizontal_margin"
                 />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                android:layout_marginBottom="@dimen/activity_vertical_margin"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:visibility="invisible"
+                android:id="@+id/image_control_layout"
+                >
+                <ImageButton
+                    android:id="@+id/delete_image_btn"
+                    android:layout_width="@dimen/camera_icon_size_small"
+                    android:layout_height="@dimen/camera_icon_size_small"
+                    android:src="@drawable/ic_delete_black_24dp"
+                    android:tint="@color/white"
+                    android:scaleType="fitXY"
+                    android:background="?android:selectableItemBackground"
+                    android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                    />
+
+                <ImageButton
+                    android:id="@+id/rotate_image_btn"
+                    android:layout_width="@dimen/camera_icon_size_small"
+                    android:layout_height="@dimen/camera_icon_size_small"
+                    android:src="@drawable/ic_rotate_right_black_24dp"
+                    android:tint="@color/white"
+                    android:scaleType="fitXY"
+                    android:background="?android:selectableItemBackground"
+                    />
+
+
+
+            </LinearLayout>
 
         </RelativeLayout>
 
@@ -100,9 +137,149 @@
 
         </LinearLayout>
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:layout_marginEnd="@dimen/activity_horizontal_margin"
+            android:text="@string/budget"
+            />
+        <LinearLayout
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:layout_marginEnd="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="1.0">
 
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.25"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center"
+                    android:text="@string/budget_cheap"
+                    />
+                <CheckBox
+                    android:layout_gravity="center_horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.25"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center"
+                    android:text="@string/budget_normal"
+                    />
+                <CheckBox
+                    android:layout_gravity="center_horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.25"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center"
+                    android:text="@string/budget_expensive"
+                    />
+                <CheckBox
+                    android:layout_gravity="center_horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.25"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center"
+                    android:text="@string/budget_very_expensive"
+                    />
+                <CheckBox
+                    android:layout_gravity="center_horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    />
+            </LinearLayout>
+        </LinearLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/food_type"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:layout_marginEnd="@dimen/activity_horizontal_margin"
+            />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:layout_marginEnd="@dimen/activity_horizontal_margin"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/no_kitchen_chosen"
+                android:layout_gravity="center_vertical"
+                android:overScrollMode="always"
+                android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                />
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_add_black_24dp"
+                android:theme="@style/MaterialButton"
+                android:tint="@color/white"
+                android:contentDescription="@string/choose_kitchen"
+                android:id="@+id/choose_kitchenBtn"
+                />
+        </LinearLayout>
 
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/activity_horizontal_margin"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="@dimen/activity_vertical_margin">
 
-
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/done"
+                android:id="@+id/create_restaurant_okBtn"
+                android:layout_alignParentEnd="true"
+                android:theme="@style/MaterialButton"
+                />
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/cancel"
+                android:theme="@style/MaterialButtonDanger"
+                android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                android:layout_toStartOf="@id/create_restaurant_okBtn"
+                android:id="@+id/create_restaurant_cancelBtn"
+                />
+        </RelativeLayout>
     </LinearLayout>
 </ScrollView>

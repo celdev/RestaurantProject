@@ -10,4 +10,15 @@
     <string name="name">Restaurant Name</string>
     <string name="take_photo">Take Photo</string>
     <string name="rating">Rating:</string>
+    <string name="no_camera_permission">No permission to use camera</string>
+    <string name="budget_cheap">$</string>
+    <string name="budget_normal">$$</string>
+    <string name="budget_expensive">$$$</string>
+    <string name="budget_very_expensive">$$$+</string>
+    <string name="budget">Budget</string>
+    <string name="cancel">Cancel</string>
+    <string name="done">Done</string>
+    <string name="food_type">Kitchen:</string>
+    <string name="no_kitchen_chosen">No kitchen chosen</string>
+    <string name="choose_kitchen">Choose kitchen</string>
 </resources>

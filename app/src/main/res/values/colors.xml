@@ -7,4 +7,8 @@
     <color name="colorNavBarItem">#ffffff</color>
     <color name="white">#FFFFFF</color>
     <color name="colorAccentRipple">#d61b5b</color>
+    <color name="ok_blue">#2f82ff</color>
+    <color name="ok_blue_highlight">#438eff</color>
+    <color name="danger_red">#ff2e1f</color>
+    <color name="danger_red_highlight">#ff5548</color>
 </resources>

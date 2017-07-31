@@ -6,4 +6,6 @@
     <dimen name="RestaurantImageTextSize">26sp</dimen>
     <dimen name="RestaurantImageTextSizeBlack">26.2sp</dimen>
     <dimen name="camera_icon_size">32dp</dimen>
+    <dimen name="camera_icon_size_small">24dp</dimen>
+    <dimen name="create_restaurant_image_height">200dp</dimen>
 </resources>
