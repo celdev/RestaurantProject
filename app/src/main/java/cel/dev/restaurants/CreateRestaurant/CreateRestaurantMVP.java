@@ -38,6 +38,14 @@ public interface CreateRestaurantMVP {
 
         void onChooseKitchenBtnPressed();
 
+        void onNewKitchen(String name);
+
+        List<FoodType> getKitchens();
+
+        void chooseFoodType(FoodType foodType);
+
+        List<FoodType> getChosenKitchen();
+
     }
 
     interface Repository {
@@ -45,6 +53,10 @@ public interface CreateRestaurantMVP {
         List<FoodType> getKitchenTypes();
 
         void saveKitchenType(String name);
+
+        List<FoodType> chosenFoodTypes();
+
+        void chooseFoodType(FoodType foodType);
 
 
     }

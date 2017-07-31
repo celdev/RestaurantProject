@@ -7,11 +7,11 @@ import java.util.List;
 import cel.dev.restaurants.Model.BudgetType;
 import cel.dev.restaurants.Model.Restaurant;
 
-class RestaurantDAOImpl implements RestaurantDAO {
+public class RestaurantDAOImpl implements RestaurantDAO {
 
     private static int id = 0;
 
-    private List<Restaurant> restaurants = new ArrayList<>();
+    private static List<Restaurant> restaurants = new ArrayList<>();
 
     public int getNextId() {
         return id++;

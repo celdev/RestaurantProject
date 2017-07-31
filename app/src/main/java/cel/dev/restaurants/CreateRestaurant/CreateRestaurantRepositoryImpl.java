@@ -1,15 +1,20 @@
 package cel.dev.restaurants.CreateRestaurant;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import cel.dev.restaurants.Exceptions.IllegalFoodTypeName;
 import cel.dev.restaurants.Model.FoodType;
 import cel.dev.restaurants.Repository.KitchenTypeDAO;
 import cel.dev.restaurants.Repository.KitchenTypeDAOImpl;
+import cel.dev.restaurants.Utils.ModelConverterUtils;
 
 class CreateRestaurantRepositoryImpl implements CreateRestaurantMVP.Repository {
 
     private CreateRestaurantPresenterImpl presenter;
     private KitchenTypeDAO kitchenTypeDAO;
+
+    private List<FoodType> chosenTypes = new ArrayList<>();
 
     CreateRestaurantRepositoryImpl(CreateRestaurantPresenterImpl createRestaurantPresenter) {
         this.presenter = createRestaurantPresenter;
@@ -25,5 +30,17 @@ class CreateRestaurantRepositoryImpl implements CreateRestaurantMVP.Repository {
     public void saveKitchenType(String name) {
         FoodType foodType = new FoodType(name);
         kitchenTypeDAO.saveKitchenType(foodType);
+    }
+
+    @Override
+    public List<FoodType> chosenFoodTypes() {
+        return chosenTypes;
+    }
+
+    @Override
+    public void chooseFoodType(FoodType foodType) {
+        if (!chosenTypes.contains(foodType)) {
+            chosenTypes.add(foodType);
+        }
     }
 }

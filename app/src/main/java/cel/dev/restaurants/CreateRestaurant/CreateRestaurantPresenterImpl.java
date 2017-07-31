@@ -1,6 +1,11 @@
 package cel.dev.restaurants.CreateRestaurant;
 
+import java.util.List;
+
+import cel.dev.restaurants.Model.FoodType;
 import cel.dev.restaurants.Model.Restaurant;
+import cel.dev.restaurants.Repository.RestaurantDAO;
+import cel.dev.restaurants.Repository.RestaurantDAOImpl;
 
 class CreateRestaurantPresenterImpl implements CreateRestaurantMVP.Presenter {
 
@@ -28,11 +33,31 @@ class CreateRestaurantPresenterImpl implements CreateRestaurantMVP.Presenter {
 
     @Override
     public void onCreateRestaurantPressed(Restaurant restaurant) {
-
+        new RestaurantDAOImpl().saveRestaurant(restaurant);
     }
 
     @Override
     public void onChooseKitchenBtnPressed() {
         view.showSelectKitchenDialog();
+    }
+
+    @Override
+    public void onNewKitchen(String name) {
+        repository.saveKitchenType(name);
+    }
+
+    @Override
+    public List<FoodType> getKitchens() {
+        return repository.getKitchenTypes();
+    }
+
+    @Override
+    public void chooseFoodType(FoodType foodType) {
+        repository.chooseFoodType(foodType);
+    }
+
+    @Override
+    public List<FoodType> getChosenKitchen() {
+        return repository.chosenFoodTypes();
     }
 }

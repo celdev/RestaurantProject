@@ -21,4 +21,7 @@
     <string name="food_type">Kitchen:</string>
     <string name="no_kitchen_chosen">No kitchen chosen</string>
     <string name="choose_kitchen">Choose kitchen</string>
+    <string name="create_new_kitchen">Create new kitchen</string>
+    <string name="kitchen_name">Kitchen name</string>
+    <string name="placeholder_kitchen_name">ExampleKitchenName</string>
 </resources>

@@ -7,7 +7,13 @@ import cel.dev.restaurants.Model.FoodType;
 
 public class KitchenTypeDAOImpl implements KitchenTypeDAO {
 
-    private List<FoodType> foodTypes = new ArrayList<>();
+    private static List<FoodType> foodTypes = new ArrayList<>();
+
+    static {
+        foodTypes.add(new FoodType("Thai"));
+        foodTypes.add(new FoodType("Swedish"));
+        foodTypes.add(new FoodType("German"));
+    }
 
     @Override
     public void saveKitchenType(FoodType foodType) {

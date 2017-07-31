@@ -8,4 +8,6 @@
     <dimen name="camera_icon_size">32dp</dimen>
     <dimen name="camera_icon_size_small">24dp</dimen>
     <dimen name="create_restaurant_image_height">200dp</dimen>
+    <dimen name="create_kitchen_type_dialog_width">300dp</dimen>
+    <dimen name="create_kitchen_type_dialog_height">500dp</dimen>
 </resources>

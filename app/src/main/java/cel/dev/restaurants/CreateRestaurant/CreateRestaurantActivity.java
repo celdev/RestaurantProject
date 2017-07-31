@@ -139,7 +139,8 @@ public class CreateRestaurantActivity extends AppCompatActivity implements Creat
 
     @Override
     public void showSelectKitchenDialog() {
-        new ChooseKitchenDialogFragment().show(getSupportFragmentManager(),"fragment_choose_kitchen");
+        ChooseKitchenDialogFragment.newInstance(presenter.getKitchens(), presenter.getChosenKitchen())
+                .show(getSupportFragmentManager(), "fragment_choose_kitchen");
     }
 }
 
