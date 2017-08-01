@@ -24,4 +24,11 @@
     <string name="create_new_kitchen">Create new kitchen</string>
     <string name="kitchen_name">Kitchen name</string>
     <string name="placeholder_kitchen_name">ExampleKitchenName</string>
+    <string name="button_ok">ok</string>
+    <string name="no_budget_chosen">No budget chosen</string>
+    <string name="no_restaurant_name">No restaurant name</string>
+    <string name="no_rating">Please rate this restaurant</string>
+    <string name="error_creating_restaurant">Information missing</string>
+    <string name="no_position">No restaurant position given</string>
+    <string name="no_location_permission">Could not get location</string>
 </resources>

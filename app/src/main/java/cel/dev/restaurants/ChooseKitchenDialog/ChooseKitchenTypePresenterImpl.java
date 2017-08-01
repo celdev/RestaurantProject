@@ -38,5 +38,6 @@ class ChooseKitchenTypePresenterImpl implements ChooseKitchenDialogFragmentMVP.P
     public void onSwitchChangeCallback(FoodTypeAndChosenStatus foodTypeAndChosenStatus) {
         int i = foodTypeAndChosenStatuses.indexOf(foodTypeAndChosenStatus);
         foodTypeAndChosenStatuses.get(i).setChosen(foodTypeAndChosenStatus.isChosen());
+        view.onFoodTypeChosenChange(foodTypeAndChosenStatus);
     }
 }

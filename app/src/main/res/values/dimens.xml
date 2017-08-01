@@ -3,11 +3,19 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
-    <dimen name="RestaurantImageTextSize">26sp</dimen>
-    <dimen name="RestaurantImageTextSizeBlack">26.2sp</dimen>
     <dimen name="camera_icon_size">32dp</dimen>
     <dimen name="camera_icon_size_small">24dp</dimen>
     <dimen name="create_restaurant_image_height">200dp</dimen>
     <dimen name="create_kitchen_type_dialog_width">300dp</dimen>
-    <dimen name="create_kitchen_type_dialog_height">500dp</dimen>
+    <dimen name="create_kitchen_type_dialog_height">380dp</dimen>
+    <dimen name="create_kitchen_type_list_height">270dp</dimen>
+    <dimen name="list_item_height">40dp</dimen>
+    <dimen name="list_top_padding">40dp</dimen>
+
+
+
+    <dimen name="RestaurantImageTextSize">26sp</dimen>
+    <dimen name="RestaurantImageTextSizeBlack">26.2sp</dimen>
+    <dimen name="food_type_text_size">18sp</dimen>
+    <dimen name="dialog_text_size">24sp</dimen>
 </resources>

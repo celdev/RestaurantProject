@@ -9,19 +9,19 @@ public abstract class Restaurant {
 
     private int id;
     private String name;
-    private int rating;
+    private float rating;
     private BudgetType[] budgetTypes;
-    private String latitude, longitude;
+    private double latitude, longitude;
     private FoodType[] foodTypes;
 
-    public Restaurant(String name, int rating, BudgetType[] budgetTypes, String latitude, String longitude, FoodType[] foodTypes) {
+    public Restaurant(String name, float rating, BudgetType[] budgetTypes, double lat, double lon, FoodType[] foodTypes) {
         this.id = -1;
         this.name = name;
         this.rating = rating;
         this.budgetTypes = budgetTypes;
-        this.latitude = latitude;
-        this.longitude = longitude;
         this.foodTypes = foodTypes;
+        this.latitude = lat;
+        this.longitude = lon;
     }
 
     public abstract Bitmap getRestaurantImage(Context context);
@@ -58,11 +58,11 @@ public abstract class Restaurant {
         this.name = name;
     }
 
-    public int getRating() {
+    public float getRating() {
         return rating;
     }
 
-    public void setRating(int rating) {
+    public void setRating(float rating) {
         this.rating = rating;
     }
 
@@ -74,19 +74,19 @@ public abstract class Restaurant {
         this.budgetTypes = budgetTypes;
     }
 
-    public String getLatitude() {
+    public double getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(String latitude) {
+    public void setLatitude(double latitude) {
         this.latitude = latitude;
     }
 
-    public String getLongitude() {
+    public double getLongitude() {
         return longitude;
     }
 
-    public void setLongitude(String longitude) {
+    public void setLongitude(double longitude) {
         this.longitude = longitude;
     }
 

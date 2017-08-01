@@ -1,21 +1,28 @@
 package cel.dev.restaurants.CreateRestaurant;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -25,6 +32,7 @@ import butterknife.OnClick;
 import cel.dev.restaurants.ChooseKitchenDialog.ChooseKitchenDialogFragment;
 import cel.dev.restaurants.ChooseKitchenDialog.FoodTypeToTextRenderer;
 import cel.dev.restaurants.ChooseKitchenDialog.OnChooseKitchenCallback;
+import cel.dev.restaurants.Model.BudgetType;
 import cel.dev.restaurants.Model.FoodType;
 import cel.dev.restaurants.R;
 import cel.dev.restaurants.Utils.PermissionUtils;
@@ -34,23 +42,33 @@ public class CreateRestaurantActivity extends AppCompatActivity implements Creat
 
 
     private static final int REQUEST_IMAGE_CAPTURE = 1;
+    private static final int REQUEST_LOCATION = 4;
     private static final int CAMERA_REQUEST = 2;
+    private static final int IMAGE_CROP = 3;
     private static final String TAG = "cra";
 
     @BindView(R.id.restaurant_name_field)
     EditText nameField;
-
     @BindView(R.id.restaurantNameWhitePlaceholder)
     TextView placeHolderWhite;
-
     @BindView(R.id.restaurant_image)
     ImageView restaurantImageView;
-
     @BindView(R.id.image_control_layout)
     LinearLayout imageControlLayout;
-
     @BindView(R.id.chosen_kitchen_text)
     TextView chosenKitchenText;
+    @BindView(R.id.restaurant_score)
+    RatingBar ratingBar;
+    @BindView(R.id.budget_cheap)
+    CheckBox budgetCheapBox;
+    @BindView(R.id.budget_normal)
+    CheckBox budgetNormalBox;
+    @BindView(R.id.budget_expensive)
+    CheckBox budgetExpensiveBox;
+    @BindView(R.id.budget_very_expensive)
+    CheckBox budgetVeryExpensiveBox;
+
+
 
     private CreateRestaurantMVP.Presenter presenter;
 
@@ -63,13 +81,16 @@ public class CreateRestaurantActivity extends AppCompatActivity implements Creat
         ButterKnife.bind(this);
         presenter = new CreateRestaurantPresenterImpl(this);
         nameField.addTextChangedListener(new RestaurantNameTextWatcher(placeHolderWhite));
+        initializeViewParameters();
+    }
+
+    /** Sets values for view that aren't settable in xml
+     * */
+    private void initializeViewParameters() {
+        chosenKitchenText.setMaxWidth(chosenKitchenText.getWidth());
     }
 
 
-    @OnClick(R.id.take_restaurant_picture_btn)
-    void takePicture(View view) {
-        presenter.cameraButtonPressed();
-    }
 
     @Override
     public void takePictureWithCamera() {
@@ -94,8 +115,19 @@ public class CreateRestaurantActivity extends AppCompatActivity implements Creat
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            startRestaurantImageCrop(data.getData());
+        } else if (requestCode == IMAGE_CROP && resultCode == RESULT_OK) {
             setRestaurantImage((Bitmap) data.getExtras().get("data"));
         }
+    }
+
+    private void startRestaurantImageCrop(Uri data) {
+        Intent intent = new Intent("com.android.camera.action.CROP");
+        intent.setDataAndType(data, "image/*");
+        intent.putExtra("crop", "true");
+        PictureUtils.cropIntentWidthAndHeight(intent, restaurantImageView.getDrawable().getIntrinsicWidth(), restaurantImageView.getDrawable().getIntrinsicHeight());
+        intent.putExtra("return-data", true);
+        startActivityForResult(intent, IMAGE_CROP);
     }
 
     @Override
@@ -104,12 +136,40 @@ public class CreateRestaurantActivity extends AppCompatActivity implements Creat
     }
 
     @Override
+    public void requestLocationPermission() {
+        ActivityCompat.requestPermissions(this, PermissionUtils.LOCATION_PERMISSIONS, REQUEST_LOCATION);
+    }
+
+    @Override
+    public boolean hasLocationPermission() {
+        return PermissionUtils.hasPermissionTo(this, Manifest.permission.ACCESS_FINE_LOCATION);
+    }
+
+    @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == CAMERA_REQUEST && PermissionUtils.isPermissionGranted(grantResults[0])) {
-            presenter.cameraButtonPressed();
+        if (PermissionUtils.isPermissionGranted(grantResults[0])) {
+            switch (requestCode) {
+                case CAMERA_REQUEST:
+                    presenter.cameraButtonPressed();
+                    break;
+                case REQUEST_LOCATION:
+                    receiveLocation();
+                    break;
+            }
         } else {
-            Toast.makeText(this, R.string.no_camera_permission, Toast.LENGTH_SHORT).show();
+            switch (requestCode) {
+                case CAMERA_REQUEST:
+                    Toast.makeText(this, R.string.no_camera_permission, Toast.LENGTH_SHORT).show();
+                    break;
+                case REQUEST_LOCATION:
+                    Toast.makeText(this, R.string.no_location_permission, Toast.LENGTH_SHORT).show();
+                    break;
+            }
         }
+    }
+
+    private void receiveLocation() {
+
     }
 
     @Override
@@ -127,6 +187,10 @@ public class CreateRestaurantActivity extends AppCompatActivity implements Creat
         imageControlLayout.setVisibility(show ? View.VISIBLE : View.INVISIBLE);
     }
 
+    /** ONCLICK actions
+     *
+     * */
+
     @OnClick(R.id.rotate_image_btn)
     void rotateImage(View view) {
         setRestaurantImage(PictureUtils.rotateBitmap(restaurantImage, 90));
@@ -143,6 +207,24 @@ public class CreateRestaurantActivity extends AppCompatActivity implements Creat
     void chooseKitchenClick(View view) {
         presenter.onChooseKitchenBtnPressed();
     }
+
+    @OnClick(R.id.take_restaurant_picture_btn)
+    void takePicture(View view) {
+        presenter.cameraButtonPressed();
+    }
+
+    @OnClick(R.id.create_restaurant_cancelBtn)
+    void cancelCreateRestaurantPressed(View view) {
+        finish();
+    }
+
+    @OnClick(R.id.create_restaurant_okBtn)
+    void okCreateRestaurantPressed(View view) {
+        presenter.onCreateRestaurantPressed();
+    }
+
+
+    /***************************************************************************************************/
 
     @Override
     public void showSelectKitchenDialog() {
@@ -162,6 +244,78 @@ public class CreateRestaurantActivity extends AppCompatActivity implements Creat
         } else {
             chosenKitchenText.setText(FoodTypeToTextRenderer.foodTypesToString(foodTypes));
         }
+    }
+
+    @Override
+    public Bitmap getRestaurantImage() {
+        return restaurantImage;
+    }
+
+    @Nullable
+    @Override
+    public String getRestaurantName() {
+        return nameField.getText().toString();
+    }
+
+
+    @Override
+    public float getRestaurantRating() {
+        return ratingBar.getRating();
+    }
+
+    /** converts checked checkboxes into BudgetType objects
+     *  if no budgettype is chosen null will be returned
+     * */
+    @Nullable
+    @Override
+    public BudgetType[] getSelectedBudgetTypes() {
+        List<BudgetType> budgetTypes = new ArrayList<>();
+        if (budgetCheapBox.isChecked()) {
+            budgetTypes.add(BudgetType.CHEAP);
+        }
+        if (budgetNormalBox.isChecked()) {
+            budgetTypes.add(BudgetType.NORMAL);
+        }
+        if (budgetExpensiveBox.isChecked()) {
+            budgetTypes.add(BudgetType.EXPENSIVE);
+        }
+        if (budgetVeryExpensiveBox.isChecked()) {
+            budgetTypes.add(BudgetType.VERY_EXPENSIVE);
+        }
+        if (budgetTypes.size() == 0) {
+            return null;
+        }
+        return budgetTypes.toArray(new BudgetType[budgetTypes.size()]);
+    }
+
+    @Override
+    public Double[] getPosition() {
+        Double[] temp = new Double[2];
+        temp[0] = 1.0;
+        temp[1] = 2.0;
+        return temp;
+    }
+
+
+    /** Creates and shows a dialog containing the error message
+     * */
+    @Override
+    public void createRestaurantError(int validationMessage) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.error_creating_restaurant)
+                .setMessage(validationMessage)
+                .setPositiveButton(R.string.button_ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .create().show();
+    }
+
+    @Override
+    public void createRestaurantOk() {
+        finish();
     }
 
 

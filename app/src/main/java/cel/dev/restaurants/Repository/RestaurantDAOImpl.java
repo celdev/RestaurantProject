@@ -42,8 +42,9 @@ public class RestaurantDAOImpl implements RestaurantDAO {
     }
 
     @Override
-    public void saveRestaurant(Restaurant restaurant) {
+    public boolean saveRestaurant(Restaurant restaurant) {
         restaurant.setId(getNextId());
+        return restaurants.add(restaurant);
     }
 
     @Override

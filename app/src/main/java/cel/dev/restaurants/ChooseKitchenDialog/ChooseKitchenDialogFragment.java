@@ -15,6 +15,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import cel.dev.restaurants.Model.FoodType;
 import cel.dev.restaurants.R;
 import cel.dev.restaurants.Utils.CollectionUtils;
@@ -83,5 +84,10 @@ public class ChooseKitchenDialogFragment extends DialogFragment implements Choos
     public void onDetach() {
         super.onDetach();
         onChooseKitchenCallback = null;
+    }
+
+    @OnClick(R.id.choose_kitchen_dialog_ok)
+    void okDialogPressed(View view) {
+        dismiss();
     }
 }

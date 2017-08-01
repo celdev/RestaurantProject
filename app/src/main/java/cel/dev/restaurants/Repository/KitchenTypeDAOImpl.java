@@ -10,9 +10,19 @@ public class KitchenTypeDAOImpl implements KitchenTypeDAO {
     private static List<FoodType> foodTypes = new ArrayList<>();
 
     static {
-        foodTypes.add(new FoodType("Thai"));
-        foodTypes.add(new FoodType("Swedish"));
+        foodTypes.add(new FoodType("Café"));
+        foodTypes.add(new FoodType("Chinese"));
+        foodTypes.add(new FoodType("Fast food"));
         foodTypes.add(new FoodType("German"));
+        foodTypes.add(new FoodType("Italian"));
+        foodTypes.add(new FoodType("Japanese"));
+        foodTypes.add(new FoodType("Market"));
+        foodTypes.add(new FoodType("Mexican"));
+        foodTypes.add(new FoodType("Pizza"));
+        foodTypes.add(new FoodType("Thai"));
+        foodTypes.add(new FoodType("Steak"));
+        foodTypes.add(new FoodType("Swedish"));
+
     }
 
     @Override

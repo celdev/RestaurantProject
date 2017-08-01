@@ -1,9 +1,11 @@
 package cel.dev.restaurants.CreateRestaurant;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
 
 import java.util.List;
 
+import cel.dev.restaurants.Model.BudgetType;
 import cel.dev.restaurants.Model.FoodType;
 import cel.dev.restaurants.Model.Restaurant;
 
@@ -24,11 +26,32 @@ public interface CreateRestaurantMVP {
 
         void requestCameraPermission();
 
+        void requestLocationPermission();
+
+        boolean hasLocationPermission();
+
         boolean hasCameraPermissions();
 
         void showSelectKitchenDialog();
 
         void updateChosenKitchens(List<FoodType> foodTypes);
+
+        Bitmap getRestaurantImage();
+
+        String getRestaurantName();
+
+        float getRestaurantRating();
+
+        BudgetType[] getSelectedBudgetTypes();
+
+        Double[] getPosition();
+
+        void createRestaurantError(int validationMessage);
+
+        void createRestaurantOk();
+
+
+
     }
 
     interface Presenter {
@@ -36,7 +59,7 @@ public interface CreateRestaurantMVP {
 
         void onCancelPressed();
 
-        void onCreateRestaurantPressed(Restaurant restaurant);
+        void onCreateRestaurantPressed();
 
         void onChooseKitchenBtnPressed();
 

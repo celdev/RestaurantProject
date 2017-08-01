@@ -1,10 +1,8 @@
 package cel.dev.restaurants.ChooseKitchenDialog;
 
-import android.widget.ArrayAdapter;
 
 import java.util.List;
 
-import cel.dev.restaurants.Model.FoodType;
 
 public interface ChooseKitchenDialogFragmentMVP {
 

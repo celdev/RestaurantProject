@@ -16,7 +16,7 @@ public interface RestaurantDAO {
 
     List<Restaurant> getRestaurantsByBudgetType(BudgetType budgetType);
 
-    void saveRestaurant(Restaurant restaurant);
+    boolean saveRestaurant(Restaurant restaurant);
 
     int getNextId();
 

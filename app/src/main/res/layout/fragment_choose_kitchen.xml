@@ -1,61 +1,55 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="@dimen/create_kitchen_type_dialog_width"
     android:layout_height="@dimen/create_kitchen_type_dialog_height"
-    android:layout_gravity="center"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:minWidth="@dimen/create_kitchen_type_dialog_width"
     android:minHeight="@dimen/create_kitchen_type_dialog_height"
     android:layout_marginStart="@dimen/activity_horizontal_margin"
     android:layout_marginEnd="@dimen/activity_horizontal_margin"
     android:layout_marginTop="@dimen/activity_vertical_margin"
     android:layout_marginBottom="@dimen/activity_vertical_margin"
-    android:gravity="center_horizontal"
-    android:orientation="vertical"  >
+    android:gravity="center_horizontal">
 
     <TextView
-        android:layout_marginStart="@dimen/activity_horizontal_margin"
-        android:layout_marginEnd="@dimen/activity_horizontal_margin"
-        android:layout_width="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="@string/create_new_kitchen"
-        />
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_add_black_24dp"
-            android:theme="@style/MaterialButton"
-            android:tint="@color/white"
-            android:contentDescription="@string/choose_kitchen"
-            android:id="@+id/create_kitchenBtn"
-            android:layout_alignParentEnd="true"
-            />
-        <android.support.design.widget.TextInputLayout
-            android:layout_toStartOf="@id/create_kitchenBtn"
-            android:id="@+id/kitchen_name_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            >
-            <android.support.v7.widget.AppCompatEditText
-                android:id="@+id/kitchen_name_field"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/kitchen_name"/>
-        </android.support.design.widget.TextInputLayout>
-
-    </RelativeLayout>
+        android:layout_gravity="center_horizontal"
+        android:text="@string/choose_kitchen"
+        android:textSize="@dimen/dialog_text_size"
+        android:textStyle="bold"
+        android:textAlignment="center"
+        android:id="@+id/dialog_header"
+        tools:layout_editor_absoluteX="0dp" />
 
 
     <ListView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/dialog_header"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_width="284dp"
+        android:layout_height="@dimen/create_kitchen_type_list_height"
         android:id="@+id/kitchen_type_list_view"
-        />
+        app:layout_constraintBottom_toTopOf="@+id/choose_kitchen_dialog_ok"
+        tools:layout_editor_absoluteX="8dp" />
+
+    <Button
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/kitchen_type_list_view"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/button_ok"
+        android:theme="@style/MaterialButton"
+        android:id="@+id/choose_kitchen_dialog_ok"
+        tools:layout_editor_absoluteX="212dp" />
 
 
-
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>
