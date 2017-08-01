@@ -25,7 +25,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".CreateRestaurant.CreateRestaurantActivity"></activity>
+        <activity android:name=".createrestaurant.CreateRestaurantActivity"></activity>
     </application>
 
 </manifest>

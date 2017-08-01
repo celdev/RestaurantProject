@@ -11,7 +11,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
 
-import cel.dev.restaurants.CreateRestaurant.CreateRestaurantActivity;
+import cel.dev.restaurants.createrestaurant.CreateRestaurantActivity;
+import cel.dev.restaurants.showrestaurants.RestaurantFragment;
 
 public class MainActivity extends AppCompatActivity {
 

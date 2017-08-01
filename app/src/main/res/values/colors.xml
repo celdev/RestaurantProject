@@ -11,4 +11,5 @@
     <color name="ok_blue_highlight">#438eff</color>
     <color name="danger_red">#ff2e1f</color>
     <color name="danger_red_highlight">#ff5548</color>
+    <color name="black">#000000</color>
 </resources>

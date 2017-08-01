@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
-    tools:context="cel.dev.restaurants.CreateRestaurant.CreateRestaurantActivity"
+    tools:context="cel.dev.restaurants.createrestaurant.CreateRestaurantActivity"
     >
     <!--    Using focusable and focusableInTouchMode = true to prevent the
             first EditText to gain focus upon startup of this activity

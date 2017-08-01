@@ -31,4 +31,10 @@
     <string name="error_creating_restaurant">Information missing</string>
     <string name="no_position">No restaurant position given</string>
     <string name="no_location_permission">Could not get location</string>
+    <string name="delete_restaurant">delete restaurant</string>
+    <string name="edit_restaurant">Edit Restaurant</string>
+    <string name="open_restaurant">Open Restaurant</string>
+
+    <string name="rating_placeholder">%1$.1f</string>
+
 </resources>

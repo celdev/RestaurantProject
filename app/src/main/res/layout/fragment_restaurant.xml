@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="cel.dev.restaurants.RestaurantFragment">
+    tools:context="cel.dev.restaurants.showrestaurants.RestaurantFragment">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/restaurants_recycle_view"
