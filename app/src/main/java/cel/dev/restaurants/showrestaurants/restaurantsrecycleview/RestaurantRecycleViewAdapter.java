@@ -1,7 +1,10 @@
 package cel.dev.restaurants.showrestaurants.restaurantsrecycleview;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,12 +12,12 @@ import android.view.ViewGroup;
 import java.util.List;
 
 import cel.dev.restaurants.R;
+import cel.dev.restaurants.model.BudgetType;
 import cel.dev.restaurants.model.Restaurant;
 
-public class RestaurantRecycleViewAdapter extends RecyclerView.Adapter<RestaurantViewHolder> {
+public class RestaurantRecycleViewAdapter extends RecyclerView.Adapter<RestaurantViewHolder> implements RecycleViewOnExpandChangeCallback {
 
     private List<Restaurant> restaurants;
-    private String ratingPlacerholder;
     private Context context;
 
     public RestaurantRecycleViewAdapter(List<Restaurant> restaurants, Context context) {
@@ -28,12 +31,24 @@ public class RestaurantRecycleViewAdapter extends RecyclerView.Adapter<Restauran
         return new RestaurantViewHolder(view);
     }
 
+    /** Binds the information in the restaurant to the view
+     *  @param position the restaurant's position in the restaurants array
+     * */
     @Override
     public void onBindViewHolder(RestaurantViewHolder holder, int position) {
         Restaurant restaurant = restaurants.get(position);
-        holder.restaurantName.setText(restaurant.getName());
-        holder.ratingText.setText(context.getString(R.string.rating_placeholder, restaurant.getRating()));
         restaurant.injectImageOntoImageView(holder.restaurantImage);
+        holder.setRestaurantName(restaurant.getName())
+                .setRating(context, restaurant.getRating())
+                .setRestaurantImage(restaurant)
+                .setFavorite(restaurant.isFavorite())
+                .setBudgetType(context, BudgetType.sortBudgetType(restaurant.getBudgetTypes()))
+                .setKitchenType("LP" + holder.getLayoutPosition())
+                .setOnOpenListener(new RestaurantCardButtonListener.OnOpenPressedListener(holder, this, position))
+                .setOnFavoriteListener(new RestaurantCardButtonListener.OnFavoritePressedListener(holder, restaurant))
+                .setOnDeleteRestaurantListener(new RestaurantCardButtonListener.OnDeleteRestaurantListener(holder, this, restaurant))
+                .collapseView();
+
     }
 
     @Override
@@ -44,5 +59,44 @@ public class RestaurantRecycleViewAdapter extends RecyclerView.Adapter<Restauran
     @Override
     public void onAttachedToRecyclerView(RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
+    }
+
+    /** Prepare for needing to callback to the recycle view in case of
+     *  i.e. needing to remove the item if the user presses the
+     *  delete restaurant button
+     * */
+    @Override
+    public void onExpandChange(boolean expanded, int position) {
+        //notifyItemChanged(position);
+    }
+
+    /** Creates and shows a dialog which askes the user if the user really wants
+     *  to delete this restaurant
+     *  if the user wants to delete the restaurant
+     *  will be deleted, otherwise the dialog will just be dismissed
+     * */
+    @Override
+    public void onDeleteRestaurant(final int adapterPos) {
+        new AlertDialog.Builder(context)
+                .setTitle(R.string.delete_restaurant_dialog_title)
+                .setMessage(R.string.are_you_sure_delete)
+                .setPositiveButton(R.string.delete_restaurant, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Log.d("recycle", "onClick: trying to delete restaurant with " + adapterPos);
+                        restaurants.remove(adapterPos);
+                        notifyItemRemoved(adapterPos);
+                        notifyItemRangeChanged(adapterPos, restaurants.size());
+                        dialog.dismiss();
+                    }
+                })
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .create()
+                .show();
     }
 }

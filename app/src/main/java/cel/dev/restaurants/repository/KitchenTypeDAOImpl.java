@@ -3,37 +3,37 @@ package cel.dev.restaurants.repository;
 import java.util.ArrayList;
 import java.util.List;
 
-import cel.dev.restaurants.model.FoodType;
+import cel.dev.restaurants.model.KitchenType;
 
 public class KitchenTypeDAOImpl implements KitchenTypeDAO {
 
-    private static List<FoodType> foodTypes = new ArrayList<>();
+    private static List<KitchenType> kitchenTypes = new ArrayList<>();
 
     static {
-        foodTypes.add(new FoodType("Café"));
-        foodTypes.add(new FoodType("Chinese"));
-        foodTypes.add(new FoodType("Fast food"));
-        foodTypes.add(new FoodType("German"));
-        foodTypes.add(new FoodType("Italian"));
-        foodTypes.add(new FoodType("Japanese"));
-        foodTypes.add(new FoodType("Market"));
-        foodTypes.add(new FoodType("Mexican"));
-        foodTypes.add(new FoodType("Pizza"));
-        foodTypes.add(new FoodType("Thai"));
-        foodTypes.add(new FoodType("Steak"));
-        foodTypes.add(new FoodType("Swedish"));
+        kitchenTypes.add(new KitchenType("Café"));
+        kitchenTypes.add(new KitchenType("Chinese"));
+        kitchenTypes.add(new KitchenType("Fast food"));
+        kitchenTypes.add(new KitchenType("German"));
+        kitchenTypes.add(new KitchenType("Italian"));
+        kitchenTypes.add(new KitchenType("Japanese"));
+        kitchenTypes.add(new KitchenType("Market"));
+        kitchenTypes.add(new KitchenType("Mexican"));
+        kitchenTypes.add(new KitchenType("Pizza"));
+        kitchenTypes.add(new KitchenType("Thai"));
+        kitchenTypes.add(new KitchenType("Steak"));
+        kitchenTypes.add(new KitchenType("Swedish"));
 
     }
 
     @Override
-    public void saveKitchenType(FoodType foodType) {
-        if (!foodTypes.contains(foodType)) {
-            foodTypes.add(foodType);
+    public void saveKitchenType(KitchenType kitchenType) {
+        if (!kitchenTypes.contains(kitchenType)) {
+            kitchenTypes.add(kitchenType);
         }
     }
 
     @Override
-    public List<FoodType> getAllFoodTypes() {
-        return foodTypes;
+    public List<KitchenType> getAllFoodTypes() {
+        return kitchenTypes;
     }
 }

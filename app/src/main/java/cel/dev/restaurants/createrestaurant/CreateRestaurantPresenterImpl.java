@@ -5,7 +5,7 @@ import android.graphics.Bitmap;
 import java.util.List;
 
 import cel.dev.restaurants.model.BudgetType;
-import cel.dev.restaurants.model.FoodType;
+import cel.dev.restaurants.model.KitchenType;
 import cel.dev.restaurants.model.Restaurant;
 import cel.dev.restaurants.model.RestaurantCustomImage;
 import cel.dev.restaurants.model.RestaurantPlaceholderImage;
@@ -54,7 +54,7 @@ class CreateRestaurantPresenterImpl implements CreateRestaurantMVP.Presenter {
         float rating = view.getRestaurantRating();
         Double[] location = view.getPosition();
         BudgetType[] budgetTypes = view.getSelectedBudgetTypes();
-        List<FoodType> chosenKitchen = getChosenKitchen();
+        List<KitchenType> chosenKitchen = getChosenKitchen();
         int validateCode = validateRestaurantInfo(name, rating, location, chosenKitchen, budgetTypes);
         if (validateCode != -100) {
             view.createRestaurantError(validateCode);
@@ -64,12 +64,12 @@ class CreateRestaurantPresenterImpl implements CreateRestaurantMVP.Presenter {
         if (bitmap == null) {
             restaurant = new RestaurantPlaceholderImage(name,
                     rating, budgetTypes, location[0], location[1],
-                    chosenKitchen.toArray(new FoodType[chosenKitchen.size()]),
-                    R.drawable.restaurant_placeholder);
+                    chosenKitchen.toArray(new KitchenType[chosenKitchen.size()]),
+                    R.drawable.restaurant_placeholder,false);
         } else {
             restaurant = new RestaurantCustomImage(name,rating,budgetTypes,location[0],location[1],
-                    chosenKitchen.toArray(new FoodType[chosenKitchen.size()]),
-                    PictureUtils.bitmapToByteArray(bitmap, Values.ON_SAVE_RESTAURANT_IMAGE_COMPRESS_QUALITY)
+                    chosenKitchen.toArray(new KitchenType[chosenKitchen.size()]),
+                    PictureUtils.bitmapToByteArray(bitmap, Values.ON_SAVE_RESTAURANT_IMAGE_COMPRESS_QUALITY),false
                     );
         }
         return saveRestaurant(restaurant);
@@ -80,7 +80,7 @@ class CreateRestaurantPresenterImpl implements CreateRestaurantMVP.Presenter {
         return restaurantDAO.saveRestaurant(restaurant);
     }
 
-    private int validateRestaurantInfo(String name, float rating, Double[] location, List<FoodType> chosenKitchen, BudgetType[] budgetTypes) {
+    private int validateRestaurantInfo(String name, float rating, Double[] location, List<KitchenType> chosenKitchen, BudgetType[] budgetTypes) {
         if (name == null || name.isEmpty()) {
             return CreateRestaurantValidationErrors.ERROR_NO_NAME;
         }
@@ -110,18 +110,18 @@ class CreateRestaurantPresenterImpl implements CreateRestaurantMVP.Presenter {
     }
 
     @Override
-    public List<FoodType> getKitchens() {
+    public List<KitchenType> getKitchens() {
         return repository.getKitchenTypes();
     }
 
     @Override
-    public void chooseFoodType(FoodType foodType, boolean chosen) {
-        repository.chooseFoodType(foodType, chosen);
+    public void chooseFoodType(KitchenType kitchenType, boolean chosen) {
+        repository.chooseFoodType(kitchenType, chosen);
         view.updateChosenKitchens(getChosenKitchen());
     }
 
     @Override
-    public List<FoodType> getChosenKitchen() {
+    public List<KitchenType> getChosenKitchen() {
         return repository.chosenFoodTypes();
     }
 }

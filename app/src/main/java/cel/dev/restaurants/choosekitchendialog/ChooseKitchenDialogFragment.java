@@ -14,7 +14,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import cel.dev.restaurants.model.FoodType;
+import cel.dev.restaurants.model.KitchenType;
 import cel.dev.restaurants.R;
 import cel.dev.restaurants.utils.CollectionUtils;
 
@@ -33,7 +33,7 @@ public class ChooseKitchenDialogFragment extends DialogFragment implements Choos
     @BindView(R.id.kitchen_type_list_view)
     ListView kitchenList;
 
-    public static ChooseKitchenDialogFragment newInstance(List<FoodType> all, List<FoodType> chosen) {
+    public static ChooseKitchenDialogFragment newInstance(List<KitchenType> all, List<KitchenType> chosen) {
         ChooseKitchenDialogFragment f = new ChooseKitchenDialogFragment();
         Bundle args = new Bundle();
         args.putParcelableArray(ALL_FOOD_TYPE_ARG, CollectionUtils.listToParceableArray(all));
@@ -49,8 +49,8 @@ public class ChooseKitchenDialogFragment extends DialogFragment implements Choos
         getDialog().setTitle(R.string.choose_kitchen);
         ButterKnife.bind(this, view);
         presenter = new ChooseKitchenTypePresenterImpl(this,
-                CollectionUtils.parceableToList(getArguments().getParcelableArray(ALL_FOOD_TYPE_ARG), FoodType.class),
-                CollectionUtils.parceableToList(getArguments().getParcelableArray(CHOSEN_FOOD_TYPE_ARG), FoodType.class));
+                CollectionUtils.parceableToList(getArguments().getParcelableArray(ALL_FOOD_TYPE_ARG), KitchenType.class),
+                CollectionUtils.parceableToList(getArguments().getParcelableArray(CHOSEN_FOOD_TYPE_ARG), KitchenType.class));
         presenter.createArrayAdapter();
         return view;
     }
@@ -64,7 +64,7 @@ public class ChooseKitchenDialogFragment extends DialogFragment implements Choos
     @Override
     public void onFoodTypeChosenChange(FoodTypeAndChosenStatus foodTypeAndChosenStatus) {
         if (onChooseKitchenCallback != null) {
-            onChooseKitchenCallback.chooseKitchen(foodTypeAndChosenStatus.getFoodType(),foodTypeAndChosenStatus.isChosen());
+            onChooseKitchenCallback.chooseKitchen(foodTypeAndChosenStatus.getKitchenType(),foodTypeAndChosenStatus.isChosen());
         }
     }
 

@@ -12,4 +12,6 @@
     <color name="danger_red">#ff2e1f</color>
     <color name="danger_red_highlight">#ff5548</color>
     <color name="black">#000000</color>
+    <color name="favorite">#f9d40000</color>
+    <color name="not_favorite">#000000</color>
 </resources>

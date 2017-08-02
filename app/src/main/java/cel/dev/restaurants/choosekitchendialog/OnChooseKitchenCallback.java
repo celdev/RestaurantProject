@@ -1,9 +1,9 @@
 package cel.dev.restaurants.choosekitchendialog;
 
-import cel.dev.restaurants.model.FoodType;
+import cel.dev.restaurants.model.KitchenType;
 
 public interface OnChooseKitchenCallback {
 
-    void chooseKitchen(FoodType foodType, boolean chosen);
+    void chooseKitchen(KitchenType kitchenType, boolean chosen);
 
 }

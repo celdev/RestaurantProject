@@ -5,23 +5,23 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import cel.dev.restaurants.model.FoodType;
+import cel.dev.restaurants.model.KitchenType;
 
 class ChooseKitchenTypePresenterImpl implements ChooseKitchenDialogFragmentMVP.Presenter {
 
     private ChooseKitchenDialogFragmentMVP.View view;
     private List<FoodTypeAndChosenStatus> foodTypeAndChosenStatuses;
 
-    public ChooseKitchenTypePresenterImpl(ChooseKitchenDialogFragmentMVP.View view, List<FoodType> all, List<FoodType> chosen) {
+    public ChooseKitchenTypePresenterImpl(ChooseKitchenDialogFragmentMVP.View view, List<KitchenType> all, List<KitchenType> chosen) {
         this.view = view;
         createArrays(all, chosen);
     }
 
-    private void createArrays(List<FoodType> all, List<FoodType> chosen) {
+    private void createArrays(List<KitchenType> all, List<KitchenType> chosen) {
         List<FoodTypeAndChosenStatus> statusList = new ArrayList<>(all.size());
-        Set<FoodType> chosenSet = new HashSet<>(chosen);
-        for (FoodType foodType : all) {
-            statusList.add(new FoodTypeAndChosenStatus(foodType, chosenSet.contains(foodType)));
+        Set<KitchenType> chosenSet = new HashSet<>(chosen);
+        for (KitchenType kitchenType : all) {
+            statusList.add(new FoodTypeAndChosenStatus(kitchenType, chosenSet.contains(kitchenType)));
         }
         foodTypeAndChosenStatuses = statusList;
     }

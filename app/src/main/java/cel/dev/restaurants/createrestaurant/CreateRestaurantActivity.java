@@ -31,7 +31,7 @@ import cel.dev.restaurants.choosekitchendialog.ChooseKitchenDialogFragment;
 import cel.dev.restaurants.choosekitchendialog.FoodTypeToTextRenderer;
 import cel.dev.restaurants.choosekitchendialog.OnChooseKitchenCallback;
 import cel.dev.restaurants.model.BudgetType;
-import cel.dev.restaurants.model.FoodType;
+import cel.dev.restaurants.model.KitchenType;
 import cel.dev.restaurants.R;
 import cel.dev.restaurants.utils.PermissionUtils;
 import cel.dev.restaurants.utils.PictureUtils;
@@ -231,16 +231,16 @@ public class CreateRestaurantActivity extends AppCompatActivity implements Creat
     }
 
     @Override
-    public void chooseKitchen(FoodType foodType, boolean chosen) {
-        presenter.chooseFoodType(foodType,chosen);
+    public void chooseKitchen(KitchenType kitchenType, boolean chosen) {
+        presenter.chooseFoodType(kitchenType,chosen);
     }
 
     @Override
-    public void updateChosenKitchens(List<FoodType> foodTypes) {
-        if (foodTypes.size() == 0) {
+    public void updateChosenKitchens(List<KitchenType> kitchenTypes) {
+        if (kitchenTypes.size() == 0) {
             chosenKitchenText.setText(R.string.no_kitchen_chosen);
         } else {
-            chosenKitchenText.setText(FoodTypeToTextRenderer.foodTypesToString(foodTypes));
+            chosenKitchenText.setText(FoodTypeToTextRenderer.foodTypesToString(kitchenTypes));
         }
     }
 

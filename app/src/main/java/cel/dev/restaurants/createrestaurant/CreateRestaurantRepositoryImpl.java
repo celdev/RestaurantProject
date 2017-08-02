@@ -3,7 +3,7 @@ package cel.dev.restaurants.createrestaurant;
 import java.util.ArrayList;
 import java.util.List;
 
-import cel.dev.restaurants.model.FoodType;
+import cel.dev.restaurants.model.KitchenType;
 import cel.dev.restaurants.repository.KitchenTypeDAO;
 import cel.dev.restaurants.repository.KitchenTypeDAOImpl;
 
@@ -12,7 +12,7 @@ class CreateRestaurantRepositoryImpl implements CreateRestaurantMVP.Repository {
     private CreateRestaurantPresenterImpl presenter;
     private KitchenTypeDAO kitchenTypeDAO;
 
-    private List<FoodType> chosenTypes = new ArrayList<>();
+    private List<KitchenType> chosenTypes = new ArrayList<>();
 
     CreateRestaurantRepositoryImpl(CreateRestaurantPresenterImpl createRestaurantPresenter) {
         this.presenter = createRestaurantPresenter;
@@ -20,27 +20,27 @@ class CreateRestaurantRepositoryImpl implements CreateRestaurantMVP.Repository {
     }
 
     @Override
-    public List<FoodType> getKitchenTypes() {
+    public List<KitchenType> getKitchenTypes() {
         return kitchenTypeDAO.getAllFoodTypes();
     }
 
     @Override
     public void saveKitchenType(String name) {
-        FoodType foodType = new FoodType(name);
-        kitchenTypeDAO.saveKitchenType(foodType);
+        KitchenType kitchenType = new KitchenType(name);
+        kitchenTypeDAO.saveKitchenType(kitchenType);
     }
 
     @Override
-    public List<FoodType> chosenFoodTypes() {
+    public List<KitchenType> chosenFoodTypes() {
         return chosenTypes;
     }
 
     @Override
-    public void chooseFoodType(FoodType foodType, boolean chosen) {
-        if (!chosenTypes.contains(foodType) && chosen) {
-            chosenTypes.add(foodType);
+    public void chooseFoodType(KitchenType kitchenType, boolean chosen) {
+        if (!chosenTypes.contains(kitchenType) && chosen) {
+            chosenTypes.add(kitchenType);
         } else if(!chosen) {
-            chosenTypes.remove(foodType);
+            chosenTypes.remove(kitchenType);
         }
     }
 }

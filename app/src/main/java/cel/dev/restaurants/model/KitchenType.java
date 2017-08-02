@@ -3,32 +3,27 @@ package cel.dev.restaurants.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class FoodType implements Parcelable{
-
-    private final static String EMPTY_NAME = "Unnamed";
+public class KitchenType implements Parcelable{
 
     private String name;
 
-    public FoodType(String name) {
+    public KitchenType(String name) {
         this.name = name;
-        if (name == null) {
-            this.name = EMPTY_NAME;
-        }
     }
 
-    protected FoodType(Parcel in) {
+    protected KitchenType(Parcel in) {
         name = in.readString();
     }
 
-    public static final Creator<FoodType> CREATOR = new Creator<FoodType>() {
+    public static final Creator<KitchenType> CREATOR = new Creator<KitchenType>() {
         @Override
-        public FoodType createFromParcel(Parcel in) {
-            return new FoodType(in);
+        public KitchenType createFromParcel(Parcel in) {
+            return new KitchenType(in);
         }
 
         @Override
-        public FoodType[] newArray(int size) {
-            return new FoodType[size];
+        public KitchenType[] newArray(int size) {
+            return new KitchenType[size];
         }
     };
 
@@ -37,14 +32,14 @@ public class FoodType implements Parcelable{
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        FoodType foodType = (FoodType) o;
+        KitchenType kitchenType = (KitchenType) o;
 
-        return name != null ? name.equals(foodType.name) : foodType.name == null;
+        return name != null ? name.equals(kitchenType.name) : kitchenType.name == null;
     }
 
     @Override
     public String toString() {
-        return "FoodType{" +
+        return "KitchenType{" +
                 "name='" + name + '\'' +
                 '}';
     }

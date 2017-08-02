@@ -2,12 +2,12 @@ package cel.dev.restaurants.repository;
 
 import java.util.List;
 
-import cel.dev.restaurants.model.FoodType;
+import cel.dev.restaurants.model.KitchenType;
 
 public interface KitchenTypeDAO {
 
-    void saveKitchenType(FoodType foodType);
+    void saveKitchenType(KitchenType kitchenType);
 
-    List<FoodType> getAllFoodTypes();
+    List<KitchenType> getAllFoodTypes();
 
 }

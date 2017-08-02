@@ -1,7 +1,5 @@
 package cel.dev.restaurants.model;
 
-import android.content.Context;
-import android.graphics.Bitmap;
 import android.widget.ImageView;
 
 public abstract class Restaurant {
@@ -13,16 +11,26 @@ public abstract class Restaurant {
     private float rating;
     private BudgetType[] budgetTypes;
     private double latitude, longitude;
-    private FoodType[] foodTypes;
+    private KitchenType[] kitchenTypes;
+    private boolean favorite;
 
-    public Restaurant(String name, float rating, BudgetType[] budgetTypes, double lat, double lon, FoodType[] foodTypes) {
+    public Restaurant(String name, float rating, BudgetType[] budgetTypes, double lat, double lon, KitchenType[] kitchenTypes, boolean favorite) {
+        this.favorite = favorite;
         this.id = -1;
         this.name = name;
         this.rating = rating;
         this.budgetTypes = budgetTypes;
-        this.foodTypes = foodTypes;
+        this.kitchenTypes = kitchenTypes;
         this.latitude = lat;
         this.longitude = lon;
+    }
+
+    public boolean isFavorite() {
+        return favorite;
+    }
+
+    public void setFavorite(boolean favorite) {
+        this.favorite = favorite;
     }
 
     public abstract void injectImageOntoImageView(ImageView imageView);
@@ -91,11 +99,11 @@ public abstract class Restaurant {
         this.longitude = longitude;
     }
 
-    public FoodType[] getFoodTypes() {
-        return foodTypes;
+    public KitchenType[] getKitchenTypes() {
+        return kitchenTypes;
     }
 
-    public void setFoodTypes(FoodType[] foodTypes) {
-        this.foodTypes = foodTypes;
+    public void setKitchenTypes(KitchenType[] kitchenTypes) {
+        this.kitchenTypes = kitchenTypes;
     }
 }

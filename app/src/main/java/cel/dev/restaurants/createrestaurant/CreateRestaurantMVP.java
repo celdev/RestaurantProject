@@ -5,7 +5,7 @@ import android.graphics.Bitmap;
 import java.util.List;
 
 import cel.dev.restaurants.model.BudgetType;
-import cel.dev.restaurants.model.FoodType;
+import cel.dev.restaurants.model.KitchenType;
 
 public interface CreateRestaurantMVP {
 
@@ -32,7 +32,7 @@ public interface CreateRestaurantMVP {
 
         void showSelectKitchenDialog();
 
-        void updateChosenKitchens(List<FoodType> foodTypes);
+        void updateChosenKitchens(List<KitchenType> kitchenTypes);
 
         Bitmap getRestaurantImage();
 
@@ -63,23 +63,23 @@ public interface CreateRestaurantMVP {
 
         void onNewKitchen(String name);
 
-        List<FoodType> getKitchens();
+        List<KitchenType> getKitchens();
 
-        void chooseFoodType(FoodType foodType, boolean chosen);
+        void chooseFoodType(KitchenType kitchenType, boolean chosen);
 
-        List<FoodType> getChosenKitchen();
+        List<KitchenType> getChosenKitchen();
 
     }
 
     interface Repository {
 
-        List<FoodType> getKitchenTypes();
+        List<KitchenType> getKitchenTypes();
 
         void saveKitchenType(String name);
 
-        List<FoodType> chosenFoodTypes();
+        List<KitchenType> chosenFoodTypes();
 
-        void chooseFoodType(FoodType foodType, boolean chosen);
+        void chooseFoodType(KitchenType kitchenType, boolean chosen);
 
 
     }
