@@ -6,8 +6,6 @@ import cel.dev.restaurants.model.KitchenType;
 
 public interface KitchenTypeDAO {
 
-    void saveKitchenType(KitchenType kitchenType);
-
     List<KitchenType> getAllFoodTypes();
 
 }

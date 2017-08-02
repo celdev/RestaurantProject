@@ -37,9 +37,9 @@ class RestaurantPresenterImpl implements ShowRestaurantsMVP.Presenter {
         Restaurant fakeRestaurant5 = createFakeRestaurant();
         Restaurant fakeRestaurant6 = createFakeRestaurant();
         fakeRestaurant1.setName("Test 1");
-        fakeRestaurant2.setName("Test 2");
+        fakeRestaurant2.setName("Test 2 med ett lite längre namn");
         fakeRestaurant3.setName("Test 3");
-        fakeRestaurant4.setName("Test 4");
+        fakeRestaurant4.setName("Test 4 med ett väldigt långt namn, onödigt långt");
         fakeRestaurant5.setName("Test 5");
         fakeRestaurant6.setName("Test 6");
         restaurants.add(fakeRestaurant1);

@@ -2,13 +2,16 @@ package cel.dev.restaurants.choosekitchendialog;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Parcel;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import java.util.Arrays;
 import java.util.List;
 
 import butterknife.BindView;
@@ -20,7 +23,6 @@ import cel.dev.restaurants.utils.CollectionUtils;
 
 public class ChooseKitchenDialogFragment extends DialogFragment implements ChooseKitchenDialogFragmentMVP.View {
 
-    private static final String ALL_FOOD_TYPE_ARG = "ALL";
     private static final String CHOSEN_FOOD_TYPE_ARG = "CHOSEN";
     private static final String TAG = "diag";
 
@@ -33,11 +35,10 @@ public class ChooseKitchenDialogFragment extends DialogFragment implements Choos
     @BindView(R.id.kitchen_type_list_view)
     ListView kitchenList;
 
-    public static ChooseKitchenDialogFragment newInstance(List<KitchenType> all, List<KitchenType> chosen) {
+    public static ChooseKitchenDialogFragment newInstance(List<KitchenType> chosen) {
         ChooseKitchenDialogFragment f = new ChooseKitchenDialogFragment();
         Bundle args = new Bundle();
-        args.putParcelableArray(ALL_FOOD_TYPE_ARG, CollectionUtils.listToParceableArray(all));
-        args.putParcelableArray(CHOSEN_FOOD_TYPE_ARG, CollectionUtils.listToParceableArray(chosen));
+        args.putIntArray(CHOSEN_FOOD_TYPE_ARG, KitchenType.toIntegerArray(chosen));
         f.setArguments(args);
         return f;
     }
@@ -48,9 +49,11 @@ public class ChooseKitchenDialogFragment extends DialogFragment implements Choos
         View view = inflater.inflate(R.layout.fragment_choose_kitchen, container);
         getDialog().setTitle(R.string.choose_kitchen);
         ButterKnife.bind(this, view);
+        List<KitchenType> chosen = KitchenType.fromParcel(getArguments().getIntArray(CHOSEN_FOOD_TYPE_ARG));
+        Log.d(TAG, "onCreateView: current chosen foodtype inside dialog = " + Arrays.toString(chosen.toArray()));
         presenter = new ChooseKitchenTypePresenterImpl(this,
-                CollectionUtils.parceableToList(getArguments().getParcelableArray(ALL_FOOD_TYPE_ARG), KitchenType.class),
-                CollectionUtils.parceableToList(getArguments().getParcelableArray(CHOSEN_FOOD_TYPE_ARG), KitchenType.class));
+                Arrays.asList(KitchenType.values()),
+                chosen);
         presenter.createArrayAdapter();
         return view;
     }

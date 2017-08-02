@@ -61,8 +61,6 @@ public interface CreateRestaurantMVP {
 
         void onChooseKitchenBtnPressed();
 
-        void onNewKitchen(String name);
-
         List<KitchenType> getKitchens();
 
         void chooseFoodType(KitchenType kitchenType, boolean chosen);
@@ -75,7 +73,6 @@ public interface CreateRestaurantMVP {
 
         List<KitchenType> getKitchenTypes();
 
-        void saveKitchenType(String name);
 
         List<KitchenType> chosenFoodTypes();
 

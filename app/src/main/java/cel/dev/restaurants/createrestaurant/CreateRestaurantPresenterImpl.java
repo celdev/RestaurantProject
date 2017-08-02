@@ -104,10 +104,6 @@ class CreateRestaurantPresenterImpl implements CreateRestaurantMVP.Presenter {
         view.showSelectKitchenDialog();
     }
 
-    @Override
-    public void onNewKitchen(String name) {
-        repository.saveKitchenType(name);
-    }
 
     @Override
     public List<KitchenType> getKitchens() {

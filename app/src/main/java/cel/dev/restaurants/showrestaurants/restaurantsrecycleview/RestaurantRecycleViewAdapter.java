@@ -43,7 +43,7 @@ public class RestaurantRecycleViewAdapter extends RecyclerView.Adapter<Restauran
                 .setRestaurantImage(restaurant)
                 .setFavorite(restaurant.isFavorite())
                 .setBudgetType(context, BudgetType.sortBudgetType(restaurant.getBudgetTypes()))
-                .setKitchenType("LP" + holder.getLayoutPosition())
+                .setKitchenType(context, restaurant.getKitchenTypes())
                 .setOnOpenListener(new RestaurantCardButtonListener.OnOpenPressedListener(holder, this, position))
                 .setOnFavoriteListener(new RestaurantCardButtonListener.OnFavoritePressedListener(holder, restaurant))
                 .setOnDeleteRestaurantListener(new RestaurantCardButtonListener.OnDeleteRestaurantListener(holder, this, restaurant))

@@ -1,6 +1,9 @@
 package cel.dev.restaurants.createrestaurant;
 
+import android.util.Log;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import cel.dev.restaurants.model.KitchenType;
@@ -24,14 +27,10 @@ class CreateRestaurantRepositoryImpl implements CreateRestaurantMVP.Repository {
         return kitchenTypeDAO.getAllFoodTypes();
     }
 
-    @Override
-    public void saveKitchenType(String name) {
-        KitchenType kitchenType = new KitchenType(name);
-        kitchenTypeDAO.saveKitchenType(kitchenType);
-    }
 
     @Override
     public List<KitchenType> chosenFoodTypes() {
+        Log.d("rep", "chosenFoodTypes: current chosen foodtypes = " + Arrays.toString(chosenTypes.toArray()));
         return chosenTypes;
     }
 

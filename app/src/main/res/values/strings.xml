@@ -40,5 +40,20 @@
     <string name="map">Map</string>
     <string name="delete_restaurant_dialog_title">Delete Restaurant?</string>
     <string name="are_you_sure_delete">Are you sure you want to delete this restaurant?</string>
+    <string name="cafe">Café</string>
+    <string name="chinese">Chinese</string>
+    <string name="fast_food">Fast food</string>
+    <string name="swedish">Swedish</string>
+    <string name="german">German</string>
+    <string name="japanese">Japanese</string>
+    <string name="pizza">Pizza</string>
+    <string name="thai">Thai</string>
+    <string name="steak">Steak</string>
+    <string name="market">Market</string>
+    <string name="mexican">Mexican</string>
+    <string name="italian">Italian</string>
+    <string name="use_user_location">Use my location</string>
+    <string name="pick_on_map">Pick on map</string>
+
 
 </resources>

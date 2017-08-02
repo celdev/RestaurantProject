@@ -226,7 +226,7 @@ public class CreateRestaurantActivity extends AppCompatActivity implements Creat
 
     @Override
     public void showSelectKitchenDialog() {
-        ChooseKitchenDialogFragment.newInstance(presenter.getKitchens(), presenter.getChosenKitchen())
+        ChooseKitchenDialogFragment.newInstance(presenter.getChosenKitchen())
                 .show(getSupportFragmentManager(), "fragment_choose_kitchen");
     }
 
@@ -240,7 +240,7 @@ public class CreateRestaurantActivity extends AppCompatActivity implements Creat
         if (kitchenTypes.size() == 0) {
             chosenKitchenText.setText(R.string.no_kitchen_chosen);
         } else {
-            chosenKitchenText.setText(FoodTypeToTextRenderer.foodTypesToString(kitchenTypes));
+            chosenKitchenText.setText(FoodTypeToTextRenderer.foodTypesToString(this, kitchenTypes));
         }
     }
 

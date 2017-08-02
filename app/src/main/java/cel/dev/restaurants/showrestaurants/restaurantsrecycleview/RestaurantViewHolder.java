@@ -15,6 +15,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import cel.dev.restaurants.R;
 import cel.dev.restaurants.model.BudgetType;
+import cel.dev.restaurants.model.KitchenType;
 import cel.dev.restaurants.model.Restaurant;
 import cel.dev.restaurants.utils.AndroidWorkaroundUtils;
 
@@ -97,8 +98,15 @@ class RestaurantViewHolder extends RecyclerView.ViewHolder {
         return this;
     }
 
-    public RestaurantViewHolder setKitchenType(String kitchenType) {
-        this.kitchenOutput.setText(kitchenType);
+    public RestaurantViewHolder setKitchenType(Context context, KitchenType[] kitchenTypes) {
+        StringBuilder text = new StringBuilder();
+        for (int i = 0; i < kitchenTypes.length; i++) {
+            text.append(context.getString(kitchenTypes[i].getStringResId()));
+            if (i + 1 != kitchenTypes.length) {
+                text.append(", ");
+            }
+        }
+        this.kitchenOutput.setText(text.toString());
         return this;
     }
 

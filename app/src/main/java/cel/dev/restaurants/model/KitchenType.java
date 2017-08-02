@@ -3,69 +3,50 @@ package cel.dev.restaurants.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class KitchenType implements Parcelable{
+import java.util.ArrayList;
+import java.util.List;
 
-    private String name;
+import cel.dev.restaurants.R;
 
-    public KitchenType(String name) {
-        this.name = name;
+public enum KitchenType {
+
+    Café(R.string.cafe),
+    Chinese(R.string.chinese),
+    Fast(R.string.fast_food),
+    German(R.string.german),
+    Italian(R.string.italian),
+    Japanese(R.string.japanese),
+    Market(R.string.market),
+    Mexican(R.string.mexican),
+    Pizza(R.string.pizza),
+    Thai(R.string.thai),
+    Steak(R.string.steak),
+    Swedish(R.string.swedish),;
+
+    private int stringResId;
+
+    KitchenType(int stringResId) {
+        this.stringResId = stringResId;
     }
 
-    protected KitchenType(Parcel in) {
-        name = in.readString();
+
+    public int getStringResId() {
+        return stringResId;
     }
 
-    public static final Creator<KitchenType> CREATOR = new Creator<KitchenType>() {
-        @Override
-        public KitchenType createFromParcel(Parcel in) {
-            return new KitchenType(in);
+    public static int[] toIntegerArray(List<KitchenType> kitchenTypes) {
+        int[] ordinals = new int[kitchenTypes.size()];
+        for (int i = 0; i < kitchenTypes.size(); i++) {
+            ordinals[i] = kitchenTypes.get(i).ordinal();
         }
+        return ordinals;
+    }
 
-        @Override
-        public KitchenType[] newArray(int size) {
-            return new KitchenType[size];
+    public static List<KitchenType> fromParcel(int[] ordinals) {
+        List<KitchenType> kitchenTypes = new ArrayList<>(ordinals.length);
+        for (Integer ordinal : ordinals) {
+            kitchenTypes.add(KitchenType.values()[ordinal]);
         }
-    };
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        KitchenType kitchenType = (KitchenType) o;
-
-        return name != null ? name.equals(kitchenType.name) : kitchenType.name == null;
+        return kitchenTypes;
     }
-
-    @Override
-    public String toString() {
-        return "KitchenType{" +
-                "name='" + name + '\'' +
-                '}';
-    }
-
-    @Override
-    public int hashCode() {
-        return name != null ? name.hashCode() : 0;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(name);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
 }

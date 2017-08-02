@@ -271,6 +271,48 @@
                 />
 
         </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/activity_horizontal_margin"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            >
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:theme="@style/MaterialButton"
+                android:text="@string/pick_on_map"
+                android:id="@+id/pick_on_map"
+                android:layout_alignParentEnd="true"
+                />
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:theme="@style/MaterialButton"
+                android:text="@string/use_user_location"
+                android:id="@+id/use_my_location_button"
+                android:layout_toStartOf="@id/pick_on_map"
+                />
+
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/map_layout">
+
+                <com.google.android.gms.maps.MapView
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/create_restaurant_maps_height">
+
+                </com.google.android.gms.maps.MapView>
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
