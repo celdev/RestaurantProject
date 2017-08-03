@@ -44,7 +44,6 @@ public class RestaurantFragment extends Fragment implements ShowRestaurantsMVP.V
         ButterKnife.bind(this, view);
         presenter = new RestaurantPresenterImpl(this);
         initializeViews();
-        presenter.onLoadFragment();
         return view;
     }
 
@@ -52,7 +51,11 @@ public class RestaurantFragment extends Fragment implements ShowRestaurantsMVP.V
         restaurantRecycleView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
     }
 
-
+    @Override
+    public void onResume() {
+        super.onResume();
+        presenter.onLoadFragment();
+    }
 
     @Override
     public void onDetach() {

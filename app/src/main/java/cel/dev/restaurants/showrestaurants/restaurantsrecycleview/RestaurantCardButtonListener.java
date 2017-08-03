@@ -63,4 +63,37 @@ abstract class RestaurantCardButtonListener implements View.OnClickListener {
         }
     }
 
+    static class OnShowRestaurantLocationListener extends RestaurantCardButtonListener {
+
+        private final RecycleViewOnExpandChangeCallback callback;
+        private final Restaurant restaurant;
+
+        OnShowRestaurantLocationListener(RestaurantViewHolder restaurantViewHolder, RecycleViewOnExpandChangeCallback callback, Restaurant restaurant) {
+            super(restaurantViewHolder);
+            this.callback = callback;
+            this.restaurant = restaurant;
+        }
+
+        @Override
+        public void onClick(View v) {
+            callback.onShowRestaurantLocation(restaurant);
+        }
+    }
+    static class OnEditRestaurantListener extends RestaurantCardButtonListener {
+
+        private final RecycleViewOnExpandChangeCallback callback;
+        private final Restaurant restaurant;
+
+        OnEditRestaurantListener(RestaurantViewHolder restaurantViewHolder, RecycleViewOnExpandChangeCallback callback, Restaurant restaurant) {
+            super(restaurantViewHolder);
+            this.callback = callback;
+            this.restaurant = restaurant;
+        }
+
+        @Override
+        public void onClick(View v) {
+            callback.onEditRestaurant(restaurant);
+        }
+    }
+
 }

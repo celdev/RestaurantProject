@@ -49,20 +49,9 @@ public class RestaurantRecycleViewAdapter extends RecyclerView.Adapter<Restauran
                 .setOnOpenListener(new RestaurantCardButtonListener.OnOpenPressedListener(holder, this, position))
                 .setOnFavoriteListener(new RestaurantCardButtonListener.OnFavoritePressedListener(holder, restaurant))
                 .setOnDeleteRestaurantListener(new RestaurantCardButtonListener.OnDeleteRestaurantListener(holder, this, restaurant))
-                .setOnShowLocationListener(new RestaurantCardButtonListener(holder) {
-                    @Override
-                    public void onClick(View v) {
-                        context.startActivity(AndroidUtils.createMapActivityIntentWithLatLong(context, restaurant.getLatitude(), restaurant.getLongitude()));
-                    }
-                })
-                .setOnEditRestaurantListener(new RestaurantCardButtonListener(holder) {
-                    @Override
-                    public void onClick(View v) {
-                        context.startActivity(AndroidUtils.createEditRestaurantActivityIntent(context, restaurant));
-                    }
-                })
+                .setOnShowLocationListener(new RestaurantCardButtonListener.OnShowRestaurantLocationListener(holder, this, restaurant))
+                .setOnEditRestaurantListener(new RestaurantCardButtonListener.OnEditRestaurantListener(holder, this, restaurant))
                 .collapseView();
-
     }
 
     @Override
@@ -113,4 +102,16 @@ public class RestaurantRecycleViewAdapter extends RecyclerView.Adapter<Restauran
                 .create()
                 .show();
     }
+
+    @Override
+    public void onEditRestaurant(Restaurant restaurant) {
+        context.startActivity(AndroidUtils.createEditRestaurantActivityIntent(context, restaurant));
+    }
+
+    @Override
+    public void onShowRestaurantLocation(Restaurant restaurant) {
+        context.startActivity(AndroidUtils.createMapActivityIntentWithLatLong(context, restaurant.getLatitude(), restaurant.getLongitude()));
+    }
+
+
 }
