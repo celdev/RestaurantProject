@@ -24,7 +24,6 @@ import cel.dev.restaurants.utils.CollectionUtils;
 public class ChooseKitchenDialogFragment extends DialogFragment implements ChooseKitchenDialogFragmentMVP.View {
 
     private static final String CHOSEN_FOOD_TYPE_ARG = "CHOSEN";
-    private static final String TAG = "diag";
 
     public ChooseKitchenDialogFragment() {
     }
@@ -35,6 +34,10 @@ public class ChooseKitchenDialogFragment extends DialogFragment implements Choos
     @BindView(R.id.kitchen_type_list_view)
     ListView kitchenList;
 
+    /** Creates a new instance of the DialogFragment
+     *  adds the chosen KitchenTypes as an argument which can then be used
+     *  in onCreateView
+     * */
     public static ChooseKitchenDialogFragment newInstance(List<KitchenType> chosen) {
         ChooseKitchenDialogFragment f = new ChooseKitchenDialogFragment();
         Bundle args = new Bundle();
@@ -43,6 +46,11 @@ public class ChooseKitchenDialogFragment extends DialogFragment implements Choos
         return f;
     }
 
+    /** Inflates the view using the fragment_choose_kitchen xml file
+     *  Creates the presenter and calls to the presenter so that the
+     *  contents for the adapter is created which is then used for
+     *  creating the adapter which is then attached to the list view
+     * */
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -50,7 +58,6 @@ public class ChooseKitchenDialogFragment extends DialogFragment implements Choos
         getDialog().setTitle(R.string.choose_kitchen);
         ButterKnife.bind(this, view);
         List<KitchenType> chosen = KitchenType.fromParcel(getArguments().getIntArray(CHOSEN_FOOD_TYPE_ARG));
-        Log.d(TAG, "onCreateView: current chosen foodtype inside dialog = " + Arrays.toString(chosen.toArray()));
         presenter = new ChooseKitchenTypePresenterImpl(this,
                 Arrays.asList(KitchenType.values()),
                 chosen);
@@ -58,12 +65,17 @@ public class ChooseKitchenDialogFragment extends DialogFragment implements Choos
         return view;
     }
 
+    /** Creates the ArrayAdapter for the ListView using the
+     *  @param statusList as content
+     * */
     @Override
     public void injectArrayAdapter(List<FoodTypeAndChosenStatus> statusList) {
         FoodTypeArrayAdapter foodTypeArrayAdapter = new FoodTypeArrayAdapter(getActivity(), -1, statusList, presenter);
         kitchenList.setAdapter(foodTypeArrayAdapter);
     }
 
+    /** Callback for when a Kitchen type has been selected or deselected
+     * */
     @Override
     public void onFoodTypeChosenChange(FoodTypeAndChosenStatus foodTypeAndChosenStatus) {
         if (onChooseKitchenCallback != null) {
@@ -71,6 +83,9 @@ public class ChooseKitchenDialogFragment extends DialogFragment implements Choos
         }
     }
 
+    /** The activity that will contain this DialogFragment must implement OnChooseKitchenCallback
+     *  This is so that the presenter of the activity can handle change in chosen kitchen types
+     * */
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -81,12 +96,16 @@ public class ChooseKitchenDialogFragment extends DialogFragment implements Choos
         }
     }
 
+    /** Releases the choose kitchen type callback
+     * */
     @Override
     public void onDetach() {
         super.onDetach();
         onChooseKitchenCallback = null;
     }
 
+    /** Closes the dialog when the ok button is pressed
+     * */
     @OnClick(R.id.choose_kitchen_dialog_ok)
     void okDialogPressed(View view) {
         dismiss();

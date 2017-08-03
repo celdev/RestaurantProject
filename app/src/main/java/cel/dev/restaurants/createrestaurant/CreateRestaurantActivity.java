@@ -21,6 +21,10 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.OnMapReadyCallback;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,7 +40,7 @@ import cel.dev.restaurants.R;
 import cel.dev.restaurants.utils.PermissionUtils;
 import cel.dev.restaurants.utils.PictureUtils;
 
-public class CreateRestaurantActivity extends AppCompatActivity implements CreateRestaurantMVP.View, OnChooseKitchenCallback {
+public class CreateRestaurantActivity extends AppCompatActivity implements CreateRestaurantMVP.View, OnChooseKitchenCallback, OnMapReadyCallback {
 
 
     private static final int REQUEST_IMAGE_CAPTURE = 1;
@@ -45,29 +49,19 @@ public class CreateRestaurantActivity extends AppCompatActivity implements Creat
     private static final int IMAGE_CROP = 3;
     private static final String TAG = "cra";
 
-    @BindView(R.id.restaurant_name_field)
-    EditText nameField;
-    @BindView(R.id.restaurantNameWhitePlaceholder)
-    TextView placeHolderWhite;
-    @BindView(R.id.restaurant_image)
-    ImageView restaurantImageView;
-    @BindView(R.id.image_control_layout)
-    LinearLayout imageControlLayout;
-    @BindView(R.id.chosen_kitchen_text)
-    TextView chosenKitchenText;
-    @BindView(R.id.restaurant_score)
-    RatingBar ratingBar;
-    @BindView(R.id.budget_cheap)
-    CheckBox budgetCheapBox;
-    @BindView(R.id.budget_normal)
-    CheckBox budgetNormalBox;
-    @BindView(R.id.budget_expensive)
-    CheckBox budgetExpensiveBox;
-    @BindView(R.id.budget_very_expensive)
-    CheckBox budgetVeryExpensiveBox;
+    @BindView(R.id.restaurant_name_field) EditText nameField;
+    @BindView(R.id.restaurantNameWhitePlaceholder) TextView placeHolderWhite;
+    @BindView(R.id.restaurant_image) ImageView restaurantImageView;
+    @BindView(R.id.image_control_layout) LinearLayout imageControlLayout;
+    @BindView(R.id.chosen_kitchen_text) TextView chosenKitchenText;
+    @BindView(R.id.restaurant_score) RatingBar ratingBar;
+    @BindView(R.id.budget_cheap) CheckBox budgetCheapBox;
+    @BindView(R.id.budget_normal) CheckBox budgetNormalBox;
+    @BindView(R.id.budget_expensive) CheckBox budgetExpensiveBox;
+    @BindView(R.id.budget_very_expensive) CheckBox budgetVeryExpensiveBox;
+    @BindView(R.id.map_view) MapView mapView;
 
-
-
+    private GoogleMap map;
     private CreateRestaurantMVP.Presenter presenter;
 
     private Bitmap restaurantImage;
@@ -79,13 +73,15 @@ public class CreateRestaurantActivity extends AppCompatActivity implements Creat
         ButterKnife.bind(this);
         presenter = new CreateRestaurantPresenterImpl(this);
         nameField.addTextChangedListener(new RestaurantNameTextWatcher(placeHolderWhite));
-        initializeViewParameters();
+        initializeViewParameters(savedInstanceState);
     }
 
     /** Sets values for view that aren't settable in xml
      * */
-    private void initializeViewParameters() {
+    private void initializeViewParameters(Bundle savedInstanceState) {
         chosenKitchenText.setMaxWidth(chosenKitchenText.getWidth());
+        mapView.onCreate(savedInstanceState);
+        mapView.getMapAsync(this);
     }
 
 
@@ -151,7 +147,7 @@ public class CreateRestaurantActivity extends AppCompatActivity implements Creat
                     presenter.cameraButtonPressed();
                     break;
                 case REQUEST_LOCATION:
-                    receiveLocation();
+                    onReceiveLocationPermission();
                     break;
             }
         } else {
@@ -166,7 +162,7 @@ public class CreateRestaurantActivity extends AppCompatActivity implements Creat
         }
     }
 
-    private void receiveLocation() {
+    private void onReceiveLocationPermission() {
 
     }
 
@@ -317,5 +313,49 @@ public class CreateRestaurantActivity extends AppCompatActivity implements Creat
     }
 
 
+    /** Callback for the initialize async Google map*/
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        this.map = googleMap;
+    }
+
+
+    /** Android lifecycle methods
+     * */
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mapView.onPause();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mapView.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mapView.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mapView.onDestroy();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        mapView.onLowMemory();
+    }
 }
 

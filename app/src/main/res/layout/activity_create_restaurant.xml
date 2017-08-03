@@ -300,11 +300,18 @@
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/map_layout">
+                android:id="@+id/map_layout"
+                android:layout_below="@id/pick_on_map"
+                >
 
                 <com.google.android.gms.maps.MapView
                     android:layout_width="wrap_content"
-                    android:layout_height="@dimen/create_restaurant_maps_height">
+                    android:layout_height="@dimen/create_restaurant_maps_height"
+                    android:id="@+id/map_view"
+                    android:apiKey="@string/google_maps_api_key"
+                    android:clickable="true"
+                    android:enabled="true"
+                    >
 
                 </com.google.android.gms.maps.MapView>
 
