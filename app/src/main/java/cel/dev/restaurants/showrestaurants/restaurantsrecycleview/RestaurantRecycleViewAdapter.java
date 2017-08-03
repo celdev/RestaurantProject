@@ -2,6 +2,7 @@ package cel.dev.restaurants.showrestaurants.restaurantsrecycleview;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -14,6 +15,7 @@ import java.util.List;
 import cel.dev.restaurants.R;
 import cel.dev.restaurants.model.BudgetType;
 import cel.dev.restaurants.model.Restaurant;
+import cel.dev.restaurants.utils.AndroidUtils;
 
 public class RestaurantRecycleViewAdapter extends RecyclerView.Adapter<RestaurantViewHolder> implements RecycleViewOnExpandChangeCallback {
 
@@ -36,7 +38,7 @@ public class RestaurantRecycleViewAdapter extends RecyclerView.Adapter<Restauran
      * */
     @Override
     public void onBindViewHolder(RestaurantViewHolder holder, int position) {
-        Restaurant restaurant = restaurants.get(position);
+        final Restaurant restaurant = restaurants.get(position);
         restaurant.injectImageOntoImageView(holder.restaurantImage);
         holder.setRestaurantName(restaurant.getName())
                 .setRating(context, restaurant.getRating())
@@ -47,6 +49,18 @@ public class RestaurantRecycleViewAdapter extends RecyclerView.Adapter<Restauran
                 .setOnOpenListener(new RestaurantCardButtonListener.OnOpenPressedListener(holder, this, position))
                 .setOnFavoriteListener(new RestaurantCardButtonListener.OnFavoritePressedListener(holder, restaurant))
                 .setOnDeleteRestaurantListener(new RestaurantCardButtonListener.OnDeleteRestaurantListener(holder, this, restaurant))
+                .setOnShowLocationListener(new RestaurantCardButtonListener(holder) {
+                    @Override
+                    public void onClick(View v) {
+                        context.startActivity(AndroidUtils.createMapActivityIntentWithLatLong(context, restaurant.getLatitude(), restaurant.getLongitude()));
+                    }
+                })
+                .setOnEditRestaurantListener(new RestaurantCardButtonListener(holder) {
+                    @Override
+                    public void onClick(View v) {
+                        context.startActivity(AndroidUtils.createEditRestaurantActivityIntent(context, restaurant));
+                    }
+                })
                 .collapseView();
 
     }

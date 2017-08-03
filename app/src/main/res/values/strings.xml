@@ -60,6 +60,13 @@
     <string name="stay">cancel</string>
     <string name="discard">Discard</string>
     <string name="error_getting_location">Error getting location</string>
+    <string name="title_activity_show_restaurant_location">Location</string>
+    <string name="return_location">Return location</string>
+    <string name="no_position_found">Error: no position found</string>
+    <string name="no_location_chosen">No location chosen</string>
+    <string name="error_getting_address">Error getting location name</string>
+    <string name="error_edit_restaurant">Error editing restaurant, no restaurant with this id</string>
+    <string name="save">Save</string>
 
 
 </resources>

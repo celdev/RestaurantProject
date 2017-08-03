@@ -62,4 +62,5 @@ abstract class RestaurantCardButtonListener implements View.OnClickListener {
             callback.onDeleteRestaurant(restaurantViewHolder.getAdapterPosition());
         }
     }
+
 }

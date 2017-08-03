@@ -2,6 +2,7 @@ package cel.dev.restaurants.utils;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.util.Log;
 
@@ -11,9 +12,8 @@ public class PictureUtils {
 
     private static final String TAG = "picutil";
 
-    public static Bitmap scaleBitmap(Bitmap bitmap) {
-        //todo
-        return bitmap;
+    public static Bitmap byteArrayToBitMap(byte[] image) {
+        return BitmapFactory.decodeByteArray(image, 0, image.length);
     }
 
     public static Bitmap rotateBitmap(Bitmap src, float angle) {
@@ -31,7 +31,6 @@ public class PictureUtils {
         intent.putExtra("aspectY", height);
         intent.putExtra("outputX", width);
         intent.putExtra("outputY", height);
-        Log.d(TAG, "cropIntentWidthAndHeight: height = " + height + " width = " + width);
         return intent;
     }
 

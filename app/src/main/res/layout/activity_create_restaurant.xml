@@ -283,37 +283,29 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:theme="@style/MaterialButton"
-                android:text="@string/use_user_location"
-                android:id="@+id/use_my_location_button"
-
-                />
-
-            <!--
-
-            android:layout_toStartOf="@id/pick_on_map"
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:theme="@style/MaterialButton"
                 android:text="@string/pick_on_map"
                 android:id="@+id/pick_on_map"
                 android:layout_alignParentEnd="true"
                 />
-
-
-
-            <RelativeLayout
+            <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/map_layout"
+                android:theme="@style/MaterialButton"
+                android:text="@string/use_user_location"
+                android:id="@+id/use_my_location_button"
+                android:layout_toStartOf="@id/pick_on_map"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:id="@+id/location_info_text"
+                android:text="@string/no_location_chosen"
                 android:layout_below="@id/pick_on_map"
-                >
+                />
 
 
-            </RelativeLayout>
-
-            -->
         </RelativeLayout>
 
 

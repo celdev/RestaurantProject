@@ -22,5 +22,5 @@ public interface RestaurantDAO {
 
     int getNextId();
 
-    void updateRestaurant(Restaurant restaurant);
+    //void updateRestaurant(Restaurant restaurant);
 }

@@ -1,11 +1,17 @@
 package cel.dev.restaurants.createrestaurant;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 
 import java.util.List;
 
 import cel.dev.restaurants.model.BudgetType;
 import cel.dev.restaurants.model.KitchenType;
+import cel.dev.restaurants.model.Restaurant;
 
 public interface CreateRestaurantMVP {
 
@@ -48,6 +54,10 @@ public interface CreateRestaurantMVP {
 
         void createRestaurantOk();
 
+        void showError(@StringRes int errorResCode);
+
+        void injectInformationToViews(@NonNull Restaurant restaurant);
+
     }
 
     interface UserInputInformationListener {
@@ -69,6 +79,9 @@ public interface CreateRestaurantMVP {
 
         List<KitchenType> getChosenKitchen();
 
+        String getLocationStringFromLatLng(Context context, double latitude, double longitude);
+
+        boolean getIsEditRestaurantMode(Intent intent);
     }
 
     interface Repository {
@@ -81,6 +94,10 @@ public interface CreateRestaurantMVP {
         void chooseFoodType(KitchenType kitchenType, boolean chosen);
 
 
+        @Nullable
+        Restaurant getRestaurant(int id);
+
+        void setChosenFoodTypes(KitchenType[] kitchenTypes);
     }
 
 }

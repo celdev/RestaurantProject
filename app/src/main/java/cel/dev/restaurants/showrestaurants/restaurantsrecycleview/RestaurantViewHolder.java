@@ -17,7 +17,7 @@ import cel.dev.restaurants.R;
 import cel.dev.restaurants.model.BudgetType;
 import cel.dev.restaurants.model.KitchenType;
 import cel.dev.restaurants.model.Restaurant;
-import cel.dev.restaurants.utils.AndroidWorkaroundUtils;
+import cel.dev.restaurants.utils.AndroidUtils;
 
 class RestaurantViewHolder extends RecyclerView.ViewHolder {
 
@@ -71,7 +71,7 @@ class RestaurantViewHolder extends RecyclerView.ViewHolder {
 
     public RestaurantViewHolder setFavorite(boolean favorite) {
         if (favorite) {
-            favoriteBtn.setImageDrawable(AndroidWorkaroundUtils.tintDrawable(favoriteBtn.getContext(), favoriteFull, R.color.favorite));
+            favoriteBtn.setImageDrawable(AndroidUtils.tintDrawable(favoriteBtn.getContext(), favoriteFull, R.color.favorite));
         } else {
             favoriteBtn.setImageDrawable(favoriteEmpty);
         }

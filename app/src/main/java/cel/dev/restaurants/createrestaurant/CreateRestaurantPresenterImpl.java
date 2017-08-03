@@ -1,7 +1,14 @@
 package cel.dev.restaurants.createrestaurant;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.location.Address;
+import android.location.Geocoder;
+import android.os.Bundle;
+import android.util.Log;
 
+import java.io.IOException;
 import java.util.List;
 
 import cel.dev.restaurants.model.BudgetType;
@@ -18,9 +25,12 @@ import cel.dev.restaurants.utils.Values;
 class CreateRestaurantPresenterImpl implements CreateRestaurantMVP.Presenter {
 
 
-
     private CreateRestaurantMVP.View view;
     private CreateRestaurantMVP.Repository repository;
+
+    private boolean isEditMode;
+    private int restaurantId;
+    private boolean restaurantIsFavorite;
 
     public CreateRestaurantPresenterImpl(CreateRestaurantMVP.View view) {
         this.view = view;
@@ -72,6 +82,10 @@ class CreateRestaurantPresenterImpl implements CreateRestaurantMVP.Presenter {
                     PictureUtils.bitmapToByteArray(bitmap, Values.ON_SAVE_RESTAURANT_IMAGE_COMPRESS_QUALITY),false
                     );
         }
+        if (isEditMode) {
+            restaurant.setId(restaurantId);
+            restaurant.setFavorite(restaurantIsFavorite);
+        }
         return saveRestaurant(restaurant);
     }
 
@@ -119,5 +133,43 @@ class CreateRestaurantPresenterImpl implements CreateRestaurantMVP.Presenter {
     @Override
     public List<KitchenType> getChosenKitchen() {
         return repository.chosenFoodTypes();
+    }
+
+    @Override
+    public String getLocationStringFromLatLng(Context context, double latitude, double longitude) {
+        try {
+            Geocoder geocoder = new Geocoder(context);
+            List<Address> fromLocation = geocoder.getFromLocation(latitude, longitude, 1);
+            return fromLocation.get(0).getAddressLine(0);
+        } catch (IOException e) {
+            Log.d("create pres", "getLocationStringFromLatLng: ", e);
+            return context.getString(R.string.error_getting_address);
+        }
+    }
+
+    @Override
+    public boolean getIsEditRestaurantMode(Intent intent) {
+        if (intent.getExtras() != null) {
+            Bundle extras = intent.getExtras();
+            int restaurantId = extras.getInt(CreateRestaurantActivity.EDIT_RESTAURANT_ID, -1);
+            if (restaurantId != -1) {
+                loadRestaurantToEdit(restaurantId);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void loadRestaurantToEdit(int id) {
+        Restaurant restaurant = repository.getRestaurant(id);
+        if (restaurant == null) {
+            view.showError(R.string.error_edit_restaurant);
+        } else {
+            repository.setChosenFoodTypes(restaurant.getKitchenTypes());
+            restaurantId = restaurant.getId();
+            restaurantIsFavorite = restaurant.isFavorite();
+            isEditMode = true;
+            view.injectInformationToViews(restaurant);
+        }
     }
 }

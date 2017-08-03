@@ -17,4 +17,8 @@ public class RestaurantCustomImage extends Restaurant {
         imageView.setImageBitmap(BitmapFactory.decodeByteArray(image, 0, image.length));
     }
 
+    public byte[] getImageByteArray() {
+        return image;
+    }
+
 }

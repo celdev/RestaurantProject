@@ -9,12 +9,14 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -27,17 +29,22 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import cel.dev.restaurants.ShowRestaurantLocationActivity;
 import cel.dev.restaurants.choosekitchendialog.ChooseKitchenDialogFragment;
 import cel.dev.restaurants.choosekitchendialog.FoodTypeToTextRenderer;
 import cel.dev.restaurants.choosekitchendialog.OnChooseKitchenCallback;
 import cel.dev.restaurants.model.BudgetType;
 import cel.dev.restaurants.model.KitchenType;
 import cel.dev.restaurants.R;
+import cel.dev.restaurants.model.Restaurant;
+import cel.dev.restaurants.model.RestaurantCustomImage;
+import cel.dev.restaurants.utils.AndroidUtils;
 import cel.dev.restaurants.utils.PermissionUtils;
 import cel.dev.restaurants.utils.PictureUtils;
 
@@ -45,10 +52,13 @@ public class CreateRestaurantActivity extends AppCompatActivity implements Creat
         OnChooseKitchenCallback, OnSuccessListener<Location>, CreateRestaurantMVP.UserInputInformationListener {
 
 
+    public static final String EDIT_RESTAURANT_ID = "Edit_Restaurant";
     private static final int REQUEST_IMAGE_CAPTURE = 1;
     private static final int REQUEST_LOCATION = 4;
     private static final int CAMERA_REQUEST = 2;
     private static final int IMAGE_CROP = 3;
+    private static final int LOCATION_ACTIVITY_REQUEST = 5;
+
     private static final String TAG = "cra";
 
 
@@ -64,12 +74,15 @@ public class CreateRestaurantActivity extends AppCompatActivity implements Creat
     @BindView(R.id.budget_normal) CheckBox budgetNormalBox;
     @BindView(R.id.budget_expensive) CheckBox budgetExpensiveBox;
     @BindView(R.id.budget_very_expensive) CheckBox budgetVeryExpensiveBox;
+    @BindView(R.id.location_info_text) TextView locationInfoText;
+    @BindView(R.id.create_restaurant_okBtn) Button createRestaurantButton;
 
     private CreateRestaurantMVP.Presenter presenter;
 
     private Bitmap restaurantImage;
     private Double[] location;
 
+    private ActivityMode mode = ActivityMode.NEW;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +90,9 @@ public class CreateRestaurantActivity extends AppCompatActivity implements Creat
         setContentView(R.layout.activity_create_restaurant);
         ButterKnife.bind(this);
         presenter = new CreateRestaurantPresenterImpl(this);
+        if (presenter.getIsEditRestaurantMode(getIntent())) {
+            mode = ActivityMode.EDIT;
+        }
         nameField.addTextChangedListener(new RestaurantNameTextWatcher(placeHolderWhite, this));
         initializeViewParameters(savedInstanceState);
     }
@@ -87,6 +103,9 @@ public class CreateRestaurantActivity extends AppCompatActivity implements Creat
      * */
     private void initializeViewParameters(Bundle savedInstanceState) {
         chosenKitchenText.setMaxWidth(chosenKitchenText.getWidth());
+        if (mode.equals(ActivityMode.EDIT)) {
+            createRestaurantButton.setText(R.string.save);
+        }
     }
 
 
@@ -117,6 +136,16 @@ public class CreateRestaurantActivity extends AppCompatActivity implements Creat
             startRestaurantImageCrop(data.getData());
         } else if (requestCode == IMAGE_CROP && resultCode == RESULT_OK) {
             setRestaurantImage((Bitmap) data.getExtras().get("data"));
+        } else if (requestCode == LOCATION_ACTIVITY_REQUEST) {
+            if (resultCode == RESULT_OK) {
+                Bundle extras = data.getExtras();
+                double longitude = extras.getDouble(ShowRestaurantLocationActivity.DATA_LONGITUDE);
+                double latitude = extras.getDouble(ShowRestaurantLocationActivity.DATA_LATITUDE);
+                Log.d(TAG, "onActivityResult: Location = lat " + latitude + " long = " + longitude);
+                setLocationInformation(latitude, longitude);
+            } else {
+                Log.d(TAG, "onActivityResult: error getting location from location activity");
+            }
         }
     }
 
@@ -231,11 +260,28 @@ public class CreateRestaurantActivity extends AppCompatActivity implements Creat
         }
     }
 
+    @OnClick(R.id.pick_on_map)
+    void onPickOnMapPressed(View view) {
+        Intent intent;
+        if (location != null) {
+            intent = AndroidUtils.createMapActivityIntentWithLatLong(this, location[0], location[1]);
+        } else {
+            intent =new Intent(this, ShowRestaurantLocationActivity.class);
+        }
+        startActivityForResult(intent, LOCATION_ACTIVITY_REQUEST);
+    }
+
 
     /***************************************************************************************************/
 
+    private void setLocationInformation(double latitude, double longitude) {
+        location = new Double[]{latitude, longitude};
+        locationInfoText.setText(presenter.getLocationStringFromLatLng(this, latitude, longitude));
+    }
+
     @Override
     public void showSelectKitchenDialog() {
+
         ChooseKitchenDialogFragment.newInstance(presenter.getChosenKitchen())
                 .show(getSupportFragmentManager(), "fragment_choose_kitchen");
     }
@@ -323,12 +369,50 @@ public class CreateRestaurantActivity extends AppCompatActivity implements Creat
         finish();
     }
 
+    @Override
+    public void showError(@StringRes int errorResCode) {
+        Toast.makeText(this, errorResCode, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void injectInformationToViews(@NonNull Restaurant restaurant) {
+        if (restaurant instanceof RestaurantCustomImage) {
+            setRestaurantImage(PictureUtils.byteArrayToBitMap(((RestaurantCustomImage) restaurant).getImageByteArray()));
+        }
+        nameField.setText(restaurant.getName());
+        setLocationInformation(restaurant.getLatitude(), restaurant.getLongitude());
+        translateBudgetTypesToCheckedBoxes(restaurant.getBudgetTypes());
+        ratingBar.setRating(restaurant.getRating());
+        updateChosenKitchens(Arrays.asList(restaurant.getKitchenTypes()));
+    }
+
+
+
+    private void translateBudgetTypesToCheckedBoxes(BudgetType[] budgetTypes) {
+        for (BudgetType budgetType : budgetTypes) {
+            switch (budgetType) {
+                case CHEAP:
+                    budgetCheapBox.setChecked(true);
+                    break;
+                case NORMAL:
+                    budgetNormalBox.setChecked(true);
+                    break;
+                case EXPENSIVE:
+                    budgetExpensiveBox.setChecked(true);
+                    break;
+                case VERY_EXPENSIVE:
+                    budgetVeryExpensiveBox.setChecked(true);
+                    break;
+            }
+        }
+    }
+
 
     @Override
     public void onSuccess(Location location) {
         Log.d(TAG, "onSuccess: location successfully retrieved = " + location);
         if (location != null) {
-            this.location = new Double[]{location.getLongitude(), location.getLongitude()};
+            setLocationInformation(location.getLatitude(), location.getLongitude());
         } else {
             Toast.makeText(this, R.string.error_getting_location, Toast.LENGTH_SHORT).show();
         }
@@ -359,6 +443,10 @@ public class CreateRestaurantActivity extends AppCompatActivity implements Creat
         } else {
             super.onBackPressed();
         }
+    }
+
+    private enum ActivityMode {
+        NEW, EDIT;
     }
 }
 
