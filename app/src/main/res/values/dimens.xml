@@ -22,5 +22,5 @@
     <dimen name="small_card_image_size">100dp</dimen>
     <dimen name="activity_vertical_margin_half">8dp</dimen>
     <dimen name="activity_vertical_margin_half_half">4dp</dimen>
-    <dimen name="create_restaurant_maps_height">200dp</dimen>
+    <dimen name="create_restaurant_maps_height">250dp</dimen>
 </resources>

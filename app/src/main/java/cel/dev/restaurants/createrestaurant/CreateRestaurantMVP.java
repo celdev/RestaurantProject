@@ -26,7 +26,7 @@ public interface CreateRestaurantMVP {
 
         void requestLocationPermission();
 
-        boolean hasLocationPermission();
+        boolean checkHasLocationPermission();
 
         boolean hasCameraPermissions();
 
@@ -48,8 +48,10 @@ public interface CreateRestaurantMVP {
 
         void createRestaurantOk();
 
+    }
 
-
+    interface UserInputInformationListener {
+        void hasInputInformation(boolean hasInput);
     }
 
     interface Presenter {

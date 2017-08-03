@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.location.Location;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
@@ -12,6 +13,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -21,9 +23,8 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapView;
-import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +41,8 @@ import cel.dev.restaurants.R;
 import cel.dev.restaurants.utils.PermissionUtils;
 import cel.dev.restaurants.utils.PictureUtils;
 
-public class CreateRestaurantActivity extends AppCompatActivity implements CreateRestaurantMVP.View, OnChooseKitchenCallback, OnMapReadyCallback {
+public class CreateRestaurantActivity extends AppCompatActivity implements CreateRestaurantMVP.View,
+        OnChooseKitchenCallback, OnSuccessListener<Location>, CreateRestaurantMVP.UserInputInformationListener {
 
 
     private static final int REQUEST_IMAGE_CAPTURE = 1;
@@ -48,6 +50,9 @@ public class CreateRestaurantActivity extends AppCompatActivity implements Creat
     private static final int CAMERA_REQUEST = 2;
     private static final int IMAGE_CROP = 3;
     private static final String TAG = "cra";
+
+
+    private boolean userInputInformation;
 
     @BindView(R.id.restaurant_name_field) EditText nameField;
     @BindView(R.id.restaurantNameWhitePlaceholder) TextView placeHolderWhite;
@@ -59,12 +64,12 @@ public class CreateRestaurantActivity extends AppCompatActivity implements Creat
     @BindView(R.id.budget_normal) CheckBox budgetNormalBox;
     @BindView(R.id.budget_expensive) CheckBox budgetExpensiveBox;
     @BindView(R.id.budget_very_expensive) CheckBox budgetVeryExpensiveBox;
-    @BindView(R.id.map_view) MapView mapView;
 
-    private GoogleMap map;
     private CreateRestaurantMVP.Presenter presenter;
 
     private Bitmap restaurantImage;
+    private Double[] location;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,16 +77,16 @@ public class CreateRestaurantActivity extends AppCompatActivity implements Creat
         setContentView(R.layout.activity_create_restaurant);
         ButterKnife.bind(this);
         presenter = new CreateRestaurantPresenterImpl(this);
-        nameField.addTextChangedListener(new RestaurantNameTextWatcher(placeHolderWhite));
+        nameField.addTextChangedListener(new RestaurantNameTextWatcher(placeHolderWhite, this));
         initializeViewParameters(savedInstanceState);
     }
+
+
 
     /** Sets values for view that aren't settable in xml
      * */
     private void initializeViewParameters(Bundle savedInstanceState) {
         chosenKitchenText.setMaxWidth(chosenKitchenText.getWidth());
-        mapView.onCreate(savedInstanceState);
-        mapView.getMapAsync(this);
     }
 
 
@@ -135,7 +140,7 @@ public class CreateRestaurantActivity extends AppCompatActivity implements Creat
     }
 
     @Override
-    public boolean hasLocationPermission() {
+    public boolean checkHasLocationPermission() {
         return PermissionUtils.hasPermissionTo(this, Manifest.permission.ACCESS_FINE_LOCATION);
     }
 
@@ -175,6 +180,7 @@ public class CreateRestaurantActivity extends AppCompatActivity implements Creat
         restaurantImage = image;
         restaurantImageView.setImageBitmap(restaurantImage);
         showImageControls(true);
+        hasInputInformation(true);
     }
 
     private void showImageControls(boolean show) {
@@ -215,6 +221,14 @@ public class CreateRestaurantActivity extends AppCompatActivity implements Creat
     @OnClick(R.id.create_restaurant_okBtn)
     void okCreateRestaurantPressed(View view) {
         presenter.onCreateRestaurantPressed();
+    }
+
+    @OnClick(R.id.use_my_location_button)
+    void onUseMyLocationPressed(View view) {
+        if (checkHasLocationPermission()) {
+            LocationServices.getFusedLocationProviderClient(this)
+                    .getLastLocation().addOnSuccessListener(this, this);
+        }
     }
 
 
@@ -284,10 +298,7 @@ public class CreateRestaurantActivity extends AppCompatActivity implements Creat
 
     @Override
     public Double[] getPosition() {
-        Double[] temp = new Double[2];
-        temp[0] = 1.0;
-        temp[1] = 2.0;
-        return temp;
+        return location;
     }
 
 
@@ -313,49 +324,41 @@ public class CreateRestaurantActivity extends AppCompatActivity implements Creat
     }
 
 
-    /** Callback for the initialize async Google map*/
     @Override
-    public void onMapReady(GoogleMap googleMap) {
-        this.map = googleMap;
-    }
-
-
-    /** Android lifecycle methods
-     * */
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        mapView.onPause();
+    public void onSuccess(Location location) {
+        Log.d(TAG, "onSuccess: location successfully retrieved = " + location);
+        if (location != null) {
+            this.location = new Double[]{location.getLongitude(), location.getLongitude()};
+        } else {
+            Toast.makeText(this, R.string.error_getting_location, Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        mapView.onStart();
+    public void hasInputInformation(boolean hasInput) {
+        userInputInformation = hasInput;
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
-        mapView.onStop();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mapView.onDestroy();
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-    }
-
-    @Override
-    public void onLowMemory() {
-        super.onLowMemory();
-        mapView.onLowMemory();
+    public void onBackPressed() {
+        if (userInputInformation) {
+            new AlertDialog.Builder(this).setTitle(R.string.unsaved_information)
+                    .setMessage(R.string.restaurant_not_saved_yet)
+                    .setPositiveButton(R.string.stay, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    })
+                    .setNegativeButton(R.string.discard, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            CreateRestaurantActivity.super.onBackPressed();
+                        }
+                    }).create().show();
+        } else {
+            super.onBackPressed();
+        }
     }
 }
 

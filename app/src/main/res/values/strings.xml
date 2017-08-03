@@ -54,6 +54,12 @@
     <string name="italian">Italian</string>
     <string name="use_user_location">Use my location</string>
     <string name="pick_on_map">Pick on map</string>
+    <string name="require_location_permission">Requires location permission</string>
+    <string name="unsaved_information">Restaurant not saved</string>
+    <string name="restaurant_not_saved_yet" />
+    <string name="stay">cancel</string>
+    <string name="discard">Discard</string>
+    <string name="error_getting_location">Error getting location</string>
 
 
 </resources>
