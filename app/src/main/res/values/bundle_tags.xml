@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="bundle_chosen_kitchen_types">CHOSEN_KITCHEN_TYPES</string>
+    <string name="bundle_create_restaurant_image">RESTAURANT_IMAGE</string>
+
+</resources>

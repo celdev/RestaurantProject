@@ -2,16 +2,15 @@ package cel.dev.restaurants.createrestaurant;
 
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.widget.TextView;
+
+import cel.dev.restaurants.createrestaurant.ImageFragment.ImageFragmentMVP;
 
 class RestaurantNameTextWatcher implements TextWatcher {
 
-    private TextView placeholderWhite;
-    private final CreateRestaurantMVP.UserInputInformationListener userInputInformationListener;
+    private ImageFragmentMVP.View hasTextView;
 
-    RestaurantNameTextWatcher(TextView placeholderWhite, CreateRestaurantMVP.UserInputInformationListener userInputInformationListener) {
-        this.placeholderWhite = placeholderWhite;
-        this.userInputInformationListener = userInputInformationListener;
+    RestaurantNameTextWatcher(ImageFragmentMVP.View hasTextView) {
+        this.hasTextView = hasTextView;
     }
 
     @Override
@@ -26,7 +25,8 @@ class RestaurantNameTextWatcher implements TextWatcher {
 
     @Override
     public void afterTextChanged(Editable s) {
-        placeholderWhite.setText(s.toString());
-        userInputInformationListener.hasInputInformation(true);
+        hasTextView.setText(s.toString());
     }
+
+
 }

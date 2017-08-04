@@ -10,13 +10,19 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.ColorRes;
 import android.support.annotation.IdRes;
+import android.support.annotation.Nullable;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 
 import cel.dev.restaurants.ShowRestaurantLocationActivity;
+import cel.dev.restaurants.choosekitchendialog.ChooseKitchenDialogFragmentMVP;
 import cel.dev.restaurants.createrestaurant.CreateRestaurantActivity;
 import cel.dev.restaurants.model.Restaurant;
 
 public class AndroidUtils {
+
+    public static final String TAG = "android utils";
 
     public static Drawable tintDrawable(Context context, Drawable drawable, @ColorRes int color) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -46,6 +52,10 @@ public class AndroidUtils {
         extras.putInt(CreateRestaurantActivity.EDIT_RESTAURANT_ID, restaurant.getId());
         intent.putExtras(extras);
         return intent;
+    }
+
+    public static boolean dialogFragmentIsShowing(@Nullable ChooseKitchenDialogFragmentMVP.HasShownStatus dialogFragment) {
+        return dialogFragment != null && dialogFragment.getDialogIsShowing();
     }
 
 }

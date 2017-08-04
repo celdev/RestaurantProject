@@ -3,6 +3,7 @@ package cel.dev.restaurants.createrestaurant;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
@@ -18,23 +19,12 @@ public interface CreateRestaurantMVP {
 
     interface View {
 
-        void takePictureWithCamera();
-
-        void finishCreateRestaurant();
 
         void onCancelCreateRestaurantPressed();
-
-        void onOkCreateRestaurantPressed();
-
-        //void onCreateError();
-
-        void requestCameraPermission();
 
         void requestLocationPermission();
 
         boolean checkHasLocationPermission();
-
-        boolean hasCameraPermissions();
 
         void showSelectKitchenDialog();
 
@@ -57,15 +47,12 @@ public interface CreateRestaurantMVP {
         void showError(@StringRes int errorResCode);
 
         void injectInformationToViews(@NonNull Restaurant restaurant);
-
     }
 
-    interface UserInputInformationListener {
-        void hasInputInformation(boolean hasInput);
-    }
+
+
 
     interface Presenter {
-        void cameraButtonPressed();
 
         void onCancelPressed();
 
@@ -82,6 +69,8 @@ public interface CreateRestaurantMVP {
         String getLocationStringFromLatLng(Context context, double latitude, double longitude);
 
         boolean getIsEditRestaurantMode(Intent intent);
+
+        int getRestaurantId();
     }
 
     interface Repository {

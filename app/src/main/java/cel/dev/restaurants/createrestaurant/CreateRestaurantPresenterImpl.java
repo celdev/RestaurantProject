@@ -24,6 +24,7 @@ import cel.dev.restaurants.utils.Values;
 
 class CreateRestaurantPresenterImpl implements CreateRestaurantMVP.Presenter {
 
+    public static final String TAG = "create rest pres";
 
     private CreateRestaurantMVP.View view;
     private CreateRestaurantMVP.Repository repository;
@@ -35,16 +36,9 @@ class CreateRestaurantPresenterImpl implements CreateRestaurantMVP.Presenter {
     public CreateRestaurantPresenterImpl(CreateRestaurantMVP.View view) {
         this.view = view;
         this.repository = new CreateRestaurantRepositoryImpl(this);
+        Log.d(TAG, "CreateRestaurantPresenterImpl: Creating presenter" );
     }
 
-    @Override
-    public void cameraButtonPressed() {
-        if (view.hasCameraPermissions()) {
-            view.takePictureWithCamera();
-        } else {
-            view.requestCameraPermission();
-        }
-    }
 
     @Override
     public void onCancelPressed() {
@@ -171,5 +165,10 @@ class CreateRestaurantPresenterImpl implements CreateRestaurantMVP.Presenter {
             isEditMode = true;
             view.injectInformationToViews(restaurant);
         }
+    }
+
+    @Override
+    public int getRestaurantId() {
+        return restaurantId;
     }
 }

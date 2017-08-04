@@ -1,10 +1,11 @@
 package cel.dev.restaurants.choosekitchendialog;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
-import android.os.Parcel;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,11 +20,12 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cel.dev.restaurants.model.KitchenType;
 import cel.dev.restaurants.R;
-import cel.dev.restaurants.utils.CollectionUtils;
 
 public class ChooseKitchenDialogFragment extends DialogFragment implements ChooseKitchenDialogFragmentMVP.View {
 
     private static final String CHOSEN_FOOD_TYPE_ARG = "CHOSEN";
+
+    private boolean shown;
 
     public ChooseKitchenDialogFragment() {
     }
@@ -65,6 +67,13 @@ public class ChooseKitchenDialogFragment extends DialogFragment implements Choos
         return view;
     }
 
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        dismissAllowingStateLoss();
+    }
+
     /** Creates the ArrayAdapter for the ListView using the
      *  @param statusList as content
      * */
@@ -96,6 +105,21 @@ public class ChooseKitchenDialogFragment extends DialogFragment implements Choos
         }
     }
 
+    @Override
+    public void show(FragmentManager manager, String tag) {
+        if (shown) {
+            return;
+        }
+        super.show(manager, tag);
+        shown = true;
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        shown = false;
+        super.onDismiss(dialog);
+    }
+
     /** Releases the choose kitchen type callback
      * */
     @Override
@@ -109,5 +133,10 @@ public class ChooseKitchenDialogFragment extends DialogFragment implements Choos
     @OnClick(R.id.choose_kitchen_dialog_ok)
     void okDialogPressed(View view) {
         dismiss();
+    }
+
+    @Override
+    public boolean getDialogIsShowing() {
+        return shown;
     }
 }

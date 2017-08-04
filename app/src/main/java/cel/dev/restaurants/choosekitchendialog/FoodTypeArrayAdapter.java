@@ -51,6 +51,7 @@ class FoodTypeArrayAdapter extends ArrayAdapter<FoodTypeAndChosenStatus>  {
         kitchenName.setText(foodTypeAndChosenStatus.getKitchenType().getStringResId());
         switchView.setChecked(foodTypeAndChosenStatus.isChosen());
         switchView.setOnCheckedChangeListener(new SwitchChangeListener(foodTypeAndChosenStatus));
+        view.setId(View.generateViewId());
         return view;
     }
 

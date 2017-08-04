@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface ChooseKitchenDialogFragmentMVP {
 
-    interface View {
+    interface View extends HasShownStatus {
 
         void injectArrayAdapter(List<FoodTypeAndChosenStatus> statusList);
         void onFoodTypeChosenChange(FoodTypeAndChosenStatus foodTypeAndChosenStatus);
@@ -17,7 +17,10 @@ public interface ChooseKitchenDialogFragmentMVP {
 
         void createArrayAdapter();
 
+    }
 
+    interface HasShownStatus {
+        boolean getDialogIsShowing();
     }
 
     interface SwitchCallback {

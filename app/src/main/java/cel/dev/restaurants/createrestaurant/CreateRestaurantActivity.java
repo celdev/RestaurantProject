@@ -5,8 +5,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.location.Location;
-import android.net.Uri;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
@@ -19,8 +17,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,35 +35,32 @@ import cel.dev.restaurants.ShowRestaurantLocationActivity;
 import cel.dev.restaurants.choosekitchendialog.ChooseKitchenDialogFragment;
 import cel.dev.restaurants.choosekitchendialog.FoodTypeToTextRenderer;
 import cel.dev.restaurants.choosekitchendialog.OnChooseKitchenCallback;
+import cel.dev.restaurants.createrestaurant.ImageFragment.ImageFragmentMVP;
 import cel.dev.restaurants.model.BudgetType;
 import cel.dev.restaurants.model.KitchenType;
 import cel.dev.restaurants.R;
 import cel.dev.restaurants.model.Restaurant;
 import cel.dev.restaurants.model.RestaurantCustomImage;
 import cel.dev.restaurants.utils.AndroidUtils;
+import cel.dev.restaurants.utils.CollectionUtils;
 import cel.dev.restaurants.utils.PermissionUtils;
 import cel.dev.restaurants.utils.PictureUtils;
 
 public class CreateRestaurantActivity extends AppCompatActivity implements CreateRestaurantMVP.View,
-        OnChooseKitchenCallback, OnSuccessListener<Location>, CreateRestaurantMVP.UserInputInformationListener {
+        OnChooseKitchenCallback, OnSuccessListener<Location>{
 
+    private enum ActivityMode {
+        NEW, EDIT;
+    }
 
     public static final String EDIT_RESTAURANT_ID = "Edit_Restaurant";
-    private static final int REQUEST_IMAGE_CAPTURE = 1;
     private static final int REQUEST_LOCATION = 4;
-    private static final int CAMERA_REQUEST = 2;
-    private static final int IMAGE_CROP = 3;
-    private static final int LOCATION_ACTIVITY_REQUEST = 5;
 
+    private static final int LOCATION_ACTIVITY_REQUEST = 5;
     private static final String TAG = "cra";
 
-
-    private boolean userInputInformation;
-
     @BindView(R.id.restaurant_name_field) EditText nameField;
-    @BindView(R.id.restaurantNameWhitePlaceholder) TextView placeHolderWhite;
-    @BindView(R.id.restaurant_image) ImageView restaurantImageView;
-    @BindView(R.id.image_control_layout) LinearLayout imageControlLayout;
+
     @BindView(R.id.chosen_kitchen_text) TextView chosenKitchenText;
     @BindView(R.id.restaurant_score) RatingBar ratingBar;
     @BindView(R.id.budget_cheap) CheckBox budgetCheapBox;
@@ -77,12 +70,11 @@ public class CreateRestaurantActivity extends AppCompatActivity implements Creat
     @BindView(R.id.location_info_text) TextView locationInfoText;
     @BindView(R.id.create_restaurant_okBtn) Button createRestaurantButton;
 
+    private ImageFragmentMVP.View imageFragmentView;
     private CreateRestaurantMVP.Presenter presenter;
-
-    private Bitmap restaurantImage;
     private Double[] location;
-
     private ActivityMode mode = ActivityMode.NEW;
+    private ChooseKitchenDialogFragment chooseKitchenDialogFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,77 +82,42 @@ public class CreateRestaurantActivity extends AppCompatActivity implements Creat
         setContentView(R.layout.activity_create_restaurant);
         ButterKnife.bind(this);
         presenter = new CreateRestaurantPresenterImpl(this);
+        imageFragmentView = (ImageFragmentMVP.View) getFragmentManager().findFragmentById(R.id.restaurant_image_fragment);
         if (presenter.getIsEditRestaurantMode(getIntent())) {
             mode = ActivityMode.EDIT;
         }
-        nameField.addTextChangedListener(new RestaurantNameTextWatcher(placeHolderWhite, this));
         initializeViewParameters(savedInstanceState);
+        Log.d(TAG, "onCreate: creating activity");
     }
 
-
-
-    /** Sets values for view that aren't settable in xml
-     * */
+    /**
+     * Sets values for view that aren't settable in xml
+     */
     private void initializeViewParameters(Bundle savedInstanceState) {
+        nameField.addTextChangedListener(new RestaurantNameTextWatcher(imageFragmentView));
         chosenKitchenText.setMaxWidth(chosenKitchenText.getWidth());
         if (mode.equals(ActivityMode.EDIT)) {
             createRestaurantButton.setText(R.string.save);
         }
     }
 
-
-
-    @Override
-    public void takePictureWithCamera() {
-        startActivityForResult(new Intent(MediaStore.ACTION_IMAGE_CAPTURE), REQUEST_IMAGE_CAPTURE);
-    }
-
-    @Override
-    public void finishCreateRestaurant() {
-
-    }
-
     @Override
     public void onCancelCreateRestaurantPressed() {
-
-    }
-
-    @Override
-    public void onOkCreateRestaurantPressed() {
-
+        finish();
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            startRestaurantImageCrop(data.getData());
-        } else if (requestCode == IMAGE_CROP && resultCode == RESULT_OK) {
-            setRestaurantImage((Bitmap) data.getExtras().get("data"));
-        } else if (requestCode == LOCATION_ACTIVITY_REQUEST) {
+        if (requestCode == LOCATION_ACTIVITY_REQUEST) {
             if (resultCode == RESULT_OK) {
                 Bundle extras = data.getExtras();
                 double longitude = extras.getDouble(ShowRestaurantLocationActivity.DATA_LONGITUDE);
                 double latitude = extras.getDouble(ShowRestaurantLocationActivity.DATA_LATITUDE);
-                Log.d(TAG, "onActivityResult: Location = lat " + latitude + " long = " + longitude);
                 setLocationInformation(latitude, longitude);
             } else {
-                Log.d(TAG, "onActivityResult: error getting location from location activity");
+                Toast.makeText(this, R.string.error_getting_location, Toast.LENGTH_SHORT).show();
             }
         }
-    }
-
-    private void startRestaurantImageCrop(Uri data) {
-        Intent intent = new Intent("com.android.camera.action.CROP");
-        intent.setDataAndType(data, "image/*");
-        intent.putExtra("crop", "true");
-        PictureUtils.cropIntentWidthAndHeight(intent, restaurantImageView.getDrawable().getIntrinsicWidth(), restaurantImageView.getDrawable().getIntrinsicHeight());
-        intent.putExtra("return-data", true);
-        startActivityForResult(intent, IMAGE_CROP);
-    }
-
-    @Override
-    public void requestCameraPermission() {
-        ActivityCompat.requestPermissions(this, PermissionUtils.CAMERA_PERMISSIONS, CAMERA_REQUEST);
     }
 
     @Override
@@ -177,102 +134,18 @@ public class CreateRestaurantActivity extends AppCompatActivity implements Creat
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (PermissionUtils.isPermissionGranted(grantResults[0])) {
             switch (requestCode) {
-                case CAMERA_REQUEST:
-                    presenter.cameraButtonPressed();
-                    break;
                 case REQUEST_LOCATION:
-                    onReceiveLocationPermission();
+                    //todo request location again
                     break;
             }
         } else {
             switch (requestCode) {
-                case CAMERA_REQUEST:
-                    Toast.makeText(this, R.string.no_camera_permission, Toast.LENGTH_SHORT).show();
-                    break;
                 case REQUEST_LOCATION:
                     Toast.makeText(this, R.string.no_location_permission, Toast.LENGTH_SHORT).show();
                     break;
             }
         }
     }
-
-    private void onReceiveLocationPermission() {
-
-    }
-
-    @Override
-    public boolean hasCameraPermissions() {
-        return PermissionUtils.hasPermissionTo(this, Manifest.permission.CAMERA);
-    }
-
-    private void setRestaurantImage(Bitmap image) {
-        restaurantImage = image;
-        restaurantImageView.setImageBitmap(restaurantImage);
-        showImageControls(true);
-        hasInputInformation(true);
-    }
-
-    private void showImageControls(boolean show) {
-        imageControlLayout.setVisibility(show ? View.VISIBLE : View.INVISIBLE);
-    }
-
-    /** ONCLICK actions
-     *
-     * */
-
-    @OnClick(R.id.rotate_image_btn)
-    void rotateImage(View view) {
-        setRestaurantImage(PictureUtils.rotateBitmap(restaurantImage, 90));
-    }
-
-    @OnClick(R.id.delete_image_btn)
-    void deleteImage(View view) {
-        restaurantImage = null;
-        restaurantImageView.setImageDrawable(getResources().getDrawable(R.drawable.restaurant_placeholder, getTheme()));
-        showImageControls(false);
-    }
-
-    @OnClick(R.id.choose_kitchenBtn)
-    void chooseKitchenClick(View view) {
-        presenter.onChooseKitchenBtnPressed();
-    }
-
-    @OnClick(R.id.take_restaurant_picture_btn)
-    void takePicture(View view) {
-        presenter.cameraButtonPressed();
-    }
-
-    @OnClick(R.id.create_restaurant_cancelBtn)
-    void cancelCreateRestaurantPressed(View view) {
-        finish();
-    }
-
-    @OnClick(R.id.create_restaurant_okBtn)
-    void okCreateRestaurantPressed(View view) {
-        presenter.onCreateRestaurantPressed();
-    }
-
-    @OnClick(R.id.use_my_location_button)
-    void onUseMyLocationPressed(View view) {
-        if (checkHasLocationPermission()) {
-            LocationServices.getFusedLocationProviderClient(this)
-                    .getLastLocation().addOnSuccessListener(this, this);
-        }
-    }
-
-    @OnClick(R.id.pick_on_map)
-    void onPickOnMapPressed(View view) {
-        Intent intent;
-        if (location != null) {
-            intent = AndroidUtils.createMapActivityIntentWithLatLong(this, location[0], location[1]);
-        } else {
-            intent =new Intent(this, ShowRestaurantLocationActivity.class);
-        }
-        startActivityForResult(intent, LOCATION_ACTIVITY_REQUEST);
-    }
-
-
-    /***************************************************************************************************/
 
     private void setLocationInformation(double latitude, double longitude) {
         location = new Double[]{latitude, longitude};
@@ -281,8 +154,8 @@ public class CreateRestaurantActivity extends AppCompatActivity implements Creat
 
     @Override
     public void showSelectKitchenDialog() {
-
-        ChooseKitchenDialogFragment.newInstance(presenter.getChosenKitchen())
+        chooseKitchenDialogFragment = ChooseKitchenDialogFragment.newInstance(presenter.getChosenKitchen());
+        chooseKitchenDialogFragment
                 .show(getSupportFragmentManager(), "fragment_choose_kitchen");
     }
 
@@ -302,7 +175,7 @@ public class CreateRestaurantActivity extends AppCompatActivity implements Creat
 
     @Override
     public Bitmap getRestaurantImage() {
-        return restaurantImage;
+        return imageFragmentView.getImage();
     }
 
     @Nullable
@@ -377,7 +250,7 @@ public class CreateRestaurantActivity extends AppCompatActivity implements Creat
     @Override
     public void injectInformationToViews(@NonNull Restaurant restaurant) {
         if (restaurant instanceof RestaurantCustomImage) {
-            setRestaurantImage(PictureUtils.byteArrayToBitMap(((RestaurantCustomImage) restaurant).getImageByteArray()));
+            imageFragmentView.setRestaurantImage(PictureUtils.byteArrayToBitMap(((RestaurantCustomImage) restaurant).getImageByteArray()));
         }
         nameField.setText(restaurant.getName());
         setLocationInformation(restaurant.getLatitude(), restaurant.getLongitude());
@@ -385,8 +258,6 @@ public class CreateRestaurantActivity extends AppCompatActivity implements Creat
         ratingBar.setRating(restaurant.getRating());
         updateChosenKitchens(Arrays.asList(restaurant.getKitchenTypes()));
     }
-
-
 
     private void translateBudgetTypesToCheckedBoxes(BudgetType[] budgetTypes) {
         for (BudgetType budgetType : budgetTypes) {
@@ -407,10 +278,8 @@ public class CreateRestaurantActivity extends AppCompatActivity implements Creat
         }
     }
 
-
     @Override
     public void onSuccess(Location location) {
-        Log.d(TAG, "onSuccess: location successfully retrieved = " + location);
         if (location != null) {
             setLocationInformation(location.getLatitude(), location.getLongitude());
         } else {
@@ -419,34 +288,102 @@ public class CreateRestaurantActivity extends AppCompatActivity implements Creat
     }
 
     @Override
-    public void hasInputInformation(boolean hasInput) {
-        userInputInformation = hasInput;
+    public void onBackPressed() {
+        new AlertDialog.Builder(this).setTitle(R.string.unsaved_information)
+                .setMessage(R.string.restaurant_not_saved_yet)
+                .setPositiveButton(R.string.stay, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .setNegativeButton(R.string.discard, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        CreateRestaurantActivity.super.onBackPressed();
+                    }
+                }).create().show();
     }
 
-    @Override
-    public void onBackPressed() {
-        if (userInputInformation) {
-            new AlertDialog.Builder(this).setTitle(R.string.unsaved_information)
-                    .setMessage(R.string.restaurant_not_saved_yet)
-                    .setPositiveButton(R.string.stay, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    })
-                    .setNegativeButton(R.string.discard, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            CreateRestaurantActivity.super.onBackPressed();
-                        }
-                    }).create().show();
-        } else {
-            super.onBackPressed();
+
+
+    /**
+     #############################################################################
+     #############################################################################
+     ########################       ON CLICK              ########################
+     #############################################################################
+     #############################################################################
+     * */
+    @OnClick(R.id.choose_kitchenBtn)
+    void chooseKitchenClick(View view) {
+        presenter.onChooseKitchenBtnPressed();
+    }
+
+    @OnClick(R.id.create_restaurant_cancelBtn)
+    void cancelCreateRestaurantPressed(View view) {
+        finish();
+    }
+
+    @OnClick(R.id.create_restaurant_okBtn)
+    void okCreateRestaurantPressed(View view) {
+        presenter.onCreateRestaurantPressed();
+    }
+
+    @OnClick(R.id.use_my_location_button)
+    void onUseMyLocationPressed(View view) {
+        if (checkHasLocationPermission()) {
+            LocationServices.getFusedLocationProviderClient(this)
+                    .getLastLocation().addOnSuccessListener(this, this);
         }
     }
 
-    private enum ActivityMode {
-        NEW, EDIT;
+    @OnClick(R.id.pick_on_map)
+    void onPickOnMapPressed(View view) {
+        Intent intent;
+        if (location != null) {
+            intent = AndroidUtils.createMapActivityIntentWithLatLong(this, location[0], location[1]);
+        } else {
+            intent =new Intent(this, ShowRestaurantLocationActivity.class);
+        }
+        startActivityForResult(intent, LOCATION_ACTIVITY_REQUEST);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putIntArray(getString(R.string.bundle_chosen_kitchen_types), CollectionUtils.enumToIntArr(presenter.getChosenKitchen()));
+        Log.d(TAG, "onSaveInstanceState: ");
+        outState.putBoolean(getString(R.string.bundle_is_showing_choose_kitchen_dialog),
+                AndroidUtils.dialogFragmentIsShowing(chooseKitchenDialogFragment));
+        if (location != null) {
+            outState.putDoubleArray(getString(R.string.bundle_location), new double[]{location[0], location[1]});
+        }
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        try {
+            List<KitchenType> chosenKitchenTypes = CollectionUtils.intArrToEnum(
+                            savedInstanceState.getIntArray(getString(R.string.bundle_chosen_kitchen_types)),KitchenType.class);
+            for (KitchenType chosenKitchenType : chosenKitchenTypes) {
+                presenter.chooseFoodType(chosenKitchenType, true);
+            }
+        } catch (EnumConstantNotPresentException e) {
+            Log.e(TAG, "onRestoreInstanceState: error restoring enum bundle", e);
+        }
+        if (savedInstanceState.getBoolean(getString(R.string.bundle_is_showing_choose_kitchen_dialog), false)) {
+            showSelectKitchenDialog();
+        }
+        String key = getString(R.string.bundle_location);
+        if(savedInstanceState.containsKey(key)) {
+            try {
+                double[] loc = savedInstanceState.getDoubleArray(key);
+                setLocationInformation(loc[0], loc[1]);
+            } catch (Exception e) {
+                Log.e(TAG, "onRestoreInstanceState: error restoring location", e);
+            }
+        }
     }
 }
 

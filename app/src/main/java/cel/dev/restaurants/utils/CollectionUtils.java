@@ -1,6 +1,7 @@
 package cel.dev.restaurants.utils;
 
 import android.os.Parcelable;
+import android.support.v7.util.SortedList;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -33,5 +34,33 @@ public class CollectionUtils {
         }
         return list;
     }
+
+    public static int[] enumToIntArr(List<? extends Enum> list) {
+        int[] arr = new int[list.size()];
+        if (list.size() == 0) {
+            return arr;
+        }
+        for (int i = 0; i < list.size(); i++) {
+            arr[i] = list.get(i).ordinal();
+        }
+        return arr;
+    }
+
+    public static <T extends Enum> List<T> intArrToEnum(int[] arr, Class<T> clazz) throws EnumConstantNotPresentException {
+        List<T> list = new ArrayList<>(arr.length);
+        if (arr.length == 0) {
+            return list;
+        }
+        T[] enumConstants = clazz.getEnumConstants();
+        for (int i = 0; i < arr.length; i++) {
+            try {
+                list.add(enumConstants[arr[i]]);
+            } catch (Exception e) {
+                throw new EnumConstantNotPresentException(clazz, "ordinal = " + i);
+            }
+        }
+        return list;
+    }
+
 
 }
