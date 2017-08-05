@@ -72,12 +72,17 @@ public class ShowRestaurantLocationActivity extends FragmentActivity implements 
                 finish();
                 break;
             case RETURN_LOCATION:
-                LatLng position = marker.getPosition();
-                Bundle data = new Bundle();
-                data.putDouble(DATA_LATITUDE, position.latitude);
-                data.putDouble(DATA_LONGITUDE, position.longitude);
-                setResult(RESULT_OK, new Intent().putExtras(data));
-                finish();
+                if (marker != null) {
+                    LatLng position = marker.getPosition();
+                    Bundle data = new Bundle();
+                    data.putDouble(DATA_LATITUDE, position.latitude);
+                    data.putDouble(DATA_LONGITUDE, position.longitude);
+                    setResult(RESULT_OK, new Intent().putExtras(data));
+                    finish();
+                } else {
+                    Toast.makeText(this,R.string.error_no_location,Toast.LENGTH_SHORT).show();
+                }
+
                 break;
         }
     }

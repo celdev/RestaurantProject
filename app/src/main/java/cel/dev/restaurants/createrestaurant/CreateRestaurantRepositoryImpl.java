@@ -1,5 +1,6 @@
 package cel.dev.restaurants.createrestaurant;
 
+import android.content.Context;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
@@ -49,8 +50,8 @@ class CreateRestaurantRepositoryImpl implements CreateRestaurantMVP.Repository {
 
     @Override
     @Nullable
-    public Restaurant getRestaurant(int id) {
-        RestaurantDAO restaurantDAO = new RestaurantDAOImpl();
+    public Restaurant getRestaurant(long id, Context context) {
+        RestaurantDAO restaurantDAO = new RestaurantDAOImpl(context);
         return restaurantDAO.getRestaurantById(id);
     }
 

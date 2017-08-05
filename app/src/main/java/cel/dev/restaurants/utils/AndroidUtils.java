@@ -15,6 +15,9 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import cel.dev.restaurants.ShowRestaurantLocationActivity;
 import cel.dev.restaurants.choosekitchendialog.ChooseKitchenDialogFragmentMVP;
 import cel.dev.restaurants.createrestaurant.CreateRestaurantActivity;
@@ -49,13 +52,40 @@ public class AndroidUtils {
     public static Intent createEditRestaurantActivityIntent(Context context, Restaurant restaurant) {
         Intent intent = new Intent(context, CreateRestaurantActivity.class);
         Bundle extras = new Bundle();
-        extras.putInt(CreateRestaurantActivity.EDIT_RESTAURANT_ID, restaurant.getId());
+        extras.putLong(CreateRestaurantActivity.EDIT_RESTAURANT_ID, restaurant.getId());
         intent.putExtras(extras);
         return intent;
     }
 
     public static boolean dialogFragmentIsShowing(@Nullable ChooseKitchenDialogFragmentMVP.HasShownStatus dialogFragment) {
         return dialogFragment != null && dialogFragment.getDialogIsShowing();
+    }
+
+
+    public static class DBUtils {
+
+        public static <T extends Enum> String enumsToString(T[] enums) {
+            String ret = "";
+            for (int i = 0; i < enums.length; i++) {
+                ret += enums[i].ordinal();
+                if (i != enums.length - 1) {
+                    ret += ",";
+                }
+            }
+            return ret;
+        }
+
+        public static <T extends Enum> List<T> stringToEnum(String enumString, Class<T> clazz) throws Exception {
+            List<T> list = new ArrayList<>();
+            String[] split = enumString.split(",");
+            T[] enumConstants = clazz.getEnumConstants();
+            for (String s : split) {
+                int i = Integer.valueOf(s);
+                list.add(enumConstants[i]);
+            }
+            return list;
+        }
+
     }
 
 }

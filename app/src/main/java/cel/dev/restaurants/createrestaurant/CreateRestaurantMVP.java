@@ -47,6 +47,8 @@ public interface CreateRestaurantMVP {
         void showError(@StringRes int errorResCode);
 
         void injectInformationToViews(@NonNull Restaurant restaurant);
+
+        Context getViewContext();
     }
 
 
@@ -68,9 +70,9 @@ public interface CreateRestaurantMVP {
 
         String getLocationStringFromLatLng(Context context, double latitude, double longitude);
 
-        boolean getIsEditRestaurantMode(Intent intent);
+        boolean getIsEditRestaurantMode(Intent intent, Context context);
 
-        int getRestaurantId();
+        long getRestaurantId();
     }
 
     interface Repository {
@@ -84,7 +86,7 @@ public interface CreateRestaurantMVP {
 
 
         @Nullable
-        Restaurant getRestaurant(int id);
+        Restaurant getRestaurant(long id, Context context);
 
         void setChosenFoodTypes(KitchenType[] kitchenTypes);
     }

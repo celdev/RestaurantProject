@@ -1,5 +1,7 @@
 package cel.dev.restaurants.showrestaurants;
 
+import android.content.Context;
+
 import java.util.List;
 
 import cel.dev.restaurants.model.Restaurant;
@@ -15,7 +17,7 @@ public interface ShowRestaurantsMVP {
 
     interface Presenter {
 
-        void onLoadFragment();
+        void onLoadFragment(Context context);
 
     }
 

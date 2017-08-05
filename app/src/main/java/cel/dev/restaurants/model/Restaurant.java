@@ -4,9 +4,9 @@ import android.widget.ImageView;
 
 public abstract class Restaurant {
 
-    public static final int NOT_SAVED_ID = -1;
+    public static final long NOT_SAVED_ID = -1;
 
-    private int id;
+    private long id;
     private String name;
     private float rating;
     private BudgetType[] budgetTypes;
@@ -48,14 +48,21 @@ public abstract class Restaurant {
 
     @Override
     public int hashCode() {
+        int result;
+        long temp;
+        result = (int) (id ^ (id >>> 32));
+        temp = Double.doubleToLongBits(latitude);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(longitude);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        return result;
+    }
+
+    public long getId() {
         return id;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -105,5 +112,9 @@ public abstract class Restaurant {
 
     public void setKitchenTypes(KitchenType[] kitchenTypes) {
         this.kitchenTypes = kitchenTypes;
+    }
+
+    public static boolean restaurantHasIdSet(Restaurant restaurant) {
+        return restaurant.getId() != NOT_SAVED_ID;
     }
 }

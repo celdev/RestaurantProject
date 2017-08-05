@@ -1,6 +1,7 @@
 package cel.dev.restaurants.createrestaurant;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -83,7 +84,7 @@ public class CreateRestaurantActivity extends AppCompatActivity implements Creat
         ButterKnife.bind(this);
         presenter = new CreateRestaurantPresenterImpl(this);
         imageFragmentView = (ImageFragmentMVP.View) getFragmentManager().findFragmentById(R.id.restaurant_image_fragment);
-        if (presenter.getIsEditRestaurantMode(getIntent())) {
+        if (presenter.getIsEditRestaurantMode(getIntent(), this)) {
             mode = ActivityMode.EDIT;
         }
         initializeViewParameters(savedInstanceState);
@@ -384,6 +385,11 @@ public class CreateRestaurantActivity extends AppCompatActivity implements Creat
                 Log.e(TAG, "onRestoreInstanceState: error restoring location", e);
             }
         }
+    }
+
+    @Override
+    public Context getViewContext() {
+        return this;
     }
 }
 

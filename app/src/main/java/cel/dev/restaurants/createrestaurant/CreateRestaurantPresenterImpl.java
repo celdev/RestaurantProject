@@ -30,7 +30,7 @@ class CreateRestaurantPresenterImpl implements CreateRestaurantMVP.Presenter {
     private CreateRestaurantMVP.Repository repository;
 
     private boolean isEditMode;
-    private int restaurantId;
+    private long restaurantId;
     private boolean restaurantIsFavorite;
 
     public CreateRestaurantPresenterImpl(CreateRestaurantMVP.View view) {
@@ -84,7 +84,7 @@ class CreateRestaurantPresenterImpl implements CreateRestaurantMVP.Presenter {
     }
 
     private boolean saveRestaurant(Restaurant restaurant) {
-        RestaurantDAO restaurantDAO = new RestaurantDAOImpl();
+        RestaurantDAO restaurantDAO = new RestaurantDAOImpl(view.getViewContext());
         return restaurantDAO.saveRestaurant(restaurant);
     }
 
@@ -142,20 +142,20 @@ class CreateRestaurantPresenterImpl implements CreateRestaurantMVP.Presenter {
     }
 
     @Override
-    public boolean getIsEditRestaurantMode(Intent intent) {
+    public boolean getIsEditRestaurantMode(Intent intent, Context context) {
         if (intent.getExtras() != null) {
             Bundle extras = intent.getExtras();
-            int restaurantId = extras.getInt(CreateRestaurantActivity.EDIT_RESTAURANT_ID, -1);
+            long restaurantId = extras.getLong(CreateRestaurantActivity.EDIT_RESTAURANT_ID, -1L);
             if (restaurantId != -1) {
-                loadRestaurantToEdit(restaurantId);
+                loadRestaurantToEdit(restaurantId, context);
                 return true;
             }
         }
         return false;
     }
 
-    public void loadRestaurantToEdit(int id) {
-        Restaurant restaurant = repository.getRestaurant(id);
+    public void loadRestaurantToEdit(long id, Context context) {
+        Restaurant restaurant = repository.getRestaurant(id, context);
         if (restaurant == null) {
             view.showError(R.string.error_edit_restaurant);
         } else {
@@ -168,7 +168,7 @@ class CreateRestaurantPresenterImpl implements CreateRestaurantMVP.Presenter {
     }
 
     @Override
-    public int getRestaurantId() {
+    public long getRestaurantId() {
         return restaurantId;
     }
 }

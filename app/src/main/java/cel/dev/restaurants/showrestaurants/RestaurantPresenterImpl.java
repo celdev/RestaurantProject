@@ -1,5 +1,7 @@
 package cel.dev.restaurants.showrestaurants;
 
+import android.content.Context;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,12 +23,12 @@ class RestaurantPresenterImpl implements ShowRestaurantsMVP.Presenter {
     }
 
     @Override
-    public void onLoadFragment() {
-        view.injectData(DEBUGfakeRestaurants());
+    public void onLoadFragment(Context context) {
+        view.injectData(DEBUGfakeRestaurants(context));
     }
 
 
-    public List<Restaurant> DEBUGfakeRestaurants() {
-        return new RestaurantDAOImpl().getAllRestaurants();
+    public List<Restaurant> DEBUGfakeRestaurants(Context context) {
+        return new RestaurantDAOImpl(context).getAllRestaurants();
     }
 }

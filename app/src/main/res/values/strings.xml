@@ -70,6 +70,7 @@
     <string name="bundle_kitchen_type_list_view">KITCHEN_TYPE_LIST_VIEW</string>
     <string name="bundle_is_showing_choose_kitchen_dialog">IS_SHOWING_KITCHEN_DIALOG</string>
     <string name="bundle_location">LOCATION_LAT_LON</string>
+    <string name="error_no_location">Error: no location chosen</string>
 
 
 </resources>

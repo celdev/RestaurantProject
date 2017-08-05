@@ -54,7 +54,7 @@ public class RestaurantFragment extends Fragment implements ShowRestaurantsMVP.V
     @Override
     public void onResume() {
         super.onResume();
-        presenter.onLoadFragment();
+        presenter.onLoadFragment(getContext());
     }
 
     @Override

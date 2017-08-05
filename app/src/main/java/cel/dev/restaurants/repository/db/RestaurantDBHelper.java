@@ -1,4 +1,4 @@
-package cel.dev.restaurants.repository;
+package cel.dev.restaurants.repository.db;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -10,20 +10,23 @@ public class RestaurantDBHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "restaurants.db";
 
 
-
-    public RestaurantDBHelper(Context context, SQLiteDatabase.CursorFactory factory) {
-        super(context, DATABASE_NAME, factory, VERSION);
+    public RestaurantDBHelper(Context context) {
+        super(context, DATABASE_NAME, null, VERSION);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL(RestaurantDbSchema.generateCreateDatabase());
+        db.execSQL(RestaurantDbSchema.generateCreateDatabaseQuery());
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
+        db.execSQL(RestaurantDbSchema.generateDropTableQuery());
+        onCreate(db);
     }
 
-
+    @Override
+    public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        onUpgrade(db, oldVersion, newVersion);
+    }
 }

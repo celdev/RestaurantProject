@@ -7,10 +7,10 @@ import cel.dev.restaurants.model.Restaurant;
 
 public interface RestaurantDAO {
 
-    Restaurant getRestaurantById(int id);
+    Restaurant getRestaurantById(long id);
 
 
-    List<Restaurant> getRestaurantsByIds(List<Integer> ids);
+    List<Restaurant> getRestaurantsByIds(List<Long> ids);
 
     List<Restaurant> getAllRestaurants();
 
@@ -20,7 +20,4 @@ public interface RestaurantDAO {
 
     boolean saveRestaurant(Restaurant restaurant);
 
-    int getNextId();
-
-    //void updateRestaurant(Restaurant restaurant);
 }
