@@ -1,9 +1,10 @@
-package cel.dev.restaurants.showrestaurants.restaurantsrecycleview;
+package cel.dev.restaurants.mainfragments.showrestaurants.restaurantsrecycleview;
 
 import android.util.Log;
 import android.view.View;
 
 import cel.dev.restaurants.model.Restaurant;
+import cel.dev.restaurants.repository.RestaurantDAO;
 
 abstract class RestaurantCardButtonListener implements View.OnClickListener {
     RestaurantViewHolder restaurantViewHolder;
@@ -31,10 +32,12 @@ abstract class RestaurantCardButtonListener implements View.OnClickListener {
     static class OnFavoritePressedListener extends RestaurantCardButtonListener {
 
         private Restaurant restaurant;
+        private final RestaurantDAO restaurantDAO;
 
-        OnFavoritePressedListener(RestaurantViewHolder restaurantViewHolder, Restaurant restaurant) {
+        OnFavoritePressedListener(RestaurantViewHolder restaurantViewHolder, Restaurant restaurant, RestaurantDAO restaurantDAO) {
             super(restaurantViewHolder);
             this.restaurant = restaurant;
+            this.restaurantDAO = restaurantDAO;
         }
 
         @Override
@@ -42,6 +45,7 @@ abstract class RestaurantCardButtonListener implements View.OnClickListener {
             boolean favorite = restaurant.isFavorite();
             restaurant.setFavorite(!favorite);
             restaurantViewHolder.setFavorite(restaurant.isFavorite());
+            restaurantDAO.setRestaurantFavorite(restaurant);
         }
     }
 

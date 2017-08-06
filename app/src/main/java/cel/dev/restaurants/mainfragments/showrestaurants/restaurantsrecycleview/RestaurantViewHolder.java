@@ -1,4 +1,4 @@
-package cel.dev.restaurants.showrestaurants.restaurantsrecycleview;
+package cel.dev.restaurants.mainfragments.showrestaurants.restaurantsrecycleview;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
@@ -16,7 +16,6 @@ import butterknife.ButterKnife;
 import cel.dev.restaurants.R;
 import cel.dev.restaurants.model.BudgetType;
 import cel.dev.restaurants.model.KitchenType;
-import cel.dev.restaurants.model.Restaurant;
 import cel.dev.restaurants.utils.AndroidUtils;
 
 class RestaurantViewHolder extends RecyclerView.ViewHolder {
@@ -55,11 +54,6 @@ class RestaurantViewHolder extends RecyclerView.ViewHolder {
 
     public RestaurantViewHolder setRating(Context context, float rating) {
         this.ratingBar.setRating(rating);
-        return this;
-    }
-
-    public RestaurantViewHolder setRestaurantImage(Restaurant restaurant) {
-        restaurant.injectImageOntoImageView(restaurantImage);
         return this;
     }
 

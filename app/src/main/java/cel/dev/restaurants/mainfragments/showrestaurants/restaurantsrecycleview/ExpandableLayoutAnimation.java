@@ -1,4 +1,4 @@
-package cel.dev.restaurants.showrestaurants.restaurantsrecycleview;
+package cel.dev.restaurants.mainfragments.showrestaurants.restaurantsrecycleview;
 
 import android.view.View;
 import android.view.ViewGroup;

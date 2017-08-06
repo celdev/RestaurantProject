@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
@@ -98,6 +99,11 @@ public class CreateRestaurantImageFragment extends Fragment implements ImageFrag
     }
 
     @Override
+    public ImageView getRestaurantImageView() {
+        return restaurantImageView;
+    }
+
+    @Override
     public boolean hasCameraPermission() {
         return PermissionUtils.hasPermissionTo(getActivity(), Manifest.permission.CAMERA);
     }
@@ -114,7 +120,11 @@ public class CreateRestaurantImageFragment extends Fragment implements ImageFrag
     @OnClick(R.id.delete_image_btn)
     void deleteImage(View view) {
         restaurantImage = null;
-        restaurantImageView.setImageDrawable(getResources().getDrawable(R.drawable.restaurant_placeholder, getContext().getTheme()));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            restaurantImageView.setImageDrawable(getResources().getDrawable(R.drawable.restaurant_placeholder, getContext().getTheme()));
+        } else {
+            restaurantImageView.setImageDrawable(getResources().getDrawable(R.drawable.restaurant_placeholder));
+        }
         showImageControls(false);
     }
 

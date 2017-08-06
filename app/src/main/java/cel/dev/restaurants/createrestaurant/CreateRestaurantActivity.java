@@ -82,7 +82,7 @@ public class CreateRestaurantActivity extends AppCompatActivity implements Creat
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_restaurant);
         ButterKnife.bind(this);
-        presenter = new CreateRestaurantPresenterImpl(this);
+        presenter = new CreateRestaurantPresenterImpl(this, this);
         imageFragmentView = (ImageFragmentMVP.View) getFragmentManager().findFragmentById(R.id.restaurant_image_fragment);
         if (presenter.getIsEditRestaurantMode(getIntent(), this)) {
             mode = ActivityMode.EDIT;
@@ -251,7 +251,8 @@ public class CreateRestaurantActivity extends AppCompatActivity implements Creat
     @Override
     public void injectInformationToViews(@NonNull Restaurant restaurant) {
         if (restaurant instanceof RestaurantCustomImage) {
-            imageFragmentView.setRestaurantImage(PictureUtils.byteArrayToBitMap(((RestaurantCustomImage) restaurant).getImageByteArray()));
+            presenter.injectImageOntoDrawable(imageFragmentView.getRestaurantImageView(), restaurant);
+            imageFragmentView.setRestaurantImage(imageFragmentView.getImage());
         }
         nameField.setText(restaurant.getName());
         setLocationInformation(restaurant.getLatitude(), restaurant.getLongitude());

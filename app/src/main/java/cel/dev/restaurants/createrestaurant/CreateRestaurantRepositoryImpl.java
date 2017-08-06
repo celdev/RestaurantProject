@@ -3,6 +3,7 @@ package cel.dev.restaurants.createrestaurant;
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.widget.ImageView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,6 +11,7 @@ import java.util.List;
 
 import cel.dev.restaurants.model.KitchenType;
 import cel.dev.restaurants.model.Restaurant;
+import cel.dev.restaurants.model.RestaurantCustomImage;
 import cel.dev.restaurants.repository.KitchenTypeDAO;
 import cel.dev.restaurants.repository.KitchenTypeDAOImpl;
 import cel.dev.restaurants.repository.RestaurantDAO;
@@ -17,25 +19,24 @@ import cel.dev.restaurants.repository.RestaurantDAOImpl;
 
 class CreateRestaurantRepositoryImpl implements CreateRestaurantMVP.Repository {
 
-    private CreateRestaurantPresenterImpl presenter;
-    private KitchenTypeDAO kitchenTypeDAO;
-
+    private final Context context;
     private List<KitchenType> chosenTypes = new ArrayList<>();
 
-    CreateRestaurantRepositoryImpl(CreateRestaurantPresenterImpl createRestaurantPresenter) {
-        this.presenter = createRestaurantPresenter;
-        kitchenTypeDAO = new KitchenTypeDAOImpl();
+    private RestaurantDAO restaurantDAO;
+
+    CreateRestaurantRepositoryImpl(Context context) {
+        this.context = context;
+        restaurantDAO = new RestaurantDAOImpl(context);
     }
 
     @Override
     public List<KitchenType> getKitchenTypes() {
-        return kitchenTypeDAO.getAllFoodTypes();
+        return Arrays.asList(KitchenType.values());
     }
 
 
     @Override
     public List<KitchenType> chosenFoodTypes() {
-        Log.d("rep", "chosenFoodTypes: current chosen foodtypes = " + Arrays.toString(chosenTypes.toArray()));
         return chosenTypes;
     }
 
@@ -50,13 +51,19 @@ class CreateRestaurantRepositoryImpl implements CreateRestaurantMVP.Repository {
 
     @Override
     @Nullable
-    public Restaurant getRestaurant(long id, Context context) {
-        RestaurantDAO restaurantDAO = new RestaurantDAOImpl(context);
+    public Restaurant getRestaurant(long id) {
         return restaurantDAO.getRestaurantById(id);
     }
 
     @Override
     public void setChosenFoodTypes(KitchenType[] kitchenTypes) {
         chosenTypes.addAll(Arrays.asList(kitchenTypes));
+    }
+
+    @Override
+    public void injectImageOntoImageView(ImageView imageView, Restaurant restaurant) {
+        if (restaurant instanceof RestaurantCustomImage) {
+            restaurantDAO.injectImageOntoImageView(imageView, restaurant);
+        }
     }
 }

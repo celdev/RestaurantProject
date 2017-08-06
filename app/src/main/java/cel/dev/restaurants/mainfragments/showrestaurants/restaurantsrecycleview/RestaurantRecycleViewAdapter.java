@@ -1,8 +1,7 @@
-package cel.dev.restaurants.showrestaurants.restaurantsrecycleview;
+package cel.dev.restaurants.mainfragments.showrestaurants.restaurantsrecycleview;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -15,16 +14,19 @@ import java.util.List;
 import cel.dev.restaurants.R;
 import cel.dev.restaurants.model.BudgetType;
 import cel.dev.restaurants.model.Restaurant;
+import cel.dev.restaurants.repository.RestaurantDAO;
 import cel.dev.restaurants.utils.AndroidUtils;
 
 public class RestaurantRecycleViewAdapter extends RecyclerView.Adapter<RestaurantViewHolder> implements RecycleViewOnExpandChangeCallback {
 
     private List<Restaurant> restaurants;
     private Context context;
+    private final RestaurantDAO restaurantDAO;
 
-    public RestaurantRecycleViewAdapter(List<Restaurant> restaurants, Context context) {
+    public RestaurantRecycleViewAdapter(List<Restaurant> restaurants, Context context, RestaurantDAO restaurantDAO) {
         this.restaurants = restaurants;
         this.context = context;
+        this.restaurantDAO = restaurantDAO;
     }
 
     @Override
@@ -39,15 +41,14 @@ public class RestaurantRecycleViewAdapter extends RecyclerView.Adapter<Restauran
     @Override
     public void onBindViewHolder(RestaurantViewHolder holder, int position) {
         final Restaurant restaurant = restaurants.get(position);
-        restaurant.injectImageOntoImageView(holder.restaurantImage);
+        restaurant.injectImageOntoImageView(holder.restaurantImage, restaurantDAO);
         holder.setRestaurantName(restaurant.getName())
                 .setRating(context, restaurant.getRating())
-                .setRestaurantImage(restaurant)
                 .setFavorite(restaurant.isFavorite())
                 .setBudgetType(context, BudgetType.sortBudgetType(restaurant.getBudgetTypes()))
                 .setKitchenType(context, restaurant.getKitchenTypes())
                 .setOnOpenListener(new RestaurantCardButtonListener.OnOpenPressedListener(holder, this, position))
-                .setOnFavoriteListener(new RestaurantCardButtonListener.OnFavoritePressedListener(holder, restaurant))
+                .setOnFavoriteListener(new RestaurantCardButtonListener.OnFavoritePressedListener(holder, restaurant, restaurantDAO))
                 .setOnDeleteRestaurantListener(new RestaurantCardButtonListener.OnDeleteRestaurantListener(holder, this, restaurant))
                 .setOnShowLocationListener(new RestaurantCardButtonListener.OnShowRestaurantLocationListener(holder, this, restaurant))
                 .setOnEditRestaurantListener(new RestaurantCardButtonListener.OnEditRestaurantListener(holder, this, restaurant))

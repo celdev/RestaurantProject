@@ -7,6 +7,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ImageView;
 
 import java.io.IOException;
 import java.util.List;
@@ -19,6 +20,7 @@ import cel.dev.restaurants.model.RestaurantPlaceholderImage;
 import cel.dev.restaurants.R;
 import cel.dev.restaurants.repository.RestaurantDAO;
 import cel.dev.restaurants.repository.RestaurantDAOImpl;
+import cel.dev.restaurants.repository.db.RestaurantCRUD;
 import cel.dev.restaurants.utils.PictureUtils;
 import cel.dev.restaurants.utils.Values;
 
@@ -33,9 +35,9 @@ class CreateRestaurantPresenterImpl implements CreateRestaurantMVP.Presenter {
     private long restaurantId;
     private boolean restaurantIsFavorite;
 
-    public CreateRestaurantPresenterImpl(CreateRestaurantMVP.View view) {
+    public CreateRestaurantPresenterImpl(CreateRestaurantMVP.View view, Context context) {
         this.view = view;
-        this.repository = new CreateRestaurantRepositoryImpl(this);
+        this.repository = new CreateRestaurantRepositoryImpl(context);
         Log.d(TAG, "CreateRestaurantPresenterImpl: Creating presenter" );
     }
 
@@ -147,15 +149,15 @@ class CreateRestaurantPresenterImpl implements CreateRestaurantMVP.Presenter {
             Bundle extras = intent.getExtras();
             long restaurantId = extras.getLong(CreateRestaurantActivity.EDIT_RESTAURANT_ID, -1L);
             if (restaurantId != -1) {
-                loadRestaurantToEdit(restaurantId, context);
+                loadRestaurantToEdit(restaurantId);
                 return true;
             }
         }
         return false;
     }
 
-    public void loadRestaurantToEdit(long id, Context context) {
-        Restaurant restaurant = repository.getRestaurant(id, context);
+    public void loadRestaurantToEdit(long id) {
+        Restaurant restaurant = repository.getRestaurant(id);
         if (restaurant == null) {
             view.showError(R.string.error_edit_restaurant);
         } else {
@@ -171,4 +173,10 @@ class CreateRestaurantPresenterImpl implements CreateRestaurantMVP.Presenter {
     public long getRestaurantId() {
         return restaurantId;
     }
+
+    @Override
+    public void injectImageOntoDrawable(ImageView imageView, Restaurant restaurant) {
+        repository.injectImageOntoImageView(imageView, restaurant);
+    }
+
 }

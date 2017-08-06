@@ -2,6 +2,9 @@ package cel.dev.restaurants.model;
 
 import android.widget.ImageView;
 
+import cel.dev.restaurants.repository.RestaurantDAO;
+import cel.dev.restaurants.repository.db.RestaurantCRUD;
+
 public abstract class Restaurant {
 
     public static final long NOT_SAVED_ID = -1;
@@ -33,7 +36,7 @@ public abstract class Restaurant {
         this.favorite = favorite;
     }
 
-    public abstract void injectImageOntoImageView(ImageView imageView);
+    public abstract void injectImageOntoImageView(ImageView imageView, RestaurantDAO restaurantDAO);
 
     @Override
     public boolean equals(Object o) {

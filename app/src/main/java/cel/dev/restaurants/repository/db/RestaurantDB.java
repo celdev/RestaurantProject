@@ -83,11 +83,10 @@ public class RestaurantDB implements RestaurantCRUD {
     public List<Restaurant> getAllRestaurants() {
         List<Restaurant> restaurants = new ArrayList<>();
         Cursor cursor = null;
-        Restaurant restaurant = null;
         try {
-            cursor = db.query(Table.NAME, Projections.PROJECTION_ALL, null, null, null, null, null);
+            cursor = db.query(Table.NAME, Projections.PROJECTION_ALL_BUT_BYTE_IMAGE, null, null, null, null, null);
             while (cursor.moveToNext()) {
-                restaurants.add(cursorToRestaurant(cursor, Projections.PROJECTION_ALL));
+                restaurants.add(cursorToRestaurant(cursor, Projections.PROJECTION_ALL_BUT_BYTE_IMAGE));
             }
         } catch (Exception e) {
             Log.e(TAG, "getAllRestaurants: ", e);
@@ -100,21 +99,20 @@ public class RestaurantDB implements RestaurantCRUD {
     }
 
     private Restaurant cursorToRestaurant(Cursor cursor, String[] projections) throws Exception {
-        Map<String, Integer> index = createColumnNameToColumnIndexMap(cursor, projections);
-        long id = cursor.getLong(index.get(Cols.ID));
-        float rating = Float.valueOf(cursor.getString(index.get(Cols.RATING)));
-        boolean isFavorite = cursor.getInt(index.get(Cols.FAVORITE)) != 0;
-        double lat = cursor.getDouble(index.get(Cols.LOCATION_LATITUDE));
-        double lon = cursor.getDouble(index.get(Cols.LOCATION_LONGITUDE));
-        List<KitchenType> kitchenTypes = AndroidUtils.DBUtils.stringToEnum(cursor.getString(index.get(Cols.KITCHEN_TYPES)), KitchenType.class);
-        List<BudgetType> budgetTypes = AndroidUtils.DBUtils.stringToEnum(cursor.getString(index.get(Cols.BUDGET_TYPES)), BudgetType.class);
-        boolean hasImage = cursor.getInt(index.get(Cols.HAS_IMAGE)) != 0;
-        String name = cursor.getString(index.get(Cols.NAME));
+        Map<String, Integer> cols = createColumnNameToColumnIndexMap(cursor, projections);
+        long id = cursor.getLong(cols.get(Cols.ID));
+        float rating = Float.valueOf(cursor.getString(cols.get(Cols.RATING)));
+        boolean isFavorite = cursor.getInt(cols.get(Cols.FAVORITE)) != 0;
+        double lat = cursor.getDouble(cols.get(Cols.LOCATION_LATITUDE));
+        double lon = cursor.getDouble(cols.get(Cols.LOCATION_LONGITUDE));
+        List<KitchenType> kitchenTypes = AndroidUtils.DBUtils.stringToEnum(cursor.getString(cols.get(Cols.KITCHEN_TYPES)), KitchenType.class);
+        List<BudgetType> budgetTypes = AndroidUtils.DBUtils.stringToEnum(cursor.getString(cols.get(Cols.BUDGET_TYPES)), BudgetType.class);
+        boolean hasImage = cursor.getInt(cols.get(Cols.HAS_IMAGE)) != 0;
+        String name = cursor.getString(cols.get(Cols.NAME));
         Restaurant restaurant;
         if (hasImage) {
-            byte[] image = cursor.getBlob(index.get(Cols.IMAGE));
             restaurant = new RestaurantCustomImage(name, rating, budgetTypes.toArray(new BudgetType[budgetTypes.size()]),
-                    lat, lon, kitchenTypes.toArray(new KitchenType[kitchenTypes.size()]), image, isFavorite);
+                    lat, lon, kitchenTypes.toArray(new KitchenType[kitchenTypes.size()]), isFavorite);
             restaurant.setId(id);
         } else {
             restaurant = new RestaurantPlaceholderImage(name, rating, budgetTypes.toArray(new BudgetType[budgetTypes.size()]),
@@ -130,5 +128,25 @@ public class RestaurantDB implements RestaurantCRUD {
             map.put(p, cursor.getColumnIndex(p));
         }
         return map;
+    }
+
+    @Override
+    public byte[] getImageOfRestaurant(RestaurantCustomImage restaurantCustomImage) throws Exception {
+        Cursor cursor = db.query(Table.NAME, Projections.PROJECTION_IMAGE, Selections.SELECTION_ID, new String[]{"" + restaurantCustomImage.getId()}, null, null, null);
+        if (cursor.moveToFirst()) {
+            byte[] image = cursor.getBlob(0);
+            cursor.close();
+            return image;
+        }else {
+            cursor.close();
+            throw new Exception();
+        }
+    }
+
+    @Override
+    public void setRestaurantFavorite(Restaurant restaurant) {
+        ContentValues values = new ContentValues();
+        values.put(Cols.FAVORITE, restaurant.isFavorite());
+        db.update(Table.NAME, values, Selections.SELECTION_ID, new String[]{"" + restaurant.getId()});
     }
 }

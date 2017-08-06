@@ -1,4 +1,4 @@
-package cel.dev.restaurants;
+package cel.dev.restaurants.mainfragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -6,8 +6,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import cel.dev.restaurants.R;
 
-public class FindFragment extends Fragment {
+
+public class FindFragment extends Fragment implements FABFragmentHandler {
 
 
 
@@ -41,4 +43,8 @@ public class FindFragment extends Fragment {
     }
 
 
+    @Override
+    public void handleFABClick() {
+
+    }
 }

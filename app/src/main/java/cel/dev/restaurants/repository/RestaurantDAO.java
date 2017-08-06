@@ -1,5 +1,7 @@
 package cel.dev.restaurants.repository;
 
+import android.widget.ImageView;
+
 import java.util.List;
 
 import cel.dev.restaurants.model.BudgetType;
@@ -14,10 +16,13 @@ public interface RestaurantDAO {
 
     List<Restaurant> getAllRestaurants();
 
-    List<Restaurant> getRestaurantsByLocation(String longitude, String latitude, double range);
+    List<Restaurant> getRestaurantsByLocation(double lat, double lon, double range);
 
     List<Restaurant> getRestaurantsByBudgetType(BudgetType budgetType);
 
     boolean saveRestaurant(Restaurant restaurant);
 
+    void injectImageOntoImageView(ImageView imageView, Restaurant restaurant);
+
+    void setRestaurantFavorite(Restaurant restaurant);
 }

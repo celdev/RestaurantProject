@@ -1,6 +1,7 @@
-package cel.dev.restaurants.showrestaurants;
+package cel.dev.restaurants.mainfragments.showrestaurants;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,12 +15,15 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import cel.dev.restaurants.createrestaurant.CreateRestaurantActivity;
+import cel.dev.restaurants.mainfragments.FABFragmentHandler;
 import cel.dev.restaurants.model.Restaurant;
 import cel.dev.restaurants.R;
-import cel.dev.restaurants.showrestaurants.restaurantsrecycleview.RestaurantRecycleViewAdapter;
+import cel.dev.restaurants.repository.RestaurantDAO;
+import cel.dev.restaurants.mainfragments.showrestaurants.restaurantsrecycleview.RestaurantRecycleViewAdapter;
 
 
-public class RestaurantFragment extends Fragment implements ShowRestaurantsMVP.View {
+public class RestaurantFragment extends Fragment implements ShowRestaurantsMVP.View, FABFragmentHandler {
 
     public static final String TAG = " restfrag";
 
@@ -42,7 +46,7 @@ public class RestaurantFragment extends Fragment implements ShowRestaurantsMVP.V
 
         View view = inflater.inflate(R.layout.fragment_restaurant, container, false);
         ButterKnife.bind(this, view);
-        presenter = new RestaurantPresenterImpl(this);
+        presenter = new RestaurantPresenterImpl(this, getContext());
         initializeViews();
         return view;
     }
@@ -54,7 +58,7 @@ public class RestaurantFragment extends Fragment implements ShowRestaurantsMVP.V
     @Override
     public void onResume() {
         super.onResume();
-        presenter.onLoadFragment(getContext());
+        presenter.onLoadFragment();
     }
 
     @Override
@@ -69,12 +73,16 @@ public class RestaurantFragment extends Fragment implements ShowRestaurantsMVP.V
     }
 
     @Override
-    public void injectData(List<Restaurant> restaurants) {
+    public void injectData(List<Restaurant> restaurants, RestaurantDAO restaurantDAO) {
         Log.d(TAG, "injectData: injecting " + restaurants.size() + " restaurants into adapter");
-        RestaurantRecycleViewAdapter adapter = new RestaurantRecycleViewAdapter(restaurants, getContext());
+        RestaurantRecycleViewAdapter adapter = new RestaurantRecycleViewAdapter(restaurants, getContext(), restaurantDAO);
         restaurantRecycleView.setAdapter(adapter);
 
     }
 
 
+    @Override
+    public void handleFABClick() {
+        startActivity(new Intent(getContext(),CreateRestaurantActivity.class));
+    }
 }

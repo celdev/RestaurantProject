@@ -53,6 +53,21 @@ public class RestaurantDbSchema {
                         Cols.LOCATION_LONGITUDE,
                         Cols.FAVORITE
                 };
+        public static final String[] PROJECTION_ALL_BUT_BYTE_IMAGE =
+                new String[]{
+                        Cols.ID,
+                        Cols.NAME,
+                        Cols.HAS_IMAGE,
+                        Cols.RATING,
+                        Cols.BUDGET_TYPES,
+                        Cols.KITCHEN_TYPES,
+                        Cols.LOCATION_LATITUDE,
+                        Cols.LOCATION_LONGITUDE,
+                        Cols.FAVORITE
+                };
+        public static final String[] PROJECTION_IMAGE = new String[]{
+                        Cols.IMAGE
+        };
     }
 
     public static class Selections {

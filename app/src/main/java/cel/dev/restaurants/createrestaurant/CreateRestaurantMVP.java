@@ -7,12 +7,14 @@ import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
+import android.widget.ImageView;
 
 import java.util.List;
 
 import cel.dev.restaurants.model.BudgetType;
 import cel.dev.restaurants.model.KitchenType;
 import cel.dev.restaurants.model.Restaurant;
+import cel.dev.restaurants.repository.db.RestaurantCRUD;
 
 public interface CreateRestaurantMVP {
 
@@ -73,6 +75,8 @@ public interface CreateRestaurantMVP {
         boolean getIsEditRestaurantMode(Intent intent, Context context);
 
         long getRestaurantId();
+
+        void injectImageOntoDrawable(ImageView imageView, Restaurant restaurant);
     }
 
     interface Repository {
@@ -85,10 +89,13 @@ public interface CreateRestaurantMVP {
         void chooseFoodType(KitchenType kitchenType, boolean chosen);
 
 
+
         @Nullable
-        Restaurant getRestaurant(long id, Context context);
+        Restaurant getRestaurant(long id);
 
         void setChosenFoodTypes(KitchenType[] kitchenTypes);
+
+        void injectImageOntoImageView(ImageView imageView, Restaurant restaurant);
     }
 
 }

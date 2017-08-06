@@ -2,6 +2,9 @@ package cel.dev.restaurants.model;
 
 import android.widget.ImageView;
 
+import cel.dev.restaurants.repository.RestaurantDAO;
+import cel.dev.restaurants.repository.db.RestaurantCRUD;
+
 public class RestaurantPlaceholderImage extends Restaurant {
 
     private int placeholderImageRes;
@@ -12,7 +15,7 @@ public class RestaurantPlaceholderImage extends Restaurant {
     }
 
     @Override
-    public void injectImageOntoImageView(ImageView imageView) {
+    public void injectImageOntoImageView(ImageView imageView, RestaurantDAO restaurantDAO) {
         imageView.setImageDrawable(imageView.getResources().getDrawable(placeholderImageRes, imageView.getContext().getTheme()));
     }
 }
