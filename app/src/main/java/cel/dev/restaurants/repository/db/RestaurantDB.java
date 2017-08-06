@@ -149,4 +149,29 @@ public class RestaurantDB implements RestaurantCRUD {
         values.put(Cols.FAVORITE, restaurant.isFavorite());
         db.update(Table.NAME, values, Selections.SELECTION_ID, new String[]{"" + restaurant.getId()});
     }
+
+    @Override
+    public List<Long> getRestaurantIdsByLocation(double lat, double lon, double range) {
+        Cursor cursor = db.rawQuery(
+                "SELECT " + Cols.ID + " FROM " + Table.NAME + " WHERE " +
+                        Cols.LOCATION_LATITUDE + " < ? AND " +
+                        Cols.LOCATION_LATITUDE + " > ? AND " +
+                        Cols.LOCATION_LONGITUDE + " < ? AND " +
+                        Cols.LOCATION_LONGITUDE + " > ?"
+                , new String[]{
+                        "" + (lat + range),
+                        "" + (lat - range),
+                        "" + (lon + range),
+                        "" + (lon - range)
+                }
+        );
+
+        List<Long> ids = new ArrayList<>();
+        while (cursor.moveToNext()) {
+            ids.add(cursor.getLong(0));
+        }
+        cursor.close();
+        return ids;
+    }
+
 }

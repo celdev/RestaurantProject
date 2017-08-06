@@ -15,15 +15,17 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import cel.dev.restaurants.createrestaurant.CreateRestaurantActivity;
 import cel.dev.restaurants.mainfragments.FABFragmentHandler;
+import cel.dev.restaurants.mainfragments.ListRestaurantsFragment;
 import cel.dev.restaurants.model.Restaurant;
 import cel.dev.restaurants.R;
 import cel.dev.restaurants.repository.RestaurantDAO;
 import cel.dev.restaurants.mainfragments.showrestaurants.restaurantsrecycleview.RestaurantRecycleViewAdapter;
 
 
-public class RestaurantFragment extends Fragment implements ShowRestaurantsMVP.View, FABFragmentHandler {
+public class RestaurantFragment extends ListRestaurantsFragment implements ShowRestaurantsMVP.View{
 
     public static final String TAG = " restfrag";
 
@@ -37,23 +39,19 @@ public class RestaurantFragment extends Fragment implements ShowRestaurantsMVP.V
 
     private ShowRestaurantsMVP.Presenter presenter;
 
-    @BindView(R.id.restaurants_recycle_view)
-    RecyclerView restaurantRecycleView;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-
-        View view = inflater.inflate(R.layout.fragment_restaurant, container, false);
-        ButterKnife.bind(this, view);
+    public void initializePresenter() {
         presenter = new RestaurantPresenterImpl(this, getContext());
-        initializeViews();
-        return view;
     }
 
-    private void initializeViews() {
-        restaurantRecycleView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+
+    @Override
+    public void initializeViews() {
+        getRestaurantRecyclerView().setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
     }
+
+
 
     @Override
     public void onResume() {
@@ -61,23 +59,12 @@ public class RestaurantFragment extends Fragment implements ShowRestaurantsMVP.V
         presenter.onLoadFragment();
     }
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-    }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-
-    }
 
     @Override
     public void injectData(List<Restaurant> restaurants, RestaurantDAO restaurantDAO) {
-        Log.d(TAG, "injectData: injecting " + restaurants.size() + " restaurants into adapter");
         RestaurantRecycleViewAdapter adapter = new RestaurantRecycleViewAdapter(restaurants, getContext(), restaurantDAO);
-        restaurantRecycleView.setAdapter(adapter);
-
+        getRestaurantRecyclerView().setAdapter(adapter);
     }
 
 

@@ -13,7 +13,7 @@ import android.view.View;
 
 import cel.dev.restaurants.mainfragments.FABFragmentHandler;
 import cel.dev.restaurants.mainfragments.FindFragment;
-import cel.dev.restaurants.mainfragments.NearbyFragment;
+import cel.dev.restaurants.mainfragments.nearbyrestaurants.NearbyFragment;
 import cel.dev.restaurants.mainfragments.showrestaurants.RestaurantFragment;
 
 public class MainActivity extends AppCompatActivity {

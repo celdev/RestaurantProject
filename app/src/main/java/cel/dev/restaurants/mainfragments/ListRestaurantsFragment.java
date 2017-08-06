@@ -21,8 +21,8 @@ public abstract class ListRestaurantsFragment extends Fragment implements FABFra
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_restaurant, container, false);
         recyclerView = (RecyclerView) view.findViewById(R.id.restaurants_recycle_view);
-        initializePresenter();
         initializeViews();
+        initializePresenter();
         return view;
     }
 
@@ -30,7 +30,7 @@ public abstract class ListRestaurantsFragment extends Fragment implements FABFra
         return recyclerView;
     }
 
-    abstract void initializePresenter();
+    public abstract void initializePresenter();
 
-    abstract void initializeViews();
+    public abstract void initializeViews();
 }

@@ -19,4 +19,6 @@ public interface RestaurantCRUD {
 
     void setRestaurantFavorite(Restaurant restaurant);
 
+    List<Long> getRestaurantIdsByLocation(double lat, double lon, double range);
+
 }

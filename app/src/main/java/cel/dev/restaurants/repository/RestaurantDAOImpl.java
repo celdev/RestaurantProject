@@ -8,12 +8,9 @@ import android.widget.ImageView;
 import java.util.ArrayList;
 import java.util.List;
 
-import cel.dev.restaurants.R;
 import cel.dev.restaurants.model.BudgetType;
-import cel.dev.restaurants.model.KitchenType;
 import cel.dev.restaurants.model.Restaurant;
 import cel.dev.restaurants.model.RestaurantCustomImage;
-import cel.dev.restaurants.model.RestaurantPlaceholderImage;
 import cel.dev.restaurants.repository.db.RestaurantCRUD;
 import cel.dev.restaurants.repository.db.RestaurantDB;
 import cel.dev.restaurants.repository.db.RestaurantDBHelper;
@@ -49,11 +46,6 @@ public class RestaurantDAOImpl implements RestaurantDAO {
     }
 
     @Override
-    public List<Restaurant> getRestaurantsByLocation(String longitude, String latitude, double range) {
-        return null;
-    }
-
-    @Override
     public List<Restaurant> getRestaurantsByBudgetType(BudgetType budgetType) {
         return null;
     }
@@ -78,5 +70,15 @@ public class RestaurantDAOImpl implements RestaurantDAO {
     @Override
     public void setRestaurantFavorite(Restaurant restaurant) {
         restaurantCRUD.setRestaurantFavorite(restaurant);
+    }
+
+    @Override
+    public List<Restaurant> getRestaurantsByLocation(double lat, double lon, double range) {
+        List<Long> restaurantIdsByLocation = restaurantCRUD.getRestaurantIdsByLocation(lat, lon, range);
+        List<Restaurant> restaurants = new ArrayList<>();
+        for (long id : restaurantIdsByLocation) {
+            restaurants.add(restaurantCRUD.getRestaurantById(id));
+        }
+        return restaurants;
     }
 }
