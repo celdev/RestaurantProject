@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -252,7 +253,9 @@ public class CreateRestaurantActivity extends AppCompatActivity implements Creat
     public void injectInformationToViews(@NonNull Restaurant restaurant) {
         if (restaurant instanceof RestaurantCustomImage) {
             presenter.injectImageOntoDrawable(imageFragmentView.getRestaurantImageView(), restaurant);
-            imageFragmentView.setRestaurantImage(imageFragmentView.getImage());
+            imageFragmentView.setRestaurantImage(((BitmapDrawable) imageFragmentView.getRestaurantImageView().getDrawable()).getBitmap());
+        } else {
+            imageFragmentView.getRestaurantImageView().setImageDrawable(AndroidUtils.drawableResToDrawable(R.drawable.restaurant_placeholder, getApplicationContext()));
         }
         nameField.setText(restaurant.getName());
         setLocationInformation(restaurant.getLatitude(), restaurant.getLongitude());

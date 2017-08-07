@@ -63,7 +63,7 @@ class CreateRestaurantRepositoryImpl implements CreateRestaurantMVP.Repository {
     @Override
     public void injectImageOntoImageView(ImageView imageView, Restaurant restaurant) {
         if (restaurant instanceof RestaurantCustomImage) {
-            restaurantDAO.injectImageOntoImageView(imageView, restaurant);
+            restaurant.injectImageOntoImageView(imageView, restaurantDAO);
         }
     }
 }

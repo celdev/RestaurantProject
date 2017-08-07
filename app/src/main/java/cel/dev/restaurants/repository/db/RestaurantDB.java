@@ -151,6 +151,11 @@ public class RestaurantDB implements RestaurantCRUD {
     }
 
     @Override
+    public boolean removeRestaurant(Restaurant restaurant) {
+        return 0 < db.delete(Table.NAME, Selections.SELECTION_ID, new String[]{"" + restaurant.getId()});
+    }
+
+    @Override
     public List<Long> getRestaurantIdsByLocation(double lat, double lon, double range) {
         Cursor cursor = db.rawQuery(
                 "SELECT " + Cols.ID + " FROM " + Table.NAME + " WHERE " +

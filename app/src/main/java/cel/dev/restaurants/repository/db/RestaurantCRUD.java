@@ -21,4 +21,5 @@ public interface RestaurantCRUD {
 
     List<Long> getRestaurantIdsByLocation(double lat, double lon, double range);
 
+    boolean removeRestaurant(Restaurant restaurant);
 }

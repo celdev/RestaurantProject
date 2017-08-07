@@ -71,6 +71,12 @@
     <string name="bundle_is_showing_choose_kitchen_dialog">IS_SHOWING_KITCHEN_DIALOG</string>
     <string name="bundle_location">LOCATION_LAT_LON</string>
     <string name="error_no_location">Error: no location chosen</string>
+    <string name="choose_range">Set nearby distance</string>
+    <string name="need_location_permission">Missing Permission</string>
+    <string name="needs_location_permission">This application need location permissions</string>
+    <string name="range_close">Close</string>
+    <string name="range_far_away">Very far away</string>
+    <string name="error">Error</string>
 
 
 </resources>

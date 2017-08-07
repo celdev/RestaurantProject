@@ -18,6 +18,7 @@ import cel.dev.restaurants.utils.PictureUtils;
 
 public class RestaurantDAOImpl implements RestaurantDAO {
 
+    public static final String TAG = "restaurantdao";
     private SQLiteDatabase db;
     private RestaurantCRUD restaurantCRUD;
 
@@ -56,13 +57,19 @@ public class RestaurantDAOImpl implements RestaurantDAO {
     }
 
     @Override
+    public boolean removeRestaurant(Restaurant restaurant) {
+        return restaurantCRUD.removeRestaurant(restaurant);
+    }
+
+    @Override
     public void injectImageOntoImageView(ImageView imageView, Restaurant restaurant) {
         if (restaurant instanceof RestaurantCustomImage) {
             try {
                 byte[] image = restaurantCRUD.getImageOfRestaurant((RestaurantCustomImage) restaurant);
+                Log.d(TAG, "injectImageOntoImageView: image size = " + image.length);
                 imageView.setImageBitmap(PictureUtils.byteArrayToBitMap(image));
             } catch (Exception e) {
-                Log.e("restaurantdao", "injectImageOntoImageView: ", e);
+                Log.e(TAG, "injectImageOntoImageView: ", e);
             }
         }
     }

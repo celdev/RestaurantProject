@@ -25,4 +25,6 @@ public interface RestaurantDAO {
     void injectImageOntoImageView(ImageView imageView, Restaurant restaurant);
 
     void setRestaurantFavorite(Restaurant restaurant);
+
+    boolean removeRestaurant(Restaurant restaurant);
 }

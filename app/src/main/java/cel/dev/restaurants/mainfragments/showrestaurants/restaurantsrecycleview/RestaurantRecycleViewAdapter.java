@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -88,7 +89,7 @@ public class RestaurantRecycleViewAdapter extends RecyclerView.Adapter<Restauran
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Log.d("recycle", "onClick: trying to delete restaurant with " + adapterPos);
-                        restaurants.remove(adapterPos);
+                        removeRestaurant(restaurants.remove(adapterPos));
                         notifyItemRemoved(adapterPos);
                         notifyItemRangeChanged(adapterPos, restaurants.size());
                         dialog.dismiss();
@@ -102,6 +103,12 @@ public class RestaurantRecycleViewAdapter extends RecyclerView.Adapter<Restauran
                 })
                 .create()
                 .show();
+    }
+
+    private void removeRestaurant(Restaurant restaurant) {
+        if (!restaurantDAO.removeRestaurant(restaurant)) {
+            Toast.makeText(context, R.string.error, Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override

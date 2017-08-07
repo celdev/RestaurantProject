@@ -9,6 +9,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.ColorRes;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
@@ -18,6 +19,7 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
+import cel.dev.restaurants.R;
 import cel.dev.restaurants.ShowRestaurantLocationActivity;
 import cel.dev.restaurants.choosekitchendialog.ChooseKitchenDialogFragmentMVP;
 import cel.dev.restaurants.createrestaurant.CreateRestaurantActivity;
@@ -59,6 +61,10 @@ public class AndroidUtils {
 
     public static boolean dialogFragmentIsShowing(@Nullable ChooseKitchenDialogFragmentMVP.HasShownStatus dialogFragment) {
         return dialogFragment != null && dialogFragment.getDialogIsShowing();
+    }
+
+    public static Drawable drawableResToDrawable(@DrawableRes int drawableRes, Context context) {
+        return context.getDrawable(drawableRes);
     }
 
 
