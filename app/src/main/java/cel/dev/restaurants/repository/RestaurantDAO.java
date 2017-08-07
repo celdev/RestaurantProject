@@ -5,6 +5,7 @@ import android.widget.ImageView;
 import java.util.List;
 
 import cel.dev.restaurants.model.BudgetType;
+import cel.dev.restaurants.model.RandomiseSettings;
 import cel.dev.restaurants.model.Restaurant;
 
 public interface RestaurantDAO {
@@ -27,4 +28,6 @@ public interface RestaurantDAO {
     void setRestaurantFavorite(Restaurant restaurant);
 
     boolean removeRestaurant(Restaurant restaurant);
+
+    Restaurant getRandomRestaurant(RandomiseSettings randomiseSettings);
 }

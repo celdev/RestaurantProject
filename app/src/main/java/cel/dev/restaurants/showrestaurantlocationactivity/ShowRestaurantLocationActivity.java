@@ -1,4 +1,4 @@
-package cel.dev.restaurants;
+package cel.dev.restaurants.showrestaurantlocationactivity;
 
 import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
@@ -18,6 +18,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import cel.dev.restaurants.R;
 import cel.dev.restaurants.utils.AndroidUtils;
 import cel.dev.restaurants.utils.Values;
 
@@ -113,11 +114,12 @@ public class ShowRestaurantLocationActivity extends FragmentActivity implements 
 
     }
 
-
     @Override
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
-        map.setOnMapClickListener(this);
+        if (!MapActivityMode.SHOW_LOCATION.equals(mode)) {
+            map.setOnMapClickListener(this);
+        }
         if (location != null) {
             addMarkerAtLocation(location);
         }

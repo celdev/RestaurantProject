@@ -33,7 +33,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import cel.dev.restaurants.ShowRestaurantLocationActivity;
+import cel.dev.restaurants.showrestaurantlocationactivity.ShowRestaurantLocationActivity;
 import cel.dev.restaurants.choosekitchendialog.ChooseKitchenDialogFragment;
 import cel.dev.restaurants.choosekitchendialog.FoodTypeToTextRenderer;
 import cel.dev.restaurants.choosekitchendialog.OnChooseKitchenCallback;
@@ -46,7 +46,6 @@ import cel.dev.restaurants.model.RestaurantCustomImage;
 import cel.dev.restaurants.utils.AndroidUtils;
 import cel.dev.restaurants.utils.CollectionUtils;
 import cel.dev.restaurants.utils.PermissionUtils;
-import cel.dev.restaurants.utils.PictureUtils;
 
 public class CreateRestaurantActivity extends AppCompatActivity implements CreateRestaurantMVP.View,
         OnChooseKitchenCallback, OnSuccessListener<Location>{

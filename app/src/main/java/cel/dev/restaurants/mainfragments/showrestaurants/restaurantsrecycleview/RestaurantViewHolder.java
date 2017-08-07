@@ -17,6 +17,7 @@ import cel.dev.restaurants.R;
 import cel.dev.restaurants.model.BudgetType;
 import cel.dev.restaurants.model.KitchenType;
 import cel.dev.restaurants.utils.AndroidUtils;
+import cel.dev.restaurants.utils.CollectionUtils;
 
 class RestaurantViewHolder extends RecyclerView.ViewHolder {
 
@@ -93,27 +94,12 @@ class RestaurantViewHolder extends RecyclerView.ViewHolder {
     }
 
     public RestaurantViewHolder setKitchenType(Context context, KitchenType[] kitchenTypes) {
-        StringBuilder text = new StringBuilder();
-        for (int i = 0; i < kitchenTypes.length; i++) {
-            text.append(context.getString(kitchenTypes[i].getStringResId()));
-            if (i + 1 != kitchenTypes.length) {
-                text.append(", ");
-            }
-        }
-        this.kitchenOutput.setText(text.toString());
+        this.kitchenOutput.setText(CollectionUtils.kitchenEnumToString(kitchenTypes, context));
         return this;
     }
 
     public RestaurantViewHolder setBudgetType(Context context, BudgetType[] budgetTypes) {
-        StringBuilder text = new StringBuilder();
-        BudgetType.sortBudgetType(budgetTypes);
-        for (int i = 0; i < budgetTypes.length; i++) {
-            text.append(context.getString(BudgetType.budgetTypeToString(budgetTypes[i])));
-            if (i + 1 != budgetTypes.length) {
-                text.append(", ");
-            }
-        }
-        this.budgetOutput.setText(text.toString());
+        this.budgetOutput.setText(CollectionUtils.budgetEnumToString(budgetTypes,context));
         return this;
     }
 

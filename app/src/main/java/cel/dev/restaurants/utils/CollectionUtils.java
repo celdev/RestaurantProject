@@ -1,15 +1,21 @@
 package cel.dev.restaurants.utils;
 
+import android.content.Context;
 import android.os.Parcelable;
 import android.support.v7.util.SortedList;
 import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
+
+import cel.dev.restaurants.model.BudgetType;
+import cel.dev.restaurants.model.KitchenType;
 
 public class CollectionUtils {
 
@@ -60,6 +66,35 @@ public class CollectionUtils {
             }
         }
         return list;
+    }
+
+    public static String kitchenEnumToString(KitchenType[] kitchenTypes, Context context) {
+        StringBuilder text = new StringBuilder();
+        for (int i = 0; i < kitchenTypes.length; i++) {
+            text.append(context.getString(kitchenTypes[i].getStringResId()));
+            if (i + 1 != kitchenTypes.length) {
+                text.append(", ");
+            }
+        }
+        return text.toString();
+    }
+
+    public static String budgetEnumToString(BudgetType[] budgetTypes, Context context) {
+        StringBuilder text = new StringBuilder();
+        BudgetType.sortBudgetType(budgetTypes);
+        for (int i = 0; i < budgetTypes.length; i++) {
+            text.append(context.getString(BudgetType.budgetTypeToString(budgetTypes[i])));
+            if (i + 1 != budgetTypes.length) {
+                text.append(", ");
+            }
+        }
+        return text.toString();
+    }
+
+    public static <T> T getRandomEntryIn(List<T> collection) {
+        Random random = new Random();
+        int index = random.nextInt(collection.size());
+        return collection.get(index);
     }
 
 
