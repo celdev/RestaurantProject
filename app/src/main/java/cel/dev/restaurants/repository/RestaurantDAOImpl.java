@@ -2,10 +2,12 @@ package cel.dev.restaurants.repository;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.widget.ImageView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -95,6 +97,7 @@ public class RestaurantDAOImpl implements RestaurantDAO {
         return restaurants;
     }
 
+    @Nullable
     @Override
     public Restaurant getRandomRestaurant(RandomiseSettings randomiseSettings) {
         List<Restaurant> restaurants;
@@ -131,10 +134,6 @@ public class RestaurantDAOImpl implements RestaurantDAO {
         Set<Long> notTheseRestaurantsById = randomiseSettings.getNotTheseRestaurantsById();
         if (!notTheseRestaurantsById.isEmpty()) {
             restaurants = filterById(restaurants, notTheseRestaurantsById);
-            if (restaurants.isEmpty()) {
-                randomiseSettings.setNotTheseRestaurantsById(new HashSet<Long>());
-                return getRandomRestaurant(randomiseSettings);
-            }
         }
         return CollectionUtils.getRandomEntryIn(restaurants);
     }
@@ -142,7 +141,9 @@ public class RestaurantDAOImpl implements RestaurantDAO {
     private List<Restaurant> filterById(List<Restaurant> toFilter, Set<Long> ids) {
         Iterator<Restaurant> iterator = toFilter.iterator();
         while (iterator.hasNext()) {
-            if (ids.contains(iterator.next().getId())) {
+            Restaurant restaurant = iterator.next();
+            if (ids.contains(restaurant.getId())) {
+                Log.d(TAG, "filterById: restaurantid exist in ids to filter" + restaurant.getId() + "\n exist in " + Arrays.toString(ids.toArray()));
                 iterator.remove();
             }
         }

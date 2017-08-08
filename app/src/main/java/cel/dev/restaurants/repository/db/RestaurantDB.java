@@ -46,7 +46,7 @@ public class RestaurantDB implements RestaurantCRUD {
             values.put(Cols.IMAGE, ((RestaurantCustomImage) restaurant).getImageByteArray());
         }
         values.put(Cols.BUDGET_TYPES, AndroidUtils.DBUtils.enumsToString(restaurant.getBudgetTypes()));
-        values.put(Cols.KITCHEN_TYPES, AndroidUtils.DBUtils.enumsToString(restaurant.getBudgetTypes()));
+        values.put(Cols.KITCHEN_TYPES, AndroidUtils.DBUtils.enumsToString(restaurant.getKitchenTypes()));
         values.put(Cols.LOCATION_LATITUDE, restaurant.getLatitude());
         values.put(Cols.LOCATION_LONGITUDE, restaurant.getLongitude());
         if (Restaurant.restaurantHasIdSet(restaurant)) {

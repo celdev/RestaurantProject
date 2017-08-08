@@ -7,11 +7,13 @@ import cel.dev.restaurants.utils.Values;
 
 class NearbyPresenterImpl implements NearbyMVP.Presenter {
 
-
+    private static final double SEEK_BAR_PROGRESS_MODIFIER = 1000.0;
 
     private NearbyMVP.View view;
     private Context context;
     private RestaurantDAO restaurantDAO;
+
+
 
     private double range;
 
@@ -28,7 +30,7 @@ class NearbyPresenterImpl implements NearbyMVP.Presenter {
 
     @Override
     public void saveRange(double range) {
-        range /= 1000.0;
+        range /= SEEK_BAR_PROGRESS_MODIFIER;
         if (range < Values.MINIMUM_RANGE_VALUE) {
             range = Values.MINIMUM_RANGE_VALUE;
         }
@@ -49,7 +51,7 @@ class NearbyPresenterImpl implements NearbyMVP.Presenter {
 
     @Override
     public int getRangeForSeekBar() {
-        return (int)(range * 100);
+        return (int)(range * SEEK_BAR_PROGRESS_MODIFIER);
     }
 
     @Override

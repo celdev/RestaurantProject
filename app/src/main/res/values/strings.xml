@@ -77,6 +77,11 @@
     <string name="range_close">Close</string>
     <string name="range_far_away">Very far away</string>
     <string name="error">Error</string>
+    <string name="show_me_another_restaurant">Show me another restaurant</string>
+    <string name="no_restaurant_found">No restaurant found</string>
+    <string name="change_settings_to_find_a_restaurant">Change settings to find a restaurant</string>
+    <string name="reset">Reset</string>
+    <string name="random_settings">Settings</string>
 
 
 </resources>

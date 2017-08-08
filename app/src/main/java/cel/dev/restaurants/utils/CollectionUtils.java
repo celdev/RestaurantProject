@@ -2,6 +2,7 @@ package cel.dev.restaurants.utils;
 
 import android.content.Context;
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
 import android.support.v7.util.SortedList;
 import android.util.Log;
 
@@ -39,6 +40,10 @@ public class CollectionUtils {
             list.add(i, (T) parcelables[i]);
         }
         return list;
+    }
+
+    public static int[] enumToIntArr(Collection<? extends Enum> collection) {
+        return enumToIntArr(new ArrayList<Enum>(collection));
     }
 
     public static int[] enumToIntArr(List<? extends Enum> list) {
@@ -91,7 +96,11 @@ public class CollectionUtils {
         return text.toString();
     }
 
+    @Nullable
     public static <T> T getRandomEntryIn(List<T> collection) {
+        if (collection == null || collection.isEmpty()) {
+            return null;
+        }
         Random random = new Random();
         int index = random.nextInt(collection.size());
         return collection.get(index);

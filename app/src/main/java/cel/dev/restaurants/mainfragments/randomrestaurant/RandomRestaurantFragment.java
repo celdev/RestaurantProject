@@ -8,6 +8,7 @@ import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -63,6 +64,12 @@ public class RandomRestaurantFragment extends Fragment implements FABFragmentHan
     ImageButton restaurantFavoriteBtn;
     @BindView(R.id.open_restaurant_info_btn)
     ImageButton openRestaurantBtn;
+    @BindView(R.id.no_restaurant_found_layout)
+    View noRestaurantsLayout;
+    @BindView(R.id.random_buttons_layout)
+    View randomRestaurantButtonLayout;
+    @BindView(R.id.restaurant_card)
+    CardView restaurantCard;
 
     @BindDrawable(R.drawable.ic_favorite_border_black_24dp)
     Drawable favoriteEmpty;
@@ -83,12 +90,32 @@ public class RandomRestaurantFragment extends Fragment implements FABFragmentHan
     }
 
     @Override
-    public void handleFABClick() {
+    public void showSettingsDialog() {
 
     }
 
     @Override
+    public void handleFABClick() {
+        showSettingsDialog();
+    }
+
+    @Override
+    public void handleNoRestaurantsFound() {
+        randomRestaurantButtonLayout.setVisibility(View.GONE);
+        restaurantCard.setVisibility(View.GONE);
+        noRestaurantsLayout.setVisibility(View.VISIBLE);
+    }
+
+    private void setRestaurantFound() {
+        restaurantCard.setVisibility(View.VISIBLE);
+        randomRestaurantButtonLayout.setVisibility(View.VISIBLE);
+        noRestaurantsLayout.setVisibility(View.GONE);
+    }
+
+
+    @Override
     public void injectRestaurant(final Restaurant restaurant, RestaurantDAO restaurantDAO) {
+        setRestaurantFound();
         restaurantName.setText(restaurant.getName());
         restaurant.injectImageOntoImageView(restaurantImage, restaurantDAO);
         kitchenTypesText.setText(CollectionUtils.kitchenEnumToString(restaurant.getKitchenTypes(), getContext()));
@@ -155,6 +182,16 @@ public class RandomRestaurantFragment extends Fragment implements FABFragmentHan
     @OnClick(R.id.show_restaurant_location_btn)
     public void showLocationClicked(View view) {
         presenter.showRestaurantLocation();
+    }
+
+    @OnClick(R.id.not_this_restaurant)
+    public void notThisRestaurantPressed(View view) {
+        presenter.notThisRestaurantPressed();
+    }
+
+    @OnClick(R.id.reset_settings_button)
+    public void resetSettingsPressed(View view) {
+        presenter.resetSettings();
     }
 
 }
