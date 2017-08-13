@@ -1,11 +1,14 @@
 package cel.dev.restaurants.mainfragments.randomrestaurant;
 
+import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.location.Location;
 import android.os.Bundle;
-import android.support.annotation.DrawableRes;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
@@ -18,6 +21,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 import butterknife.BindDrawable;
 import butterknife.BindView;
@@ -26,14 +33,18 @@ import butterknife.OnClick;
 import cel.dev.restaurants.R;
 import cel.dev.restaurants.mainfragments.FABFragmentHandler;
 import cel.dev.restaurants.mainfragments.showrestaurants.restaurantsrecycleview.ExpandableLayoutAnimation;
-import cel.dev.restaurants.model.KitchenType;
 import cel.dev.restaurants.model.Restaurant;
 import cel.dev.restaurants.repository.RestaurantDAO;
 import cel.dev.restaurants.utils.AndroidUtils;
 import cel.dev.restaurants.utils.CollectionUtils;
+import cel.dev.restaurants.utils.PermissionUtils;
 
 
-public class RandomRestaurantFragment extends Fragment implements FABFragmentHandler, RandomRestaurantMVP.View {
+public class RandomRestaurantFragment extends Fragment implements FABFragmentHandler, RandomRestaurantMVP.View, OnSuccessListener<Location> {
+
+
+    private static final int REQUEST_LOCATION = 1;
+    private static final String TAG = "random rest";
 
     public RandomRestaurantFragment() {
     }
@@ -42,20 +53,34 @@ public class RandomRestaurantFragment extends Fragment implements FABFragmentHan
         return new RandomRestaurantFragment();
     }
 
-    @BindView(R.id.restaurant_name) TextView restaurantName;
-    @BindView(R.id.restaurant_rating) RatingBar ratingBar;
-    @BindView(R.id.restaurant_image) ImageView restaurantImage;
-    @BindView(R.id.budget_type_card_output) TextView budgetTypesText;
-    @BindView(R.id.kitchen_type_card_output) TextView kitchenTypesText;
-    @BindView(R.id.expandable_layout) LinearLayout expandableView;
-    @BindView(R.id.delete_restaurant_btn) ImageButton deleteRestaurantBtn;
-    @BindView(R.id.edit_restaurant_btn) ImageButton editRestaurantBtn;
-    @BindView(R.id.show_restaurant_location_btn) ImageButton restaurantLocationBtn;
-    @BindView(R.id.favorite_restaurant_btn) ImageButton restaurantFavoriteBtn;
-    @BindView(R.id.open_restaurant_info_btn) ImageButton openRestaurantBtn;
-    @BindView(R.id.no_restaurant_found_layout) View noRestaurantsLayout;
-    @BindView(R.id.random_buttons_layout) View randomRestaurantButtonLayout;
-    @BindView(R.id.restaurant_card) CardView restaurantCard;
+    @BindView(R.id.restaurant_name)
+    TextView restaurantName;
+    @BindView(R.id.restaurant_rating)
+    RatingBar ratingBar;
+    @BindView(R.id.restaurant_image)
+    ImageView restaurantImage;
+    @BindView(R.id.budget_type_card_output)
+    TextView budgetTypesText;
+    @BindView(R.id.kitchen_type_card_output)
+    TextView kitchenTypesText;
+    @BindView(R.id.expandable_layout)
+    LinearLayout expandableView;
+    @BindView(R.id.delete_restaurant_btn)
+    ImageButton deleteRestaurantBtn;
+    @BindView(R.id.edit_restaurant_btn)
+    ImageButton editRestaurantBtn;
+    @BindView(R.id.show_restaurant_location_btn)
+    ImageButton restaurantLocationBtn;
+    @BindView(R.id.favorite_restaurant_btn)
+    ImageButton restaurantFavoriteBtn;
+    @BindView(R.id.open_restaurant_info_btn)
+    ImageButton openRestaurantBtn;
+    @BindView(R.id.no_restaurant_found_layout)
+    View noRestaurantsLayout;
+    @BindView(R.id.random_buttons_layout)
+    View randomRestaurantButtonLayout;
+    @BindView(R.id.restaurant_card)
+    CardView restaurantCard;
 
     @BindDrawable(R.drawable.ic_favorite_border_black_24dp)
     Drawable favoriteEmpty;
@@ -64,6 +89,7 @@ public class RandomRestaurantFragment extends Fragment implements FABFragmentHan
 
     private RandomRestaurantMVP.Presenter presenter;
     private boolean expanded;
+    private ProgressDialog progressDialog;
 
     @Nullable
     @Override
@@ -71,10 +97,75 @@ public class RandomRestaurantFragment extends Fragment implements FABFragmentHan
         View view = inflater.inflate(R.layout.fragment_random_restaurant, container, false);
         ButterKnife.bind(this, view);
         presenter = new PresenterImpl(this, getContext());
-        presenter.loadRestaurant();
+        handleNoRestaurantsFound();
+        presenter.onRequestingLocation();
         return view;
     }
 
+    @Override
+    public boolean checkHasLocationPermission() {
+        return PermissionUtils.hasPermissionTo(getContext(), Manifest.permission.ACCESS_FINE_LOCATION);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (PermissionUtils.isPermissionGranted(grantResults[0])) {
+            if (requestCode == REQUEST_LOCATION) {
+                presenter.onRequestingLocation();
+            }
+        } else {
+            showGetLocationPermissionDialog();
+        }
+    }
+
+
+    public void requestLocationPermission() {
+        ActivityCompat.requestPermissions(getActivity(), PermissionUtils.LOCATION_PERMISSIONS, REQUEST_LOCATION);
+    }
+
+    @Override
+    public void showGetLocationPermissionDialog() {
+        new AlertDialog.Builder(getContext())
+                .setTitle(R.string.need_location_permission)
+                .setMessage(R.string.needs_location_permission)
+                .setPositiveButton(R.string.button_ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        requestLocationPermission();
+                        dialog.dismiss();
+                    }
+                }).create().show();
+    }
+
+    @Override
+    public void showLoadingLocationDialog() {
+        progressDialog = AndroidUtils.
+                createProgressDialog(getContext(), R.string.loading_location, false);
+        progressDialog.show();
+    }
+
+    @Override
+    public void requestLocation() {
+        if (checkHasLocationPermission()) {
+            try {
+                LocationServices.getFusedLocationProviderClient(getActivity())
+                        .getLastLocation().addOnSuccessListener(getActivity(), this);
+            } catch (Exception e) {
+                Log.e(TAG, "requestLocation: ", e);
+            }
+        } else {
+            showGetLocationPermissionDialog();
+        }
+    }
+
+    @Override
+    public void hideLoadingDialog() {
+        if (progressDialog != null) {
+            progressDialog.cancel();
+            progressDialog.dismiss();
+            progressDialog = null;
+        }
+    }
 
     @Override
     public void handleFABClick() {
@@ -191,4 +282,14 @@ public class RandomRestaurantFragment extends Fragment implements FABFragmentHan
         presenter.resetSettings();
     }
 
+    @Override
+    public void onSuccess(Location location) {
+        if (location != null) {
+            presenter.injectLocation(location.getLatitude(), location.getLongitude());
+        } else {
+            hideLoadingDialog();
+            Log.d(TAG, "onSuccess: location is null");
+            Toast.makeText(getActivity(), R.string.error_getting_location, Toast.LENGTH_SHORT).show();
+        }
+    }
 }

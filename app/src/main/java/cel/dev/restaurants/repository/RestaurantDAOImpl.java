@@ -103,37 +103,14 @@ public class RestaurantDAOImpl implements RestaurantDAO {
         List<Restaurant> restaurants;
         if (randomiseSettings.isUseLocation()) {
             restaurants = getRestaurantsByLocation(randomiseSettings.getLatitude(), randomiseSettings.getLongitude(), randomiseSettings.getRange());
-            if (restaurants.isEmpty()) {
-                randomiseSettings.setUseLocation(false);
-                return getRandomRestaurant(randomiseSettings);
-            }
         } else {
             restaurants = getAllRestaurants();
         }
-        if (randomiseSettings.isFavorite()) {
-            restaurants = filterByFavorite(restaurants);
-            if (restaurants.isEmpty()) {
-                randomiseSettings.setFavorite(false);
-                return getRandomRestaurant(randomiseSettings);
-            }
-        }
-        if (randomiseSettings.isUseKitchenTypes()) {
-            restaurants = filterByKitchenTypes(restaurants, randomiseSettings.getKitchenTypes());
-            if (restaurants.isEmpty()) {
-                randomiseSettings.setUseKitchenTypes(false);
-                return getRandomRestaurant(randomiseSettings);
-            }
-        }
-        if (randomiseSettings.isUseBudgetTypes()) {
-            restaurants = filterByBudgetTypes(restaurants, randomiseSettings.getBudgetTypes());
-            if (restaurants.isEmpty()) {
-                randomiseSettings.setUseBudgetTypes(false);
-                return getRandomRestaurant(randomiseSettings);
-            }
-        }
-        Set<Long> notTheseRestaurantsById = randomiseSettings.getNotTheseRestaurantsById();
-        if (!notTheseRestaurantsById.isEmpty()) {
-            restaurants = filterById(restaurants, notTheseRestaurantsById);
+        restaurants = filterById(restaurants, randomiseSettings.getNotTheseRestaurantsById());
+        restaurants = filterByBudgetTypes(restaurants, randomiseSettings.getBudgetTypes());
+        restaurants = filterByKitchenTypes(restaurants, randomiseSettings.getKitchenTypes());
+        if (restaurants.isEmpty()) {
+            return null;
         }
         return CollectionUtils.getRandomEntryIn(restaurants);
     }

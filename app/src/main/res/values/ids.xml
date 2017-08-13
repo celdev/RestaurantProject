@@ -2,4 +2,5 @@
 <resources>
     <item name="visible" type="id"/>
     <item name="masked" type="id"/>
+    <item name="loading_location" type="id">Loading location</item>
 </resources>

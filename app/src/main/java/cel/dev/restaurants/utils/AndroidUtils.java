@@ -1,6 +1,7 @@
 package cel.dev.restaurants.utils;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.PorterDuff;
@@ -10,6 +11,7 @@ import android.os.Bundle;
 import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,6 +61,16 @@ public class AndroidUtils {
 
     public static Drawable drawableResToDrawable(@DrawableRes int drawableRes, Context context) {
         return context.getDrawable(drawableRes);
+    }
+
+
+    public static ProgressDialog createProgressDialog(Context context,
+                                                      @StringRes int title,
+                                                      boolean cancleable) {
+        ProgressDialog progressDialog = new ProgressDialog(context);
+        progressDialog.setTitle(title);
+        progressDialog.setCancelable(cancleable);
+        return progressDialog;
     }
 
 

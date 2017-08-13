@@ -7,6 +7,7 @@ import android.util.Log;
 import java.util.HashSet;
 import java.util.Set;
 
+import cel.dev.restaurants.model.BudgetType;
 import cel.dev.restaurants.model.RandomiseSettings;
 import cel.dev.restaurants.model.Restaurant;
 import cel.dev.restaurants.repository.RestaurantDAO;
@@ -37,6 +38,14 @@ class PresenterImpl implements RandomRestaurantMVP.Presenter {
         randomiseSettings = new RandomiseSettings(notThisRestaurantIds);
     }
 
+    @Override
+    public void onRequestingLocation() {
+        view.showLoadingLocationDialog();
+        view.requestLocation();
+    }
+
+
+
     public void loadRestaurant() {
         for (Long aLong : randomiseSettings.getNotTheseRestaurantsById()) {
             Log.d(TAG, "loadRestaurant: longs in not these ids = " + aLong);
@@ -53,12 +62,14 @@ class PresenterImpl implements RandomRestaurantMVP.Presenter {
     @Override
     public void injectLocation(double latitude, double longitude) {
         randomiseSettings.injectLocation(latitude, longitude);
+        view.hideLoadingDialog();
     }
 
     @Override
     public void resetSettings() {
         notThisRestaurantIds.clear();
         initRandomiseSettings(notThisRestaurantIds);
+        view.requestLocation();
     }
 
     @Override
@@ -73,11 +84,20 @@ class PresenterImpl implements RandomRestaurantMVP.Presenter {
                 randomiseSettings.closer();
                 break;
             case DIFFERENT_FOOD:
+                randomiseSettings.injectKitchenTypeToFilter(restaurant.getKitchenTypes());
                 break;
             case CHEAPER:
+                setCheaperSettings();
                 break;
             case NO_CHANGE:
                 break;
+        }
+        loadRestaurant();
+    }
+
+    private void setCheaperSettings() {
+        for (BudgetType budgetType : restaurant.getBudgetTypes()) {
+            randomiseSettings.setCheaperThan(budgetType);
         }
     }
 

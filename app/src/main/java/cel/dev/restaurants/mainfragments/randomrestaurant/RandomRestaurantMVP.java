@@ -11,9 +11,19 @@ public interface RandomRestaurantMVP {
 
     interface View {
 
+        boolean checkHasLocationPermission();
+
+        void showGetLocationPermissionDialog();
+
+        void requestLocation();
+
+        void hideLoadingDialog();
+
         void handleNoRestaurantsFound();
 
         void injectRestaurant(Restaurant restaurant, RestaurantDAO restaurantDAO);
+
+        void showLoadingLocationDialog();
 
     }
 
@@ -34,6 +44,8 @@ public interface RandomRestaurantMVP {
         void resetSettings();
 
         void showNewRestaurant(RandomChoice closer);
+
+        void onRequestingLocation();
     }
 
 }
