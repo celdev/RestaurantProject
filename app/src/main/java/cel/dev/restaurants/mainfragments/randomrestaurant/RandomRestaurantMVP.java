@@ -11,8 +11,6 @@ public interface RandomRestaurantMVP {
 
     interface View {
 
-        void showSettingsDialog();
-
         void handleNoRestaurantsFound();
 
         void injectRestaurant(Restaurant restaurant, RestaurantDAO restaurantDAO);
@@ -31,12 +29,11 @@ public interface RandomRestaurantMVP {
 
         void showRestaurantLocation();
 
+        void injectLocation(double latitude, double longitude);
+
         void resetSettings();
 
-        void setSettings(boolean useLocation, double range, double latitude, double longitude, boolean useFavorite, boolean useBudgetTypes, boolean useKitchenTypes,
-                         Set<BudgetType> budgetTypes, Set<KitchenType> kitchenTypes);
-
-        void notThisRestaurantPressed();
+        void showNewRestaurant(RandomChoice closer);
     }
 
 }

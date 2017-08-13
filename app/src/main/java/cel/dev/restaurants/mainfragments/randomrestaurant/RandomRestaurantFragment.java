@@ -42,34 +42,20 @@ public class RandomRestaurantFragment extends Fragment implements FABFragmentHan
         return new RandomRestaurantFragment();
     }
 
-    @BindView(R.id.restaurant_name)
-    TextView restaurantName;
-    @BindView(R.id.restaurant_rating)
-    RatingBar ratingBar;
-    @BindView(R.id.restaurant_image)
-    ImageView restaurantImage;
-    @BindView(R.id.budget_type_card_output)
-    TextView budgetTypesText;
-    @BindView(R.id.kitchen_type_card_output)
-    TextView kitchenTypesText;
-    @BindView(R.id.expandable_layout)
-    LinearLayout expandableView;
-    @BindView(R.id.delete_restaurant_btn)
-    ImageButton deleteRestaurantBtn;
-    @BindView(R.id.edit_restaurant_btn)
-    ImageButton editRestaurantBtn;
-    @BindView(R.id.show_restaurant_location_btn)
-    ImageButton restaurantLocationBtn;
-    @BindView(R.id.favorite_restaurant_btn)
-    ImageButton restaurantFavoriteBtn;
-    @BindView(R.id.open_restaurant_info_btn)
-    ImageButton openRestaurantBtn;
-    @BindView(R.id.no_restaurant_found_layout)
-    View noRestaurantsLayout;
-    @BindView(R.id.random_buttons_layout)
-    View randomRestaurantButtonLayout;
-    @BindView(R.id.restaurant_card)
-    CardView restaurantCard;
+    @BindView(R.id.restaurant_name) TextView restaurantName;
+    @BindView(R.id.restaurant_rating) RatingBar ratingBar;
+    @BindView(R.id.restaurant_image) ImageView restaurantImage;
+    @BindView(R.id.budget_type_card_output) TextView budgetTypesText;
+    @BindView(R.id.kitchen_type_card_output) TextView kitchenTypesText;
+    @BindView(R.id.expandable_layout) LinearLayout expandableView;
+    @BindView(R.id.delete_restaurant_btn) ImageButton deleteRestaurantBtn;
+    @BindView(R.id.edit_restaurant_btn) ImageButton editRestaurantBtn;
+    @BindView(R.id.show_restaurant_location_btn) ImageButton restaurantLocationBtn;
+    @BindView(R.id.favorite_restaurant_btn) ImageButton restaurantFavoriteBtn;
+    @BindView(R.id.open_restaurant_info_btn) ImageButton openRestaurantBtn;
+    @BindView(R.id.no_restaurant_found_layout) View noRestaurantsLayout;
+    @BindView(R.id.random_buttons_layout) View randomRestaurantButtonLayout;
+    @BindView(R.id.restaurant_card) CardView restaurantCard;
 
     @BindDrawable(R.drawable.ic_favorite_border_black_24dp)
     Drawable favoriteEmpty;
@@ -89,14 +75,9 @@ public class RandomRestaurantFragment extends Fragment implements FABFragmentHan
         return view;
     }
 
-    @Override
-    public void showSettingsDialog() {
-
-    }
 
     @Override
     public void handleFABClick() {
-        showSettingsDialog();
     }
 
     @Override
@@ -184,9 +165,25 @@ public class RandomRestaurantFragment extends Fragment implements FABFragmentHan
         presenter.showRestaurantLocation();
     }
 
-    @OnClick(R.id.not_this_restaurant)
-    public void notThisRestaurantPressed(View view) {
-        presenter.notThisRestaurantPressed();
+
+    @OnClick(R.id.restaurant_closer)
+    public void showRestaurantThatIsCloserPressed(View view) {
+        presenter.showNewRestaurant(RandomChoice.CLOSER);
+    }
+
+    @OnClick(R.id.restaurant_cheaper)
+    public void showRestaurantThatIsCheaperPressed(View view) {
+        presenter.showNewRestaurant(RandomChoice.CHEAPER);
+    }
+
+    @OnClick(R.id.restaurant_different_food)
+    public void showRestaurantDifferentFoodType(View view) {
+        presenter.showNewRestaurant(RandomChoice.DIFFERENT_FOOD);
+    }
+
+    @OnClick(R.id.just_a_different_restaurant)
+    public void showADifferentRestaurant(View view) {
+        presenter.showNewRestaurant(RandomChoice.NO_CHANGE);
     }
 
     @OnClick(R.id.reset_settings_button)

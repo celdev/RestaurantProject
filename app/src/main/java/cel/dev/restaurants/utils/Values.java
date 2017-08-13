@@ -12,6 +12,13 @@ public class Values {
     public static final String SHARED_PREFERENCES = "cel.dev.restaurants";
 
 
+    public static class RandomiserDefaults {
+
+        public static final double DEFAULT_RANGE = 0.1d;
+        public static final double RANGE_STEP_ON_CLOSER_DECREASE = 0.025d;
+
+
+    }
 
     public static class SharePreferenceKeys {
         public static final String RANGE_KEY = SHARED_PREFERENCES + ".range";

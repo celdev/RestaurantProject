@@ -1,13 +1,12 @@
 package cel.dev.restaurants.mainfragments.randomrestaurant;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import cel.dev.restaurants.model.BudgetType;
-import cel.dev.restaurants.model.KitchenType;
 import cel.dev.restaurants.model.RandomiseSettings;
 import cel.dev.restaurants.model.Restaurant;
 import cel.dev.restaurants.repository.RestaurantDAO;
@@ -35,8 +34,8 @@ class PresenterImpl implements RandomRestaurantMVP.Presenter {
     }
 
     private void initRandomiseSettings(Set<Long> notThisRestaurantIds) {
-        randomiseSettings = new RandomiseSettings(false, 0.0, 0.0, 0.0, false, false,
-                new HashSet<BudgetType>(), false, new HashSet<KitchenType>(), notThisRestaurantIds);
+        randomiseSettings = new RandomiseSettings(0.0,
+                notThisRestaurantIds);
     }
 
     public void loadRestaurant() {
@@ -47,34 +46,44 @@ class PresenterImpl implements RandomRestaurantMVP.Presenter {
         if (restaurant == null) {
             view.handleNoRestaurantsFound();
         } else {
+            notThisRestaurantIds.add(restaurant.getId());
             view.injectRestaurant(restaurant,restaurantDAO);
         }
+    }
+
+    @Override
+    public void injectLocation(double latitude, double longitude) {
+        randomiseSettings.setLatitude(latitude);
+        randomiseSettings.setLongitude(longitude);
+        randomiseSettings.setUseLocation(true);
     }
 
     @Override
     public void resetSettings() {
         notThisRestaurantIds.clear();
         initRandomiseSettings(notThisRestaurantIds);
-        view.showSettingsDialog();
     }
 
     @Override
-    public void setSettings(boolean useLocation, double range, double latitude, double longitude, boolean useFavorite, boolean useBudgetTypes, boolean useKitchenTypes,
-                            Set<BudgetType> budgetTypes, Set<KitchenType> kitchenTypes) {
-        notThisRestaurantIds.clear();
-        randomiseSettings = new RandomiseSettings(useLocation, range, latitude, longitude,
-                useFavorite, useBudgetTypes, budgetTypes, useKitchenTypes, kitchenTypes, notThisRestaurantIds);
-    }
-
-
-
-    @Override
-    public void notThisRestaurantPressed() {
-        if (restaurant != null) {
-            notThisRestaurantIds.add(restaurant.getId());
-        }
+    public void showNewRestaurant(@NonNull RandomChoice choice) {
+        changeSettings(choice);
         loadRestaurant();
     }
+
+    private void changeSettings(RandomChoice choice) {
+        switch (choice) {
+            case CLOSER:
+                randomiseSettings.closer();
+                break;
+            case DIFFERENT_FOOD:
+                break;
+            case CHEAPER:
+                break;
+            case NO_CHANGE:
+                break;
+        }
+    }
+
 
     @Override
     public void deleteCurrentRestaurant() {

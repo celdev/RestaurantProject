@@ -82,6 +82,11 @@
     <string name="change_settings_to_find_a_restaurant">Change settings to find a restaurant</string>
     <string name="reset">Reset</string>
     <string name="random_settings">Settings</string>
+    <string name="closer">Closer</string>
+    <string name="cheaper">Cheaper</string>
+    <string name="other_kind_of_food">Other kind of food</string>
+    <string name="not_this_restaurant">Not this restaurant</string>
+    <string name="show_me_a_restaurant_that_is">Show me a restaurant that is</string>
 
 
 </resources>

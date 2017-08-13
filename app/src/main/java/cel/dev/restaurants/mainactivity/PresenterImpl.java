@@ -62,12 +62,15 @@ class PresenterImpl implements MainActivityMVP.Presenter {
     public boolean tabPressed(@IdRes int navId) {
         switch (navId) {
             case R.id.nav_nearby:
+                view.hideShowFAB(true);
                 view.setFragment(createFragment(navId), R.drawable.ic_settings_black_24dp);
                 return true;
             case R.id.nav_find:
+                view.hideShowFAB(false);
                 view.setFragment(createFragment(navId), R.drawable.ic_filter_list_black_24dp);
                 return true;
             case R.id.nav_restaurants:
+                view.hideShowFAB(true);
                 view.setFragment(createFragment(navId), R.drawable.ic_add_black_24dp);
                 return true;
             default:

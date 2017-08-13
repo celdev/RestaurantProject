@@ -9,6 +9,8 @@ public interface MainActivityMVP {
 
     interface View {
         void setFragment(Fragment fragment, @DrawableRes int fabIconDrawableId);
+
+        void hideShowFAB(boolean show);
     }
 
     interface Presenter {

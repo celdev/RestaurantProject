@@ -1,15 +1,21 @@
 package cel.dev.restaurants.model;
 
+import android.support.annotation.NonNull;
+
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import cel.dev.restaurants.utils.Values;
+
 public class RandomiseSettings {
+
+
 
     private boolean useLocation;
     private double range;
     private double latitude, longitude;
-
-    private boolean isFavorite;
 
     private boolean useBudgetTypes;
     private Set<BudgetType> budgetTypes;
@@ -20,101 +26,80 @@ public class RandomiseSettings {
     private Set<Long> notTheseRestaurantsById;
 
 
-    public RandomiseSettings(boolean useLocation, double range, double latitude, double longitude, boolean isFavorite,
-                             boolean useBudgetTypes, Set<BudgetType> budgetTypes, boolean useKitchenTypes,
-                             Set<KitchenType> kitchenTypes, Set<Long> notTheseRestaurantsById) {
-        this.useLocation = useLocation;
+    public RandomiseSettings(double range,
+                             Set<Long> notTheseRestaurantsById) {
         this.range = range;
+        this.budgetTypes = new HashSet<>();
+        this.kitchenTypes = new HashSet<>();
+        this.notTheseRestaurantsById = notTheseRestaurantsById;
+    }
+
+    public void injectLocation(double latitude, double longitude) {
+        this.useLocation = true;
         this.latitude = latitude;
         this.longitude = longitude;
-        this.isFavorite = isFavorite;
-        this.useBudgetTypes = useBudgetTypes;
-        this.budgetTypes = budgetTypes;
-        this.useKitchenTypes = useKitchenTypes;
-        this.kitchenTypes = kitchenTypes;
-        this.notTheseRestaurantsById = notTheseRestaurantsById;
     }
 
-    public Set<BudgetType> getBudgetTypes() {
-        return budgetTypes;
+    public void injectKitchenTypeToFilter(KitchenType... kitchenType) {
+        Collections.addAll(kitchenTypes, kitchenType);
     }
 
-    public void setBudgetTypes(Set<BudgetType> budgetTypes) {
-        this.budgetTypes = budgetTypes;
+    public boolean setCheaperThan(@NonNull BudgetType cheaperThanThis) {
+        switch (cheaperThanThis) {
+            case CHEAP:
+                break;
+            case NORMAL:
+                budgetTypes.add(BudgetType.NORMAL);
+            case EXPENSIVE:
+                budgetTypes.add(BudgetType.EXPENSIVE);
+            case VERY_EXPENSIVE:
+                budgetTypes.add(BudgetType.VERY_EXPENSIVE);
+        }
     }
 
-    public Set<KitchenType> getKitchenTypes() {
-        return kitchenTypes;
+
+
+    public void closer() {
+        range -= Values.RandomiserDefaults.RANGE_STEP_ON_CLOSER_DECREASE;
+        if (range <= 0) {
+            range = 0.001;
+        }
     }
 
-    public void setKitchenTypes(Set<KitchenType> kitchenTypes) {
-        this.kitchenTypes = kitchenTypes;
-    }
-
-    public Set<Long> getNotTheseRestaurantsById() {
-        return notTheseRestaurantsById;
-    }
-
-    public void setNotTheseRestaurantsById(Set<Long> notTheseRestaurantsById) {
-        this.notTheseRestaurantsById = notTheseRestaurantsById;
-    }
 
     public boolean isUseLocation() {
         return useLocation;
-    }
-
-    public void setUseLocation(boolean useLocation) {
-        this.useLocation = useLocation;
     }
 
     public double getRange() {
         return range;
     }
 
-    public void setRange(double range) {
-        this.range = range;
-    }
-
     public double getLatitude() {
         return latitude;
-    }
-
-    public void setLatitude(double latitude) {
-        this.latitude = latitude;
     }
 
     public double getLongitude() {
         return longitude;
     }
 
-    public void setLongitude(double longitude) {
-        this.longitude = longitude;
-    }
-
-    public boolean isFavorite() {
-        return isFavorite;
-    }
-
-    public void setFavorite(boolean favorite) {
-        isFavorite = favorite;
-    }
-
     public boolean isUseBudgetTypes() {
         return useBudgetTypes;
     }
 
-    public void setUseBudgetTypes(boolean useBudgetTypes) {
-        this.useBudgetTypes = useBudgetTypes;
+    public Set<BudgetType> getBudgetTypes() {
+        return budgetTypes;
     }
-
-
 
     public boolean isUseKitchenTypes() {
         return useKitchenTypes;
     }
 
-    public void setUseKitchenTypes(boolean useKitchenTypes) {
-        this.useKitchenTypes = useKitchenTypes;
+    public Set<KitchenType> getKitchenTypes() {
+        return kitchenTypes;
     }
 
+    public Set<Long> getNotTheseRestaurantsById() {
+        return notTheseRestaurantsById;
+    }
 }

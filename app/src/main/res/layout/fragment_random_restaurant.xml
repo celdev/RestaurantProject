@@ -12,7 +12,7 @@
 
         <include layout="@layout/restaurant_card_layout" />
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_marginStart="@dimen/activity_horizontal_margin"
             android:layout_marginEnd="@dimen/activity_horizontal_margin"
             android:layout_width="match_parent"
@@ -20,16 +20,70 @@
             android:id="@+id/random_buttons_layout"
             android:layout_marginTop="@dimen/activity_vertical_margin_half"
             android:layout_marginBottom="@dimen/activity_vertical_margin_half"
-            >
-            <Button
-                android:layout_centerHorizontal="true"
+            android:orientation="vertical">
+
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/not_this_restaurant"
-                android:text="@string/show_me_another_restaurant"
+                android:text="@string/show_me_a_restaurant_that_is"
+                android:textSize="@dimen/dialog_text_size"
+                android:layout_gravity="center_horizontal"
+                android:textColor="@color/black"
+                />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="1.0">
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:id="@+id/restaurant_closer"
+                    android:text="@string/closer"
+                    style="@style/MaterialButton"
+
+                    />
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:id="@+id/restaurant_cheaper"
+                    android:text="@string/cheaper"
+                    style="@style/MaterialButton"
+
+                    />
+
+
+            </LinearLayout>
+
+            <Button
+                android:layout_marginTop="@dimen/activity_vertical_margin_half_half"
+                android:layout_marginBottom="@dimen/activity_vertical_margin_half_half"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/restaurant_different_food"
+                android:text="@string/other_kind_of_food"
                 style="@style/MaterialButton"
                 />
-        </RelativeLayout>
+
+            <Button
+                android:layout_marginTop="@dimen/activity_vertical_margin_half_half"
+                android:layout_marginBottom="@dimen/activity_vertical_margin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/just_a_different_restaurant"
+                android:text="@string/not_this_restaurant"
+                style="@style/MaterialButton"
+                />
+
+
+
+        </LinearLayout>
+
         <LinearLayout
             android:layout_marginTop="@dimen/activity_vertical_margin_half"
             android:layout_marginBottom="@dimen/activity_vertical_margin_half"
@@ -48,12 +102,6 @@
                 android:text="@string/no_restaurant_found"
                 android:textStyle="bold"
                 android:textSize="@dimen/RestaurantImageTextSize"
-                android:textAlignment="center"
-                />
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/change_settings_to_find_a_restaurant"
                 android:textAlignment="center"
                 />
             <Button

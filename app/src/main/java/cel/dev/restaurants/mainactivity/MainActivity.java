@@ -57,4 +57,9 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         fab.setImageDrawable(getDrawable(fabIconDrawableId));
     }
 
+    @Override
+    public void hideShowFAB(boolean show) {
+        fab.setVisibility(show ? View.VISIBLE : View.GONE);
+    }
+
 }
