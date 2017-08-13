@@ -61,8 +61,10 @@ class PresenterImpl implements RandomRestaurantMVP.Presenter {
 
     @Override
     public void injectLocation(double latitude, double longitude) {
+        Log.d(TAG, "injectLocation: injecting lat and long to randomise settings lat " + latitude + " lon " + longitude);
         randomiseSettings.injectLocation(latitude, longitude);
         view.hideLoadingDialog();
+        loadRestaurant();
     }
 
     @Override

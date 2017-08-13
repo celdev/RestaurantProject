@@ -8,7 +8,6 @@ import android.widget.ImageView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -102,17 +101,26 @@ public class RestaurantDAOImpl implements RestaurantDAO {
     public Restaurant getRandomRestaurant(RandomiseSettings randomiseSettings) {
         List<Restaurant> restaurants;
         if (randomiseSettings.isUseLocation()) {
+            Log.d(TAG, "getRandomRestaurant: using location = " + true);
             restaurants = getRestaurantsByLocation(randomiseSettings.getLatitude(), randomiseSettings.getLongitude(), randomiseSettings.getRange());
         } else {
             restaurants = getAllRestaurants();
         }
+        logSize("start", restaurants);
         restaurants = filterById(restaurants, randomiseSettings.getNotTheseRestaurantsById());
+        logSize("by id", restaurants);
         restaurants = filterByBudgetTypes(restaurants, randomiseSettings.getBudgetTypes());
+        logSize("by budget", restaurants);
         restaurants = filterByKitchenTypes(restaurants, randomiseSettings.getKitchenTypes());
+        logSize("by kitchentype", restaurants);
         if (restaurants.isEmpty()) {
             return null;
         }
         return CollectionUtils.getRandomEntryIn(restaurants);
+    }
+
+    private void logSize(String filter, List col) {
+        Log.d(TAG, "logSize: size of collection = after " + filter + " " + col.size());
     }
 
     private List<Restaurant> filterById(List<Restaurant> toFilter, Set<Long> ids) {
@@ -131,7 +139,7 @@ public class RestaurantDAOImpl implements RestaurantDAO {
         Iterator<Restaurant> iterator = toFilter.iterator();
         while (iterator.hasNext()) {
             Restaurant restaurant = iterator.next();
-            if (!containsAtLeastOneBudgetType(restaurant, budgetTypes)) {
+            if (shouldFilterRestaurantByBudgetType(restaurant, budgetTypes)) {
                 iterator.remove();
             }
         }
@@ -142,29 +150,29 @@ public class RestaurantDAOImpl implements RestaurantDAO {
         Iterator<Restaurant> iterator = toFilter.iterator();
         while (iterator.hasNext()) {
             Restaurant restaurant = iterator.next();
-            if (!containsAtLeastOneKitchenType(restaurant, kitchenTypes)) {
+            if (shouldFilterRestaurantByKitchenType(restaurant, kitchenTypes)) {
                 iterator.remove();
             }
         }
         return toFilter;
     }
 
-    private boolean containsAtLeastOneBudgetType(Restaurant restaurant, Set<BudgetType> budgetTypes) {
+    private boolean shouldFilterRestaurantByBudgetType(Restaurant restaurant, Set<BudgetType> budgetTypes) {
         for (BudgetType budgetType : restaurant.getBudgetTypes()) {
-            if (budgetTypes.contains(budgetType)) {
-                return true;
+            if (!budgetTypes.contains(budgetType)) {
+                return false;
             }
         }
-        return false;
+        return true;
     }
 
-    private boolean containsAtLeastOneKitchenType(Restaurant restaurant, Set<KitchenType> kitchenTypes) {
+    private boolean shouldFilterRestaurantByKitchenType(Restaurant restaurant, Set<KitchenType> kitchenTypes) {
         for (KitchenType kitchenType : restaurant.getKitchenTypes()) {
-            if (kitchenTypes.contains(kitchenType)) {
-                return true;
+            if (!kitchenTypes.contains(kitchenType)) {
+                return false;
             }
         }
-        return false;
+        return true;
     }
 
 

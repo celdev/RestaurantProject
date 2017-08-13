@@ -88,6 +88,8 @@
     <string name="not_this_restaurant">Not this restaurant</string>
     <string name="show_me_a_restaurant_that_is">Show me a restaurant that is</string>
     <string name="loading_location">Loading location</string>
+    <string name="require_location">Require location</string>
+    <string name="require_location_dialog_text">This feature requires location permission</string>
 
 
 </resources>

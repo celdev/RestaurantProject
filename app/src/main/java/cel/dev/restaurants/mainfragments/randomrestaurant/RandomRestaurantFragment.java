@@ -1,6 +1,5 @@
 package cel.dev.restaurants.mainfragments.randomrestaurant;
 
-import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
@@ -8,7 +7,6 @@ import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
@@ -23,24 +21,26 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 
 import butterknife.BindDrawable;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cel.dev.restaurants.R;
+import cel.dev.restaurants.locationutils.LocationRequestCallback;
 import cel.dev.restaurants.mainfragments.FABFragmentHandler;
 import cel.dev.restaurants.mainfragments.showrestaurants.restaurantsrecycleview.ExpandableLayoutAnimation;
 import cel.dev.restaurants.model.Restaurant;
 import cel.dev.restaurants.repository.RestaurantDAO;
 import cel.dev.restaurants.utils.AndroidUtils;
 import cel.dev.restaurants.utils.CollectionUtils;
-import cel.dev.restaurants.utils.PermissionUtils;
+import cel.dev.restaurants.utils.LocationUtils;
 
 
-public class RandomRestaurantFragment extends Fragment implements FABFragmentHandler, RandomRestaurantMVP.View, OnSuccessListener<Location> {
+public class RandomRestaurantFragment extends Fragment implements FABFragmentHandler, RandomRestaurantMVP.View, OnSuccessListener<Location>, OnCompleteListener<Location> {
 
 
     private static final int REQUEST_LOCATION = 1;
@@ -88,7 +88,7 @@ public class RandomRestaurantFragment extends Fragment implements FABFragmentHan
     Drawable favoriteFull;
 
     private RandomRestaurantMVP.Presenter presenter;
-    private boolean expanded;
+    private boolean expanded, hasLocation;
     private ProgressDialog progressDialog;
 
     @Nullable
@@ -102,40 +102,7 @@ public class RandomRestaurantFragment extends Fragment implements FABFragmentHan
         return view;
     }
 
-    @Override
-    public boolean checkHasLocationPermission() {
-        return PermissionUtils.hasPermissionTo(getContext(), Manifest.permission.ACCESS_FINE_LOCATION);
-    }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (PermissionUtils.isPermissionGranted(grantResults[0])) {
-            if (requestCode == REQUEST_LOCATION) {
-                presenter.onRequestingLocation();
-            }
-        } else {
-            showGetLocationPermissionDialog();
-        }
-    }
-
-
-    public void requestLocationPermission() {
-        ActivityCompat.requestPermissions(getActivity(), PermissionUtils.LOCATION_PERMISSIONS, REQUEST_LOCATION);
-    }
-
-    @Override
-    public void showGetLocationPermissionDialog() {
-        new AlertDialog.Builder(getContext())
-                .setTitle(R.string.need_location_permission)
-                .setMessage(R.string.needs_location_permission)
-                .setPositiveButton(R.string.button_ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        requestLocationPermission();
-                        dialog.dismiss();
-                    }
-                }).create().show();
-    }
 
     @Override
     public void showLoadingLocationDialog() {
@@ -146,16 +113,18 @@ public class RandomRestaurantFragment extends Fragment implements FABFragmentHan
 
     @Override
     public void requestLocation() {
-        if (checkHasLocationPermission()) {
-            try {
-                LocationServices.getFusedLocationProviderClient(getActivity())
-                        .getLastLocation().addOnSuccessListener(getActivity(), this);
-            } catch (Exception e) {
-                Log.e(TAG, "requestLocation: ", e);
+        LocationUtils.requestLocation(getContext(), this, this, new LocationRequestCallback() {
+            @Override
+            public void requestLocationCallback() {
+                LocationUtils.requestLocationPermission(getActivity(), REQUEST_LOCATION);
             }
-        } else {
-            showGetLocationPermissionDialog();
-        }
+        });
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        Log.d(TAG, "onRequestPermissionsResult: " + requestCode);
     }
 
     @Override
@@ -279,17 +248,34 @@ public class RandomRestaurantFragment extends Fragment implements FABFragmentHan
 
     @OnClick(R.id.reset_settings_button)
     public void resetSettingsPressed(View view) {
+        hasLocation = false;
         presenter.resetSettings();
     }
 
     @Override
     public void onSuccess(Location location) {
         if (location != null) {
+            hasLocation = true;
             presenter.injectLocation(location.getLatitude(), location.getLongitude());
         } else {
             hideLoadingDialog();
             Log.d(TAG, "onSuccess: location is null");
-            Toast.makeText(getActivity(), R.string.error_getting_location, Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    public void onComplete(@NonNull Task<Location> task) {
+        Location location = task.getResult();
+        Log.d(TAG, "onComplete: in oncomplete location is " + task.getResult() );
+        if (location != null) {
+            if (!hasLocation) {
+                hasLocation = true;
+                presenter.injectLocation(location.getLatitude(), location.getLongitude());
+            }
+        } else {
+            Toast.makeText(getContext(), R.string.error_getting_location, Toast.LENGTH_SHORT).show();
+        }
+
+
     }
 }

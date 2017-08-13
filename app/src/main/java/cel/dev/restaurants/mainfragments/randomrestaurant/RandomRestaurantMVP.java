@@ -11,9 +11,6 @@ public interface RandomRestaurantMVP {
 
     interface View {
 
-        boolean checkHasLocationPermission();
-
-        void showGetLocationPermissionDialog();
 
         void requestLocation();
 

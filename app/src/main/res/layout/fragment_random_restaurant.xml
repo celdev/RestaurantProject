@@ -43,8 +43,7 @@
                     android:layout_weight="0.5"
                     android:id="@+id/restaurant_closer"
                     android:text="@string/closer"
-                    style="@style/MaterialButton"
-
+                    android:theme="@style/MaterialButton"
                     />
 
                 <Button
@@ -53,8 +52,7 @@
                     android:layout_weight="0.5"
                     android:id="@+id/restaurant_cheaper"
                     android:text="@string/cheaper"
-                    style="@style/MaterialButton"
-
+                    android:theme="@style/MaterialButton"
                     />
 
 
@@ -67,7 +65,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/restaurant_different_food"
                 android:text="@string/other_kind_of_food"
-                style="@style/MaterialButton"
+                android:theme="@style/MaterialButton"
                 />
 
             <Button
@@ -77,7 +75,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/just_a_different_restaurant"
                 android:text="@string/not_this_restaurant"
-                style="@style/MaterialButton"
+                android:theme="@style/MaterialButton"
                 />
 
 
@@ -109,8 +107,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/reset"
                 android:id="@+id/reset_settings_button"
-                style="@style/MaterialButton"
-                />
+                android:theme="@style/MaterialButton" />
         </LinearLayout>
     </LinearLayout>
 
