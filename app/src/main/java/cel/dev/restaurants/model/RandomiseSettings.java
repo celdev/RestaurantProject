@@ -16,19 +16,15 @@ public class RandomiseSettings {
     private boolean useLocation;
     private double range;
     private double latitude, longitude;
-
-    private boolean useBudgetTypes;
     private Set<BudgetType> budgetTypes;
 
-    private boolean useKitchenTypes;
     private Set<KitchenType> kitchenTypes;
 
     private Set<Long> notTheseRestaurantsById;
 
 
-    public RandomiseSettings(double range,
-                             Set<Long> notTheseRestaurantsById) {
-        this.range = range;
+    public RandomiseSettings(Set<Long> notTheseRestaurantsById) {
+        this.range = Values.RandomiserDefaults.DEFAULT_RANGE;
         this.budgetTypes = new HashSet<>();
         this.kitchenTypes = new HashSet<>();
         this.notTheseRestaurantsById = notTheseRestaurantsById;
@@ -47,7 +43,7 @@ public class RandomiseSettings {
     public boolean setCheaperThan(@NonNull BudgetType cheaperThanThis) {
         switch (cheaperThanThis) {
             case CHEAP:
-                break;
+                return false;
             case NORMAL:
                 budgetTypes.add(BudgetType.NORMAL);
             case EXPENSIVE:
@@ -55,6 +51,7 @@ public class RandomiseSettings {
             case VERY_EXPENSIVE:
                 budgetTypes.add(BudgetType.VERY_EXPENSIVE);
         }
+        return true;
     }
 
 
@@ -83,16 +80,8 @@ public class RandomiseSettings {
         return longitude;
     }
 
-    public boolean isUseBudgetTypes() {
-        return useBudgetTypes;
-    }
-
     public Set<BudgetType> getBudgetTypes() {
         return budgetTypes;
-    }
-
-    public boolean isUseKitchenTypes() {
-        return useKitchenTypes;
     }
 
     public Set<KitchenType> getKitchenTypes() {

@@ -34,8 +34,7 @@ class PresenterImpl implements RandomRestaurantMVP.Presenter {
     }
 
     private void initRandomiseSettings(Set<Long> notThisRestaurantIds) {
-        randomiseSettings = new RandomiseSettings(0.0,
-                notThisRestaurantIds);
+        randomiseSettings = new RandomiseSettings(notThisRestaurantIds);
     }
 
     public void loadRestaurant() {
@@ -53,9 +52,7 @@ class PresenterImpl implements RandomRestaurantMVP.Presenter {
 
     @Override
     public void injectLocation(double latitude, double longitude) {
-        randomiseSettings.setLatitude(latitude);
-        randomiseSettings.setLongitude(longitude);
-        randomiseSettings.setUseLocation(true);
+        randomiseSettings.injectLocation(latitude, longitude);
     }
 
     @Override
