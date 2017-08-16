@@ -8,18 +8,22 @@ import cel.dev.restaurants.model.BudgetType;
 import cel.dev.restaurants.model.RandomiseSettings;
 import cel.dev.restaurants.model.Restaurant;
 
+/** This interface contains the contract which the RestaurantDAO should implement
+ *
+ *  The architecture of my application could be simplified as
+ *
+ *  View asks Presenter
+ *  Presenter asks DAO
+ *  DAO asks RestaurantCRUD
+ * */
 public interface RestaurantDAO {
 
     Restaurant getRestaurantById(long id);
 
 
-    List<Restaurant> getRestaurantsByIds(List<Long> ids);
-
     List<Restaurant> getAllRestaurants();
 
     List<Restaurant> getRestaurantsByLocation(double lat, double lon, double range);
-
-    List<Restaurant> getRestaurantsByBudgetType(BudgetType budgetType);
 
     boolean saveRestaurant(Restaurant restaurant);
 

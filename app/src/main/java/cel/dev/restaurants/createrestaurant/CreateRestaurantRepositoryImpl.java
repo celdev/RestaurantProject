@@ -12,8 +12,6 @@ import java.util.List;
 import cel.dev.restaurants.model.KitchenType;
 import cel.dev.restaurants.model.Restaurant;
 import cel.dev.restaurants.model.RestaurantCustomImage;
-import cel.dev.restaurants.repository.KitchenTypeDAO;
-import cel.dev.restaurants.repository.KitchenTypeDAOImpl;
 import cel.dev.restaurants.repository.RestaurantDAO;
 import cel.dev.restaurants.repository.RestaurantDAOImpl;
 

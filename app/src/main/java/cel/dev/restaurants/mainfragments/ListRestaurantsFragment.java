@@ -12,6 +12,13 @@ import android.widget.TextView;
 
 import cel.dev.restaurants.R;
 
+
+/** This class contains the base functionality for fragments which will show a set of restaurants
+ *  in a RecycleView
+ *
+ *  Contains functionality for showing an error message if no restaurants were found to show
+ *  in the RecycleView
+ * */
 public abstract class ListRestaurantsFragment extends Fragment implements FABFragmentHandler {
 
     public ListRestaurantsFragment() {}
@@ -42,7 +49,11 @@ public abstract class ListRestaurantsFragment extends Fragment implements FABFra
         return recyclerView;
     }
 
+    /** Allows each fragment to initialize their own presenter
+     * */
     public abstract void initializePresenter();
 
+    /** Allows each fragment to initialize their own view information
+     * */
     public abstract void initializeViews();
 }

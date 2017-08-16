@@ -9,9 +9,17 @@ import java.util.Set;
 
 import cel.dev.restaurants.utils.Values;
 
+
+/** This class contains the randomise settings used when
+ *  retrieving a random restaurant.
+ *
+ *  The different settings that can be used are
+ *      location (within a range)
+ *      BudgetTypes
+ *      KitchenTypes
+ *      Id of restaurants
+ * */
 public class RandomiseSettings {
-
-
 
     private boolean useLocation;
     private double range;
@@ -30,16 +38,27 @@ public class RandomiseSettings {
         this.notTheseRestaurantsById = notTheseRestaurantsById;
     }
 
+    /** Injects a location into the random settings
+     *  and sets the settings to use this location to filter restaurants
+     * */
     public void injectLocation(double latitude, double longitude) {
         this.useLocation = true;
         this.latitude = latitude;
         this.longitude = longitude;
     }
 
+    /** injects an amount of KitchenTypes to filter
+     * */
     public void injectKitchenTypeToFilter(KitchenType... kitchenType) {
         Collections.addAll(kitchenTypes, kitchenType);
     }
 
+    /** Sets the budgetfilters
+     *  if the user wants to filter restaurants that are cheaper than NORMAL
+     *  then also restaurants which are EXPENSIVE and VERY_EXPENSIVE will also be filtered
+     *  if the user tries to filter restaurants cheaper than CHEAP nothing will happen
+     *  since filtering restaurants Cheaper than CHEAP will always result in 0 restaurants
+     * */
     public boolean setCheaperThan(@NonNull BudgetType cheaperThanThis) {
         switch (cheaperThanThis) {
             case CHEAP:
@@ -55,11 +74,13 @@ public class RandomiseSettings {
     }
 
 
-
+    /** Decreases the range by a certain amount
+     *  if the range is less than a certain amount then the range will be set to that amount
+     * */
     public void closer() {
         range -= Values.RandomiserDefaults.RANGE_STEP_ON_CLOSER_DECREASE;
-        if (range <= 0) {
-            range = 0.001;
+        if (range <= Values.MINIMUM_RANGE_VALUE) {
+            range = Values.MINIMUM_RANGE_VALUE;
         }
     }
 

@@ -24,14 +24,14 @@ import cel.dev.restaurants.repository.db.RestaurantDbSchema;
 import cel.dev.restaurants.utils.CollectionUtils;
 import cel.dev.restaurants.utils.PictureUtils;
 
+/** Implementation of the RestaurantDAO
+ * */
 public class RestaurantDAOImpl implements RestaurantDAO {
 
     public static final String TAG = "restaurantdao";
-    private SQLiteDatabase db;
     private RestaurantCRUD restaurantCRUD;
 
     public RestaurantDAOImpl(Context context) {
-        db = new RestaurantDBHelper(context).getWritableDatabase();
         restaurantCRUD = new RestaurantDB(context);
     }
 
@@ -41,22 +41,8 @@ public class RestaurantDAOImpl implements RestaurantDAO {
     }
 
     @Override
-    public List<Restaurant> getRestaurantsByIds(List<Long> ids) {
-        List<Restaurant> restaurants = new ArrayList<>();
-        for (Long id : ids) {
-            restaurants.add(getRestaurantById(id));
-        }
-        return restaurants;
-    }
-
-    @Override
     public List<Restaurant> getAllRestaurants() {
         return restaurantCRUD.getAllRestaurants();
-    }
-
-    @Override
-    public List<Restaurant> getRestaurantsByBudgetType(BudgetType budgetType) {
-        return null;
     }
 
     @Override
@@ -74,7 +60,6 @@ public class RestaurantDAOImpl implements RestaurantDAO {
         if (restaurant instanceof RestaurantCustomImage) {
             try {
                 byte[] image = restaurantCRUD.getImageOfRestaurant((RestaurantCustomImage) restaurant);
-                Log.d(TAG, "injectImageOntoImageView: image size = " + image.length);
                 imageView.setImageBitmap(PictureUtils.byteArrayToBitMap(image));
             } catch (Exception e) {
                 Log.e(TAG, "injectImageOntoImageView: ", e);
@@ -97,51 +82,50 @@ public class RestaurantDAOImpl implements RestaurantDAO {
         return restaurants;
     }
 
+
+    /** Returns a Restaurant (or null if no restaurants were found)
+     *  using the information in the randomise settings
+     * */
     @Nullable
     @Override
     public Restaurant getRandomRestaurant(RandomiseSettings randomiseSettings) {
         List<Restaurant> restaurants;
         if (randomiseSettings.isUseLocation()) {
-            Log.d(TAG, "getRandomRestaurant: using location = " + true);
             restaurants = getRestaurantsByLocation(randomiseSettings.getLatitude(), randomiseSettings.getLongitude(), randomiseSettings.getRange());
         } else {
             restaurants = getAllRestaurants();
         }
-        logSize("start", restaurants);
-        restaurants = filterById(restaurants, randomiseSettings.getNotTheseRestaurantsById());
-        logSize("by id", restaurants);
-        restaurants = filterByBudgetTypes(restaurants, randomiseSettings.getBudgetTypes());
-        logSize("by budget", restaurants);
-        restaurants = filterByKitchenTypes(restaurants, randomiseSettings.getKitchenTypes());
-        logSize("by kitchentype", restaurants);
+        filterById(restaurants, randomiseSettings.getNotTheseRestaurantsById());
+        filterByBudgetTypes(restaurants, randomiseSettings.getBudgetTypes());
+        filterByKitchenTypes(restaurants, randomiseSettings.getKitchenTypes());
         if (restaurants.isEmpty()) {
             return null;
         }
         return CollectionUtils.getRandomEntryIn(restaurants);
     }
 
-    private void logSize(String filter, List col) {
-        Log.d(TAG, "logSize: size of collection = after " + filter + " " + col.size());
-    }
-
-    private List<Restaurant> filterById(List<Restaurant> toFilter, Set<Long> ids) {
+   /**  removes all restaurants from the list which has an id which
+    *   exists in the ids Set
+    * */
+    private void filterById(List<Restaurant> toFilter, Set<Long> ids) {
         Iterator<Restaurant> iterator = toFilter.iterator();
         while (iterator.hasNext()) {
             Restaurant restaurant = iterator.next();
             if (ids.contains(restaurant.getId())) {
-                Log.d(TAG, "filterById: restaurantid exist in ids to filter" + restaurant.getId() + "\n exist in " + Arrays.toString(ids.toArray()));
                 iterator.remove();
             }
         }
-        return toFilter;
     }
 
     @Override
     public void deleteAllRestaurants() {
-        db.delete(RestaurantDbSchema.Table.NAME, null, null);
+        restaurantCRUD.deleteAllRestaurants();
     }
 
-    private List<Restaurant> filterByBudgetTypes(List<Restaurant> toFilter, Set<BudgetType> budgetTypes) {
+    /** removes all restaurants from the list which's budgettypes are too expensive (according
+     *  to the settings)
+     * */
+    private void filterByBudgetTypes(List<Restaurant> toFilter, Set<BudgetType> budgetTypes) {
         Iterator<Restaurant> iterator = toFilter.iterator();
         while (iterator.hasNext()) {
             Restaurant restaurant = iterator.next();
@@ -149,10 +133,11 @@ public class RestaurantDAOImpl implements RestaurantDAO {
                 iterator.remove();
             }
         }
-        return toFilter;
     }
 
-    private List<Restaurant> filterByKitchenTypes(List<Restaurant> toFilter, Set<KitchenType> kitchenTypes) {
+    /** removes all restaurants from the lsit which's food types the user doesn't want
+     * */
+    private void filterByKitchenTypes(List<Restaurant> toFilter, Set<KitchenType> kitchenTypes) {
         Iterator<Restaurant> iterator = toFilter.iterator();
         while (iterator.hasNext()) {
             Restaurant restaurant = iterator.next();
@@ -160,9 +145,10 @@ public class RestaurantDAOImpl implements RestaurantDAO {
                 iterator.remove();
             }
         }
-        return toFilter;
     }
 
+    /** returns false if the restaurant contains a budget type which isn't being filtered
+     * */
     private boolean shouldFilterRestaurantByBudgetType(Restaurant restaurant, Set<BudgetType> budgetTypes) {
         for (BudgetType budgetType : restaurant.getBudgetTypes()) {
             if (!budgetTypes.contains(budgetType)) {
@@ -172,6 +158,8 @@ public class RestaurantDAOImpl implements RestaurantDAO {
         return true;
     }
 
+    /** returns false if the restaurant contains a kitchen type which isn't beeing filtered
+     * */
     private boolean shouldFilterRestaurantByKitchenType(Restaurant restaurant, Set<KitchenType> kitchenTypes) {
         for (KitchenType kitchenType : restaurant.getKitchenTypes()) {
             if (!kitchenTypes.contains(kitchenType)) {
@@ -182,13 +170,4 @@ public class RestaurantDAOImpl implements RestaurantDAO {
     }
 
 
-    private List<Restaurant> filterByFavorite(List<Restaurant> toFilter) {
-        Iterator<Restaurant> iterator = toFilter.iterator();
-        while (iterator.hasNext()) {
-            if (!iterator.next().isFavorite()) {
-                iterator.remove();
-            }
-        }
-        return toFilter;
-    }
 }

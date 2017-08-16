@@ -5,6 +5,16 @@ import android.widget.ImageView;
 import cel.dev.restaurants.repository.RestaurantDAO;
 import cel.dev.restaurants.repository.db.RestaurantCRUD;
 
+/** This class represents a Restaurant in this application
+ *  There is two different types of restaurants, one with a custom image (taken by the user)
+ *  and one with a placeholder image
+ *
+ *  This abstract class is used since how these two different types of restaurants will
+ *  interact with an ImageView is different, the custom image will be provided as a byte array
+ *  while the placeholder-image will be provided as a drawable resource id
+ *  The two different types of restaurants ResturantCustomImage and ResturantPlaceHolderImage
+ *  implements this method which allows for retrieval of the image from the database when the view needs it
+ * */
 public abstract class Restaurant {
 
     public static final long NOT_SAVED_ID = -1;
@@ -87,10 +97,6 @@ public abstract class Restaurant {
 
     public BudgetType[] getBudgetTypes() {
         return budgetTypes;
-    }
-
-    public void setBudgetTypes(BudgetType[] budgetTypes) {
-        this.budgetTypes = budgetTypes;
     }
 
     public double getLatitude() {

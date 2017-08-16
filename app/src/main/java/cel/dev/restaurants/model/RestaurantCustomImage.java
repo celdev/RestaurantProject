@@ -1,13 +1,13 @@
 package cel.dev.restaurants.model;
 
-import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.widget.ImageView;
 
-import cel.dev.restaurants.R;
 import cel.dev.restaurants.repository.RestaurantDAO;
-import cel.dev.restaurants.repository.db.RestaurantCRUD;
 
+
+/** Implementation of the the Restaurant which has a custom image (stored as a byte array)
+ * */
 public class RestaurantCustomImage extends Restaurant {
 
     private byte[] image;
@@ -21,6 +21,8 @@ public class RestaurantCustomImage extends Restaurant {
         super(name, rating, budgetTypes, lat, lon, kitchenTypes, favorite);
     }
 
+    /** This method allows for retrieving an image from the database when the view needs it
+     * */
     @Override
     public void injectImageOntoImageView(ImageView imageView, RestaurantDAO restaurantDAO) {
         try {

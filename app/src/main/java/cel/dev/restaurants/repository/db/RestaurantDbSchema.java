@@ -15,6 +15,8 @@ import static cel.dev.restaurants.repository.db.RestaurantDbSchema.Table.Cols.RA
 
 public class RestaurantDbSchema {
 
+    /** This class contains Table name and column names
+     * */
     public static class Table {
         public static final String NAME = "restaurants";
 
@@ -38,6 +40,8 @@ public class RestaurantDbSchema {
         }
     }
 
+    /** This class contains projections used when interacting with the database
+     * */
     public static class Projections {
 
         public static final String[] PROJECTION_ALL =
@@ -70,6 +74,8 @@ public class RestaurantDbSchema {
         };
     }
 
+    /** Contains selection stings used when interacting with the database
+     * */
     public static class Selections {
 
         public static final String SELECTION_ID = Cols.ID + "= ?";
@@ -77,6 +83,8 @@ public class RestaurantDbSchema {
     }
 
 
+    /** The create database SQL string
+     * */
     public static String generateCreateDatabaseQuery() {
         return "create table " +
                 Table.NAME +
@@ -94,6 +102,8 @@ public class RestaurantDbSchema {
                 ")";
     }
 
+    /** The drop table database SQL string
+     * */
     public static String generateDropTableQuery() {
         return "DROP TABLE IF EXISTS " + Table.NAME;
     }

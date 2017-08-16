@@ -6,6 +6,9 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.support.v4.content.ContextCompat;
 
+/** This class contains some constants containing arrays of permissions needed
+ *  as well as some permission related helper methods
+ * */
 public class PermissionUtils {
 
     public static final String[] CAMERA_PERMISSIONS = new String[]{Manifest.permission.CAMERA};

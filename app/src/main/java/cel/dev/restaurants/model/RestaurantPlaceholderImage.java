@@ -5,6 +5,8 @@ import android.widget.ImageView;
 import cel.dev.restaurants.repository.RestaurantDAO;
 import cel.dev.restaurants.repository.db.RestaurantCRUD;
 
+/** Implementation of the Restaurant with a placeholder-image
+ * */
 public class RestaurantPlaceholderImage extends Restaurant {
 
     private int placeholderImageRes;

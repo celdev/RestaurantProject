@@ -8,15 +8,17 @@ import cel.dev.restaurants.model.Restaurant;
 import cel.dev.restaurants.repository.RestaurantDAO;
 import cel.dev.restaurants.repository.RestaurantDAOImpl;
 
+/** The presenter for the Show restaurant Activity
+ *  responsible for retrieving all restaurants from the database and injecting those
+ *  into the view
+ * */
 class RestaurantPresenterImpl implements ShowRestaurantsMVP.Presenter {
 
     private ShowRestaurantsMVP.View view;
-    private final Context context;
     private RestaurantDAO restaurantDAO;
 
     public RestaurantPresenterImpl(ShowRestaurantsMVP.View view, Context context) {
         this.view = view;
-        this.context = context;
         this.restaurantDAO = new RestaurantDAOImpl(context);
     }
 

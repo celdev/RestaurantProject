@@ -24,6 +24,19 @@ import cel.dev.restaurants.R;
 import cel.dev.restaurants.utils.AndroidUtils;
 import cel.dev.restaurants.utils.Values;
 
+/** This activity is the activity which both lets the user return a
+ *  location to the Create/edit restaurant activity
+ *  but also lets the user show the location of a restaurant
+ *
+ *  This activity has two modes
+ *  SHOW LOCATION
+ *  or
+ *  RETURN LOCATION
+ *
+ *  the return location will try to return a location to the activity which started this activity
+ *  with startActivityForResult
+ *  the Show location will just show a location on the map
+ * */
 public class ShowRestaurantLocationActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMapClickListener {
 
     public static final String DATA_LATITUDE = "LAT";
@@ -66,6 +79,8 @@ public class ShowRestaurantLocationActivity extends FragmentActivity implements 
         return super.onOptionsItemSelected(item);
     }
 
+    /** Depending on the mode, the button will display a different text
+     * */
     private void setUpViews() {
         switch (mode) {
             case SHOW_LOCATION:
@@ -77,6 +92,15 @@ public class ShowRestaurantLocationActivity extends FragmentActivity implements 
         }
     }
 
+    /** This is called when the button is pressed
+     *  if the mode is Show Location then the activity will just be finished and
+     *  the user will be returned to the previous activity
+     *
+     *  else if the mode is to return a location then the
+     *  if a marked has been added to the map the location of this marker till be returned to
+     *  the activity which started this activity
+     *  if no marker has been set a toast showing a message that no location has been set will be shown
+     * */
     @OnClick(R.id.map_bottom_button)
     void onMapButtonClicked(View view) {
         switch (mode) {
@@ -99,7 +123,9 @@ public class ShowRestaurantLocationActivity extends FragmentActivity implements 
         }
     }
 
-
+    /** When the map is clicked a marker will be added to that location
+     *  if a marked is already present when the map is pressed that marker will be removed
+     * */
     @Override
     public void onMapClick(LatLng latLng) {
         map.clear();
@@ -109,7 +135,6 @@ public class ShowRestaurantLocationActivity extends FragmentActivity implements 
 
     /** Extracts location information from the bundle if present
      *  and adds a marker on the map if the map has been initialized
-     *
      * */
     private void handleBundle(Bundle args) {
         double latitude = args.getDouble(DATA_LATITUDE, defaultValue);
@@ -133,6 +158,11 @@ public class ShowRestaurantLocationActivity extends FragmentActivity implements 
         return true;
     }
 
+    /** Called when the Google Map has finished initializing
+     *  if the activity should return a position a onMapClickListener is added to the map
+     *  if the location isn't null (the starter activity sent a location to this activity when
+     *  starting this activity) then a marker will be added at that location
+     * */
     @Override
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
@@ -144,6 +174,9 @@ public class ShowRestaurantLocationActivity extends FragmentActivity implements 
         }
     }
 
+    /** Adds a marker att the location provided as the parameter
+     *  also moves the camera to this location
+     * */
     private void addMarkerAtLocation(LatLng latLng) {
         this.location = latLng;
         marker = map.addMarker(new MarkerOptions().position(location));
@@ -151,6 +184,9 @@ public class ShowRestaurantLocationActivity extends FragmentActivity implements 
 
     }
 
+    /** If this activity was started with startActivityForResult then the
+     *  result will be set to cancel and the activity will be finished
+     * */
     @Override
     public void onBackPressed() {
         if (MapActivityMode.RETURN_LOCATION.equals(mode)) {

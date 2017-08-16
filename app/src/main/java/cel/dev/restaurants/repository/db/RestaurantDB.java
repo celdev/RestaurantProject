@@ -23,6 +23,8 @@ import cel.dev.restaurants.utils.AndroidUtils;
 
 import static cel.dev.restaurants.repository.db.RestaurantDbSchema.*;
 
+/** Implementation of the RestaurantCRUD contract
+ * */
 public class RestaurantDB implements RestaurantCRUD {
 
     private static final String TAG = "DBClass";
@@ -33,6 +35,9 @@ public class RestaurantDB implements RestaurantCRUD {
         db = restaurantDBHelper.getWritableDatabase();
     }
 
+    /** saves or updates the restaurant passed as the parameter
+     *  if the restaurants id is set then the restaurant will be updated instead of created
+     * */
     @Override
     public boolean saveOrUpdateRestaurant(Restaurant restaurant) {
         boolean success;
@@ -61,6 +66,13 @@ public class RestaurantDB implements RestaurantCRUD {
     }
 
     @Override
+    public void deleteAllRestaurants() {
+        db.delete(RestaurantDbSchema.Table.NAME, null, null);
+    }
+
+    /** Returns (if it exist) a restaurant by id
+     * */
+    @Override
     @Nullable
     public Restaurant getRestaurantById(long id) {
         Cursor cursor = null;
@@ -79,6 +91,8 @@ public class RestaurantDB implements RestaurantCRUD {
         return restaurant;
     }
 
+    /** returns all restaurants
+     * */
     @Override
     public List<Restaurant> getAllRestaurants() {
         List<Restaurant> restaurants = new ArrayList<>();
@@ -98,6 +112,10 @@ public class RestaurantDB implements RestaurantCRUD {
         return restaurants;
     }
 
+    /** converts a Cursor into Restaurant
+     *  if the restaurant has an Image (hasImage = true) then the restaurant created will be a
+     *  RestaurantCustomImage otherwise the restaurant created will be a RestaurantPlaceholderImage
+     * */
     private Restaurant cursorToRestaurant(Cursor cursor, String[] projections) throws Exception {
         Map<String, Integer> cols = createColumnNameToColumnIndexMap(cursor, projections);
         long id = cursor.getLong(cols.get(Cols.ID));
@@ -122,6 +140,10 @@ public class RestaurantDB implements RestaurantCRUD {
         return restaurant;
     }
 
+    /** Helper-method for creating a Map containing
+     *  Column-name -> column index
+     *  which can be used when converting a Cursor into a Restaurant-object
+     * */
     private Map<String, Integer> createColumnNameToColumnIndexMap(Cursor cursor, String[] projection) {
         Map<String, Integer> map = new HashMap<>();
         for (String p : projection) {
@@ -130,6 +152,8 @@ public class RestaurantDB implements RestaurantCRUD {
         return map;
     }
 
+    /** Retrieves the image of a RestaurantCustomImage
+     * */
     @Override
     public byte[] getImageOfRestaurant(RestaurantCustomImage restaurantCustomImage) throws Exception {
         Cursor cursor = db.query(Table.NAME, Projections.PROJECTION_IMAGE, Selections.SELECTION_ID, new String[]{"" + restaurantCustomImage.getId()}, null, null, null);
@@ -143,6 +167,8 @@ public class RestaurantDB implements RestaurantCRUD {
         }
     }
 
+    /** saves the restaurants favorite status
+     * */
     @Override
     public void setRestaurantFavorite(Restaurant restaurant) {
         ContentValues values = new ContentValues();
@@ -150,11 +176,15 @@ public class RestaurantDB implements RestaurantCRUD {
         db.update(Table.NAME, values, Selections.SELECTION_ID, new String[]{"" + restaurant.getId()});
     }
 
+    /** removes the restaurant
+     * */
     @Override
     public boolean removeRestaurant(Restaurant restaurant) {
         return 0 < db.delete(Table.NAME, Selections.SELECTION_ID, new String[]{"" + restaurant.getId()});
     }
 
+    /** returns all restaurant ids within a certain range of parameters lat and lon
+     * */
     @Override
     public List<Long> getRestaurantIdsByLocation(double lat, double lon, double range) {
         Cursor cursor = db.rawQuery(

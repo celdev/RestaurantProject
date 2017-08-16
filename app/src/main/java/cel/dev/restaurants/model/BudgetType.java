@@ -10,6 +10,10 @@ import java.util.Set;
 
 import cel.dev.restaurants.R;
 
+/** This enum represents four differnt types of budgets which a restaurant can have
+ *
+ *  Also contains some helper methods for sorting and translating a budget type into a String
+ * */
 public enum BudgetType {
 
     CHEAP(0), NORMAL(1), EXPENSIVE(2), VERY_EXPENSIVE(3);

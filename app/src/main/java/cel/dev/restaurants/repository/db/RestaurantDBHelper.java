@@ -4,6 +4,9 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+/** Database creator helper
+ *  uses the strings defined in RestaurantDbSchema to create the database
+ * */
 public class RestaurantDBHelper extends SQLiteOpenHelper {
 
     private static final int VERSION = 1;

@@ -16,6 +16,9 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import cel.dev.restaurants.R;
 import cel.dev.restaurants.locationutils.LocationRequestCallback;
 
+/** This class contains some methods for extracting location related functionality from the
+ *  fragments and activities.
+ * */
 public class LocationUtils {
 
     public static final String TAG = "Loc util";
@@ -43,6 +46,9 @@ public class LocationUtils {
         return PermissionUtils.hasPermissionTo(context, Manifest.permission.ACCESS_FINE_LOCATION);
     }
 
+    /** requests the location if the user has given location permission
+     *  else the request location dialog will be shown
+     * */
     public static void requestLocation(Context context, OnSuccessListener<Location> successCallback,
                                        OnCompleteListener<Location> completeCallback, LocationRequestCallback onRequestCallback) {
         if (checkHasLocationPermission(context)) {

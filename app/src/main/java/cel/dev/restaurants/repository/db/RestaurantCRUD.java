@@ -7,6 +7,9 @@ import java.util.List;
 import cel.dev.restaurants.model.Restaurant;
 import cel.dev.restaurants.model.RestaurantCustomImage;
 
+/** This interface contains a contract which includes all functions that the
+ *  class interfacing with the database should implement
+ * */
 public interface RestaurantCRUD {
     boolean saveOrUpdateRestaurant(Restaurant restaurant);
 
@@ -22,4 +25,6 @@ public interface RestaurantCRUD {
     List<Long> getRestaurantIdsByLocation(double lat, double lon, double range);
 
     boolean removeRestaurant(Restaurant restaurant);
+
+    void deleteAllRestaurants();
 }

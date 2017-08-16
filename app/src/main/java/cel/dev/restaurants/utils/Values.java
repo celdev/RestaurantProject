@@ -1,5 +1,7 @@
 package cel.dev.restaurants.utils;
 
+/** This class contains some constants used in the application
+ * */
 public class Values {
 
     public static final int ON_SAVE_RESTAURANT_IMAGE_COMPRESS_QUALITY = 100;

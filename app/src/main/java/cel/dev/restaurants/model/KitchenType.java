@@ -1,13 +1,18 @@
 package cel.dev.restaurants.model;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import cel.dev.restaurants.R;
 
+
+/** This enum represent different types of food a restaurant can have
+ *
+ *  It also contains some methods for turning a list of KitchenType into
+ *  an integer array which can be added in a bundle
+ *
+ *  as well as a method to recreate the List of KitchenType from an integer array
+ * */
 public enum KitchenType {
 
     Café(R.string.cafe),

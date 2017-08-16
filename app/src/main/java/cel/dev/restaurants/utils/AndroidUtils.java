@@ -24,23 +24,32 @@ import cel.dev.restaurants.choosekitchendialog.ChooseKitchenDialogFragmentMVP;
 import cel.dev.restaurants.createrestaurant.CreateRestaurantActivity;
 import cel.dev.restaurants.model.Restaurant;
 
+/** This class contains a large amount of methods which provides some functionality which
+ *  would clutter the fragments and activities of this application
+ * */
 public class AndroidUtils {
 
     public static final String TAG = "android utils";
 
+    /** Tints the color of the drawable
+     * */
     public static Drawable tintDrawable(Context context, Drawable drawable, @ColorRes int color) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            drawable.setColorFilter(context.getResources().getColor(color, context.getTheme()), PorterDuff.Mode.DST_IN);
+            drawable.setColorFilter(context.getResources().getColor(color, context.getTheme()), PorterDuff.Mode.SRC_IN);
         } else {
-            drawable.setColorFilter(context.getResources().getColor(color), PorterDuff.Mode.DST_OVER);
+            drawable.setColorFilter(context.getResources().getColor(color), PorterDuff.Mode.SRC_IN);
         }
         return drawable;
     }
 
+    /** returns true if the activity was started using startActivityForResult()
+     * */
     public static boolean activityStartedForResult(Activity activity) {
         return activity.getCallingActivity() != null;
     }
 
+    /** creates an Intent containing latitude and longitude
+     * */
     public static Intent createMapActivityIntentWithLatLong(Context context, double latitude, double longitude) {
         Intent intent = new Intent(context, ShowRestaurantLocationActivity.class);
         Bundle extras = new Bundle();
@@ -50,6 +59,8 @@ public class AndroidUtils {
         return intent;
     }
 
+    /** creates an Intent with the id of the restaurant to edit
+     * */
     public static Intent createEditRestaurantActivityIntent(Context context, Restaurant restaurant) {
         Intent intent = new Intent(context, CreateRestaurantActivity.class);
         Bundle extras = new Bundle();
@@ -58,15 +69,21 @@ public class AndroidUtils {
         return intent;
     }
 
+    /** returns true if the dialog fragment isn't null and the dialog is showing (using the HasShownStatus interface)
+     * */
     public static boolean dialogFragmentIsShowing(@Nullable ChooseKitchenDialogFragmentMVP.HasShownStatus dialogFragment) {
         return dialogFragment != null && dialogFragment.getDialogIsShowing();
     }
 
+    /** drawable res to drawable
+     * */
     public static Drawable drawableResToDrawable(@DrawableRes int drawableRes, Context context) {
         return context.getDrawable(drawableRes);
     }
 
 
+    /** Show a progressdialog
+     * */
     public static ProgressDialog createProgressDialog(Context context,
                                                       @StringRes int title,
                                                       boolean cancleable) {
@@ -88,7 +105,15 @@ public class AndroidUtils {
                 }).create().show();
     }
 
-
+    /** Utils for turning a List<Enum> into a format which allows it to be stored in the database
+     *
+     *  E.g. a list containing the enums enum.A, enum.B, enum.C
+     *  can be converted into a comma separated string containing their ordinals
+     *  The resulting string would be
+     *  "0,1,2"
+     *  this can then be used to create a List of enum
+     *  by splitting the string on comma and adding the enum constant with each ordinal
+     * */
     public static class DBUtils {
 
         public static <T extends Enum> String enumsToString(T[] enums) {
