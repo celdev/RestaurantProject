@@ -7,6 +7,13 @@ import java.util.Set;
 
 import cel.dev.restaurants.model.KitchenType;
 
+/** Implementation of the presenter for the kitchen type dialog in the create kitchen activity
+ *
+ *  During the creating of this presenter the already chosen kitchen types are merged
+ *  with all kitchen types into an object which contains the kitchen type and if it is chosen.
+ *
+ *  These objects are then used in creating the adapter for the listview in the view
+ * */
 class ChooseKitchenTypePresenterImpl implements ChooseKitchenDialogFragmentMVP.Presenter {
 
     private ChooseKitchenDialogFragmentMVP.View view;
@@ -32,6 +39,10 @@ class ChooseKitchenTypePresenterImpl implements ChooseKitchenDialogFragmentMVP.P
     }
 
 
+    /** when a switch is changed in the list view this method is called
+     *  which changes the is chosen status which is then
+     *  saved by the activity through the callback in the view
+     * */
     @Override
     public void onSwitchChangeCallback(FoodTypeAndChosenStatus foodTypeAndChosenStatus) {
         int i = foodTypeAndChosenStatuses.indexOf(foodTypeAndChosenStatus);

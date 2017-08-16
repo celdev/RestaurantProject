@@ -30,4 +30,6 @@ public interface RestaurantDAO {
     boolean removeRestaurant(Restaurant restaurant);
 
     Restaurant getRandomRestaurant(RandomiseSettings randomiseSettings);
+
+    void deleteAllRestaurants();
 }

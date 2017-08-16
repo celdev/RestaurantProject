@@ -5,6 +5,10 @@ import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.widget.ImageView;
 
+/** interface for the view and presenter of the ImageFragment
+ *  Mostly contains methods which allows the container activity to
+ *  access information in the fragment
+ * */
 public interface ImageFragmentMVP {
 
     interface View {

@@ -1,5 +1,7 @@
 package cel.dev.restaurants.choosekitchendialog;
 
+import android.support.annotation.NonNull;
+
 import cel.dev.restaurants.model.KitchenType;
 
 /** This class is used to convert two arrays of food types into a list of
@@ -9,11 +11,12 @@ public class FoodTypeAndChosenStatus {
     private KitchenType kitchenType;
     private boolean chosen;
 
-    public FoodTypeAndChosenStatus(KitchenType kitchenType, boolean chosen) {
+    public FoodTypeAndChosenStatus(@NonNull KitchenType kitchenType, boolean chosen) {
         this.kitchenType = kitchenType;
         this.chosen = chosen;
     }
 
+    @NonNull
     public KitchenType getKitchenType() {
         return kitchenType;
     }
@@ -26,9 +29,6 @@ public class FoodTypeAndChosenStatus {
         this.chosen = chosen;
     }
 
-    public void setKitchenType(KitchenType kitchenType) {
-        this.kitchenType = kitchenType;
-    }
 
     @Override
     public boolean equals(Object o) {

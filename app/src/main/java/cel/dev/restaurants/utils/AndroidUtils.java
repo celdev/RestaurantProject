@@ -3,6 +3,7 @@ package cel.dev.restaurants.utils;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
@@ -12,10 +13,12 @@ import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
+import android.support.v7.app.AlertDialog;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import cel.dev.restaurants.R;
 import cel.dev.restaurants.showrestaurantlocationactivity.ShowRestaurantLocationActivity;
 import cel.dev.restaurants.choosekitchendialog.ChooseKitchenDialogFragmentMVP;
 import cel.dev.restaurants.createrestaurant.CreateRestaurantActivity;
@@ -71,6 +74,18 @@ public class AndroidUtils {
         progressDialog.setTitle(title);
         progressDialog.setCancelable(cancleable);
         return progressDialog;
+    }
+
+    public static void showAboutDialog(Context context) {
+        new AlertDialog.Builder(context)
+                .setTitle(R.string.about_dialog_title)
+                .setView(R.layout.about_dialog)
+                .setPositiveButton(R.string.button_ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).create().show();
     }
 
 

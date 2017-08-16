@@ -33,6 +33,10 @@ import cel.dev.restaurants.utils.Values;
 
 import static android.app.Activity.RESULT_OK;
 
+/** This fragment contains the image of the restaurant
+ *  as well as the controlls for taking a picture, rotating it and deleting it.
+ *
+ * */
 public class CreateRestaurantImageFragment extends Fragment implements ImageFragmentMVP.View {
 
     public static final String TAG = "image frag";
@@ -62,10 +66,12 @@ public class CreateRestaurantImageFragment extends Fragment implements ImageFrag
     }
 
 
+    /** If there is a savedInstanceState and it contains the image key
+     *  then the savedInstanceState contains an image stored as a byte-array
+     * */
     private void handleSavedInstanceState(Bundle savedInstanceState) {
         String key = getString(R.string.bundle_create_restaurant_image);
         if (savedInstanceState != null && savedInstanceState.containsKey(key)) {
-            Log.d(TAG, "onCreate: contains image");
             setRestaurantImage(PictureUtils.byteArrayToBitMap(savedInstanceState.getByteArray(key)));
         }
     }
@@ -117,6 +123,11 @@ public class CreateRestaurantImageFragment extends Fragment implements ImageFrag
         setRestaurantImage(PictureUtils.rotateBitmap(restaurantImage, 90));
     }
 
+    /** Deletes the image and hides the image controls
+     *
+     * Depending on the android version, uses different setImageDrawable-methods since
+     * the getDrawable(int) is deprecated in newer versions of android
+     * */
     @OnClick(R.id.delete_image_btn)
     void deleteImage(View view) {
         restaurantImage = null;
@@ -147,6 +158,13 @@ public class CreateRestaurantImageFragment extends Fragment implements ImageFrag
         startActivityForResult(new Intent(MediaStore.ACTION_IMAGE_CAPTURE), REQUEST_IMAGE_CAPTURE);
     }
 
+    /** Creates the Camera crop intent and adds the image to the intent
+     *  and starts the intent asking for a result
+     *  the height and width of the result is injected using the cropIntentWidthAndHeight static method
+     *  of the PictureUtils-class which scales the width and height into a dimension which won't cause
+     *  OutOfMemory-exceptions since the maximum size of the image which can be passed around in the intent
+     *  is quite small
+     * */
     private void startRestaurantImageCrop(Uri data) {
         Intent intent = new Intent("com.android.camera.action.CROP");
         intent.setDataAndType(data, "image/*");
@@ -157,6 +175,11 @@ public class CreateRestaurantImageFragment extends Fragment implements ImageFrag
         startActivityForResult(intent, IMAGE_CROP);
     }
 
+    /** Handles the request permission results
+     * if the result is OK and it's a camera request the "take picture"-button is programmatically pressed
+     * if the result is not ok and it's the camera request a Toast is shown stating that the application needs
+     * camera permission in order to take a picture for the restaurant
+     * */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (PermissionUtils.isPermissionGranted(grantResults[0])) {
@@ -174,23 +197,26 @@ public class CreateRestaurantImageFragment extends Fragment implements ImageFrag
         }
     }
 
+    /** Request camera permission
+     * */
     @Override
     public void requestCameraPermission() {
         ActivityCompat.requestPermissions(getActivity(), PermissionUtils.CAMERA_PERMISSIONS, CAMERA_REQUEST);
     }
 
+
+    /** Tries to save the image as a byte array in the bundle
+     * */
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        Log.d(TAG, "onSaveInstanceState: called, saving image = " + (restaurantImage != null) );
         if (restaurantImage != null) {
             try {
                 outState.putByteArray(getString(R.string.bundle_create_restaurant_image), PictureUtils.bitmapToByteArray(restaurantImage,
                         Values.ON_SAVE_RESTAURANT_IMAGE_COMPRESS_QUALITY));
             } catch (Exception e) {
-                e.printStackTrace();
+                Log.e(TAG, "onSaveInstanceState: ", e);
             }
-            Log.d(TAG, "onSaveInstanceState: contains image = " + outState.containsKey(getString(R.string.bundle_create_restaurant_image)));
         }
     }
 

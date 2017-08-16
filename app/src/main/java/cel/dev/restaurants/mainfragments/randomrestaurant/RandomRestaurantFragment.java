@@ -124,7 +124,6 @@ public class RandomRestaurantFragment extends Fragment implements FABFragmentHan
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        Log.d(TAG, "onRequestPermissionsResult: " + requestCode);
     }
 
     @Override
@@ -259,14 +258,12 @@ public class RandomRestaurantFragment extends Fragment implements FABFragmentHan
             presenter.injectLocation(location.getLatitude(), location.getLongitude());
         } else {
             hideLoadingDialog();
-            Log.d(TAG, "onSuccess: location is null");
         }
     }
 
     @Override
     public void onComplete(@NonNull Task<Location> task) {
         Location location = task.getResult();
-        Log.d(TAG, "onComplete: in oncomplete location is " + task.getResult() );
         if (location != null) {
             if (!hasLocation) {
                 hasLocation = true;

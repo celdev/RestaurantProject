@@ -3,6 +3,8 @@ package cel.dev.restaurants.showrestaurantlocationactivity;
 import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -27,6 +29,7 @@ public class ShowRestaurantLocationActivity extends FragmentActivity implements 
     public static final String DATA_LATITUDE = "LAT";
     public static final String DATA_LONGITUDE = "LONG";
     private static final double defaultValue = -10000000.0;
+    private boolean menuInflated = false;
 
     private GoogleMap map;
 
@@ -53,6 +56,14 @@ public class ShowRestaurantLocationActivity extends FragmentActivity implements 
         if (getIntent().getExtras() != null) {
             handleBundle(getIntent().getExtras());
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.context_about_app) {
+            AndroidUtils.showAboutDialog(this);
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void setUpViews() {
@@ -111,7 +122,15 @@ public class ShowRestaurantLocationActivity extends FragmentActivity implements 
                 addMarkerAtLocation(location);
             }
         }
+    }
 
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        if (!menuInflated) {
+            getMenuInflater().inflate(R.menu.app_bar_menu_no_delete, menu);
+            menuInflated = true;
+        }
+        return true;
     }
 
     @Override

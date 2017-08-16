@@ -10,7 +10,6 @@ import java.io.ByteArrayOutputStream;
 
 public class PictureUtils {
 
-    private static final String TAG = "picutil";
 
     public static Bitmap byteArrayToBitMap(byte[] image) {
         return BitmapFactory.decodeByteArray(image, 0, image.length);

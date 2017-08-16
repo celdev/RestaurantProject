@@ -15,6 +15,7 @@
     <dimen name="card_restaurant_name_size_plus_margin">26sp</dimen>
 
     <dimen name="RestaurantImageTextSize">26sp</dimen>
+    <dimen name="no_restaurants_text_size">18sp</dimen>
     <dimen name="RestaurantImageTextSizeBlack">26.2sp</dimen>
     <dimen name="food_type_text_size">18sp</dimen>
     <dimen name="dialog_text_size">24sp</dimen>

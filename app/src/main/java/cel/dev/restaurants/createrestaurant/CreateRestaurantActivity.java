@@ -15,6 +15,8 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -47,6 +49,14 @@ import cel.dev.restaurants.utils.AndroidUtils;
 import cel.dev.restaurants.utils.CollectionUtils;
 import cel.dev.restaurants.utils.PermissionUtils;
 
+/** This activity is the activity which allows the user to add and edit restaurants
+ *  in this application
+ *
+ *  The function (new restaurant or edit restaurant) of this activity is determined by
+ *  if the intent used when starting this activity contains the EDIT-key
+ *  if the mode is edit mode then the view is populated with the information for the restaurant
+ *  with the id passed in the bundle.
+ * */
 public class CreateRestaurantActivity extends AppCompatActivity implements CreateRestaurantMVP.View,
         OnChooseKitchenCallback, OnSuccessListener<Location>{
 
@@ -70,12 +80,35 @@ public class CreateRestaurantActivity extends AppCompatActivity implements Creat
     @BindView(R.id.budget_very_expensive) CheckBox budgetVeryExpensiveBox;
     @BindView(R.id.location_info_text) TextView locationInfoText;
     @BindView(R.id.create_restaurant_okBtn) Button createRestaurantButton;
+    @BindView(R.id.use_my_location_button) Button useMyLocationButton;
 
     private ImageFragmentMVP.View imageFragmentView;
     private CreateRestaurantMVP.Presenter presenter;
     private Double[] location;
     private ActivityMode mode = ActivityMode.NEW;
     private ChooseKitchenDialogFragment chooseKitchenDialogFragment;
+
+    private boolean menuInflated;
+
+    /** Creates and handles the options menu containing the menu item for the about dialog
+     *  uses a flag (menuInflated) in order to determine if the menu is already inflated
+     *  since this method is called each time the menu is opened
+     * */
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        if (!menuInflated) {
+            getMenuInflater().inflate(R.menu.app_bar_menu_no_delete, menu);
+            menuInflated = true;
+        }
+        return true;
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.context_about_app) {
+            AndroidUtils.showAboutDialog(this);
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,7 +121,6 @@ public class CreateRestaurantActivity extends AppCompatActivity implements Creat
             mode = ActivityMode.EDIT;
         }
         initializeViewParameters(savedInstanceState);
-        Log.d(TAG, "onCreate: creating activity");
     }
 
     /**
@@ -107,6 +139,9 @@ public class CreateRestaurantActivity extends AppCompatActivity implements Creat
         finish();
     }
 
+    /** When the custom Location activity returns a value this method will retrieve the values
+     *  and use it to save the location information
+     * */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == LOCATION_ACTIVITY_REQUEST) {
@@ -131,12 +166,15 @@ public class CreateRestaurantActivity extends AppCompatActivity implements Creat
         return PermissionUtils.hasPermissionTo(this, Manifest.permission.ACCESS_FINE_LOCATION);
     }
 
+    /** If request of the location is ok then the use my location button is pressed programmatically
+     *  otherwise shows a Toast that states that the application needs location permissions to function
+     * */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (PermissionUtils.isPermissionGranted(grantResults[0])) {
             switch (requestCode) {
                 case REQUEST_LOCATION:
-                    //todo request location again
+                    useMyLocationButton.performClick();
                     break;
             }
         } else {
@@ -148,11 +186,16 @@ public class CreateRestaurantActivity extends AppCompatActivity implements Creat
         }
     }
 
+    /** uses the latitude and longitude to get the address of the location
+     *  and sets the locationInfoText text to the address
+     * */
     private void setLocationInformation(double latitude, double longitude) {
         location = new Double[]{latitude, longitude};
         locationInfoText.setText(presenter.getLocationStringFromLatLng(this, latitude, longitude));
     }
 
+    /** Shows the choose kitchen dialog
+     * */
     @Override
     public void showSelectKitchenDialog() {
         chooseKitchenDialogFragment = ChooseKitchenDialogFragment.newInstance(presenter.getChosenKitchen());
@@ -160,11 +203,16 @@ public class CreateRestaurantActivity extends AppCompatActivity implements Creat
                 .show(getSupportFragmentManager(), "fragment_choose_kitchen");
     }
 
+    /** Callback for when a switch in the kitchen dialog has been changed
+     *  passes the kitchentype and the status to the presenter which will save this change
+     * */
     @Override
     public void chooseKitchen(KitchenType kitchenType, boolean chosen) {
         presenter.chooseFoodType(kitchenType,chosen);
     }
 
+    /** Updates the text of the chosen kitchentypes
+     * */
     @Override
     public void updateChosenKitchens(List<KitchenType> kitchenTypes) {
         if (kitchenTypes.size() == 0) {
@@ -248,6 +296,10 @@ public class CreateRestaurantActivity extends AppCompatActivity implements Creat
         Toast.makeText(this, errorResCode, Toast.LENGTH_SHORT).show();
     }
 
+    /** This method will take the information in the restaurant object (name, image, budet etc)
+     *  and update the view states accordingly
+     *  Is used in the Edit-restaurant-mode
+     * */
     @Override
     public void injectInformationToViews(@NonNull Restaurant restaurant) {
         if (restaurant instanceof RestaurantCustomImage) {
@@ -263,6 +315,8 @@ public class CreateRestaurantActivity extends AppCompatActivity implements Creat
         updateChosenKitchens(Arrays.asList(restaurant.getKitchenTypes()));
     }
 
+    /** Takes an array of BudgetType and sets the appropriate checkbox as checked
+     * */
     private void translateBudgetTypesToCheckedBoxes(BudgetType[] budgetTypes) {
         for (BudgetType budgetType : budgetTypes) {
             switch (budgetType) {
@@ -282,6 +336,8 @@ public class CreateRestaurantActivity extends AppCompatActivity implements Creat
         }
     }
 
+    /** Called when the location service returns a location
+     * */
     @Override
     public void onSuccess(Location location) {
         if (location != null) {
@@ -291,6 +347,9 @@ public class CreateRestaurantActivity extends AppCompatActivity implements Creat
         }
     }
 
+    /** Shows a dialog that asks if the user doesn't want to save the restaurant
+     *  currently being created/edited
+     * */
     @Override
     public void onBackPressed() {
         new AlertDialog.Builder(this).setTitle(R.string.unsaved_information)
@@ -317,6 +376,8 @@ public class CreateRestaurantActivity extends AppCompatActivity implements Creat
      ########################       ON CLICK              ########################
      #############################################################################
      #############################################################################
+     *
+     *  OnClick-listeners for buttons in the activity
      * */
     @OnClick(R.id.choose_kitchenBtn)
     void chooseKitchenClick(View view) {
@@ -341,6 +402,10 @@ public class CreateRestaurantActivity extends AppCompatActivity implements Creat
         }
     }
 
+    /** Starts the choose location from map activity
+     *  if the location has been set previously then
+     *  this position will be shown on the map
+     * */
     @OnClick(R.id.pick_on_map)
     void onPickOnMapPressed(View view) {
         Intent intent;

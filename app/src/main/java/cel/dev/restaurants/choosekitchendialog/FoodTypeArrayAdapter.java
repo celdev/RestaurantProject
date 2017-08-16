@@ -44,7 +44,8 @@ class FoodTypeArrayAdapter extends ArrayAdapter<FoodTypeAndChosenStatus>  {
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        @SuppressLint("ViewHolder") View view = activity.getLayoutInflater().inflate(R.layout.choose_kitchen_list_item_layout, parent, false);
+        @SuppressLint("ViewHolder")
+        View view = activity.getLayoutInflater().inflate(R.layout.choose_kitchen_list_item_layout, parent, false);
         Switch switchView = (Switch) view.findViewById(R.id.kitchen_chosen_switch);
         TextView kitchenName = (TextView) view.findViewById(R.id.kitchen_name);
         FoodTypeAndChosenStatus foodTypeAndChosenStatus = getItem(position);
@@ -56,6 +57,11 @@ class FoodTypeArrayAdapter extends ArrayAdapter<FoodTypeAndChosenStatus>  {
     }
 
 
+    /** Listener for the switch change event
+     *  when the switch is changed the FoodTypeAndChosenStatus is passed into the
+     *  callback which will then pass the status into the presenter of the activity which will save the
+     *  change
+     * */
     private class SwitchChangeListener implements CompoundButton.OnCheckedChangeListener {
 
         private FoodTypeAndChosenStatus foodTypeAndChosenStatus;

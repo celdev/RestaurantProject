@@ -11,6 +11,8 @@ import cel.dev.restaurants.mainfragments.FABFragmentHandler;
 import cel.dev.restaurants.mainfragments.randomrestaurant.RandomRestaurantFragment;
 import cel.dev.restaurants.mainfragments.nearbyrestaurants.NearbyFragment;
 import cel.dev.restaurants.mainfragments.showrestaurants.RestaurantFragment;
+import cel.dev.restaurants.repository.RestaurantDAO;
+import cel.dev.restaurants.repository.RestaurantDAOImpl;
 
 class PresenterImpl implements MainActivityMVP.Presenter {
 
@@ -78,6 +80,24 @@ class PresenterImpl implements MainActivityMVP.Presenter {
                 return false;
 
         }
+    }
+
+    @Override
+    public void contextMenuItemSelected(@IdRes int itemId) {
+        switch (itemId) {
+            case R.id.context_about_app:
+                view.showAboutDialog();
+                break;
+            case R.id.context_delete_all:
+                view.showDeleteAllRestaurantsDialog();
+                break;
+        }
+    }
+
+    @Override
+    public void deleteAllRestaurants() {
+        new RestaurantDAOImpl(context).deleteAllRestaurants();
+        view.handleAfterDeleteRestaurants();
     }
 
     @Override

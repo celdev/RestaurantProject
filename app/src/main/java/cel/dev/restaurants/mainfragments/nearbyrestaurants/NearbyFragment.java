@@ -95,8 +95,13 @@ public class NearbyFragment extends ListRestaurantsFragment implements OnSuccess
 
     @Override
     public void injectData(List<Restaurant> restaurants, RestaurantDAO restaurantDAO) {
-        RestaurantRecycleViewAdapter adapter = new RestaurantRecycleViewAdapter(restaurants, getContext(), restaurantDAO);
-        getRestaurantRecyclerView().setAdapter(adapter);
+        if (restaurants.isEmpty()) {
+            showNoRestaurantsMessage(R.string.no_restaurant_found_try_changing_area_size);
+        } else {
+            hideNoRestaurantsMessage();
+            RestaurantRecycleViewAdapter adapter = new RestaurantRecycleViewAdapter(restaurants, getContext(), restaurantDAO);
+            getRestaurantRecyclerView().setAdapter(adapter);
+        }
     }
 
     @Override

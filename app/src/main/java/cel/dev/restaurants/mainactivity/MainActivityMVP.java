@@ -8,9 +8,15 @@ import android.support.v4.app.Fragment;
 public interface MainActivityMVP {
 
     interface View {
+        void showAboutDialog();
+
+        void handleAfterDeleteRestaurants();
+
         void setFragment(Fragment fragment, @DrawableRes int fabIconDrawableId);
 
         void hideShowFAB(boolean show);
+
+        void showDeleteAllRestaurantsDialog();
     }
 
     interface Presenter {
@@ -19,10 +25,14 @@ public interface MainActivityMVP {
         boolean tabPressed(@IdRes int navId);
 
 
+        void deleteAllRestaurants();
+
         void onSaveInstanceState(Bundle outState);
 
         void handleSavedInstanceState(Bundle savedInstanceState);
 
         void loadFragment();
+
+        void contextMenuItemSelected(@IdRes int itemId);
     }
 }

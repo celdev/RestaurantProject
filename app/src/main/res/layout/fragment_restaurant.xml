@@ -5,6 +5,18 @@
     android:layout_height="match_parent"
     tools:context=".mainfragments.showrestaurants.RestaurantFragment">
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="@string/placeholder"
+        android:id="@+id/list_fragment_info_text"
+        android:visibility="gone"
+        android:layout_marginStart="@dimen/activity_horizontal_margin"
+        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:textSize="@dimen/no_restaurants_text_size"
+        />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/restaurants_recycle_view"
         android:layout_width="match_parent"

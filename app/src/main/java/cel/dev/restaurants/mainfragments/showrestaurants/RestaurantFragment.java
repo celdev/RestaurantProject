@@ -63,8 +63,13 @@ public class RestaurantFragment extends ListRestaurantsFragment implements ShowR
 
     @Override
     public void injectData(List<Restaurant> restaurants, RestaurantDAO restaurantDAO) {
-        RestaurantRecycleViewAdapter adapter = new RestaurantRecycleViewAdapter(restaurants, getContext(), restaurantDAO);
-        getRestaurantRecyclerView().setAdapter(adapter);
+        if (restaurants.isEmpty()) {
+            showNoRestaurantsMessage(R.string.no_restaurants_added);
+        } else {
+            hideNoRestaurantsMessage();
+            RestaurantRecycleViewAdapter adapter = new RestaurantRecycleViewAdapter(restaurants, getContext(), restaurantDAO);
+            getRestaurantRecyclerView().setAdapter(adapter);
+        }
     }
 
 

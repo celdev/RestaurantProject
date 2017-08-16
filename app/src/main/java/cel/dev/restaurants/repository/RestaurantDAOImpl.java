@@ -20,6 +20,7 @@ import cel.dev.restaurants.model.RestaurantCustomImage;
 import cel.dev.restaurants.repository.db.RestaurantCRUD;
 import cel.dev.restaurants.repository.db.RestaurantDB;
 import cel.dev.restaurants.repository.db.RestaurantDBHelper;
+import cel.dev.restaurants.repository.db.RestaurantDbSchema;
 import cel.dev.restaurants.utils.CollectionUtils;
 import cel.dev.restaurants.utils.PictureUtils;
 
@@ -133,6 +134,11 @@ public class RestaurantDAOImpl implements RestaurantDAO {
             }
         }
         return toFilter;
+    }
+
+    @Override
+    public void deleteAllRestaurants() {
+        db.delete(RestaurantDbSchema.Table.NAME, null, null);
     }
 
     private List<Restaurant> filterByBudgetTypes(List<Restaurant> toFilter, Set<BudgetType> budgetTypes) {

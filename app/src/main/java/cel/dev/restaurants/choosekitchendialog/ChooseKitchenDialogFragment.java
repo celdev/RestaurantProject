@@ -67,7 +67,11 @@ public class ChooseKitchenDialogFragment extends DialogFragment implements Choos
         return view;
     }
 
-
+    /** Called when this dialog is being paused
+     *  calls dismissAllowingStateLoss since the state of this dialog is
+     *  saved by the presenter of the Activity of this dialog
+     *  so this fragment doesn't need to save its own state
+     * */
     @Override
     public void onPause() {
         super.onPause();
@@ -105,6 +109,11 @@ public class ChooseKitchenDialogFragment extends DialogFragment implements Choos
         }
     }
 
+    /** This method is used to be able to tell if the dialog was showing before
+     *  the containing activity was recreated (e.g. in the case of phone orientation change)
+     *
+     *  allows for the activity to show the dialog on the re-creation of the activity
+     * */
     @Override
     public void show(FragmentManager manager, String tag) {
         if (shown) {

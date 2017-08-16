@@ -90,6 +90,17 @@
     <string name="loading_location">Loading location</string>
     <string name="require_location">Require location</string>
     <string name="require_location_dialog_text">This feature requires location permission</string>
+    <string name="about">About</string>
+    <string name="reset_app">Reset application</string>
+    <string name="about_dialog_title">About</string>
+    <string name="about_dialog_content">todo</string>
+    <string name="delete_all_restaurants">Delete Restaurants?</string>
+    <string name="are_you_sure_delete_all">Are you sure you want to delete all restaurants?</string>
+    <string name="delete_button">Delete</string>
+    <string name="no_restaurants">placeholder</string>
+    <string name="placeholder">placeholder</string>
+    <string name="no_restaurants_added">No restaurants has been added yet.\nTry adding some by pressing the plus button below.</string>
+    <string name="no_restaurant_found_try_changing_area_size">No restaurants found.\nTry increasing the nearby area size\nor add more restaurants nearby.</string>
 
 
 </resources>
