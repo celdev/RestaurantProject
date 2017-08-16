@@ -10,6 +10,15 @@ import cel.dev.restaurants.utils.Values;
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.widget.ListPopupWindow.WRAP_CONTENT;
 
+/** This class is a custom Animation which
+ *  allows for the expansion or collapse of a view during
+ *  a certain time
+ *  This Animation both supports collapse or expansion deepening on the expand
+ *  parameter in the constructor of the class
+ *
+ *  The height of the View passed in the constructor will
+ *  be decrease/increase until the target size is reached
+ * */
 public class ExpandableLayoutAnimation extends Animation {
 
     private final View expandableLayout;

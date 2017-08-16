@@ -16,6 +16,13 @@ import cel.dev.restaurants.model.KitchenType;
 import cel.dev.restaurants.model.Restaurant;
 import cel.dev.restaurants.repository.db.RestaurantCRUD;
 
+/** "M"VP for this create restaurant use case
+ *  The "M"/repository part is a bit unnecessary
+ *  since this information can be retrieved
+ *  from the RestaurantDao
+ *
+ *  Se the implementations for more details
+ * */
 public interface CreateRestaurantMVP {
 
 

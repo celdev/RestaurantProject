@@ -14,6 +14,10 @@ import cel.dev.restaurants.mainfragments.showrestaurants.RestaurantFragment;
 import cel.dev.restaurants.repository.RestaurantDAO;
 import cel.dev.restaurants.repository.RestaurantDAOImpl;
 
+/** This is the presenter of the MainActivity
+ *  It's mostly responsible for handling change in which fragment should be
+ *  active after a tab has been pressed in the BottomNavigationView
+ * */
 class PresenterImpl implements MainActivityMVP.Presenter {
 
 
@@ -38,6 +42,8 @@ class PresenterImpl implements MainActivityMVP.Presenter {
         fabHandler.handleFABClick();
     }
 
+    /** Create a fragment depending on the fragmentId
+     * */
     private Fragment createFragment(@IdRes int fragmentId) {
         Fragment fragment;
         switch (fragmentId) {
@@ -60,6 +66,9 @@ class PresenterImpl implements MainActivityMVP.Presenter {
         return fragment;
     }
 
+    /** Creates and sets the fragment depending on which button was pressed
+     *  also sets the handler of the Floating Action Button press to the created fragment
+     * */
     @Override
     public boolean tabPressed(@IdRes int navId) {
         switch (navId) {
@@ -82,8 +91,11 @@ class PresenterImpl implements MainActivityMVP.Presenter {
         }
     }
 
+
+    /** handles the press on an item in the options dialog
+     * */
     @Override
-    public void contextMenuItemSelected(@IdRes int itemId) {
+    public void menuItemSelected(@IdRes int itemId) {
         switch (itemId) {
             case R.id.context_about_app:
                 view.showAboutDialog();
@@ -94,12 +106,18 @@ class PresenterImpl implements MainActivityMVP.Presenter {
         }
     }
 
+    /** Deletes all restaurants and calls the view to handle the fragment state after all
+     *  restaurants have been deleted (returns the user to the show restaurant fragment)
+     * */
     @Override
     public void deleteAllRestaurants() {
         new RestaurantDAOImpl(context).deleteAllRestaurants();
         view.handleAfterDeleteRestaurants();
     }
 
+    /** Stores which fragment is active so this fragment can be set during
+     *  the re-creation of the activity
+     * */
     @Override
     public void onSaveInstanceState(Bundle outState) {
         outState.putInt(ACTIVE_FRAGMENT_KEY, activeFragment);

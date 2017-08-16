@@ -19,6 +19,28 @@ import cel.dev.restaurants.model.KitchenType;
 import cel.dev.restaurants.utils.AndroidUtils;
 import cel.dev.restaurants.utils.CollectionUtils;
 
+/** This is the ViewHolder for the RecycleView
+ *
+ *  This ViewHolder contains
+ *      the name of the restaurant
+ *      The rating
+ *      The image
+ *      5 Buttons
+ *          Open - toggles (expand/collapse) a part of the CardView which contains
+ *                 information about the restaurants such as budget types and delete and edit buttons
+ *          Delete
+ *          Edit
+ *          Show location
+ *          Favorite
+ *      Kitchen Types
+ *      Budget Types
+ *
+ *  This ViewHolder has a large amount of set-methods which injects information such as the
+ *  name of the restaurants and the rating.
+ *  These methods implements the fluent pattern which allows for settings multiple properties
+ *  without having to do obj.methodA(); obj.methodB(); instead obj.methodA().methodB() can be
+ *  done which makes the code a bit more readable in my opinion.
+ * */
 class RestaurantViewHolder extends RecyclerView.ViewHolder {
 
     @BindView(R.id.restaurant_card) CardView cardView;
@@ -63,7 +85,6 @@ class RestaurantViewHolder extends RecyclerView.ViewHolder {
         return this;
     }
 
-
     public RestaurantViewHolder setFavorite(boolean favorite) {
         if (favorite) {
             favoriteBtn.setImageDrawable(AndroidUtils.tintDrawable(favoriteBtn.getContext(), favoriteFull, R.color.favorite));
@@ -103,6 +124,11 @@ class RestaurantViewHolder extends RecyclerView.ViewHolder {
         return this;
     }
 
+    /** expands the card view if it's collapsed or collapse the cardview if it's expanded
+     *  changes the drawable of the open button depending on the
+     *  state (when collapsed the button will be a down arrow, when expanded the button will be
+     *  an up arrow)
+     * */
     boolean toggleExpand() {
         if (!expanded) {
             expandView();

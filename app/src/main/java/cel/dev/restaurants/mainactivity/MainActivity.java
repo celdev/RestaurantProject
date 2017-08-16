@@ -10,8 +10,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,6 +20,23 @@ import butterknife.OnClick;
 import cel.dev.restaurants.R;
 import cel.dev.restaurants.utils.AndroidUtils;
 
+/** This activity is the MainActivity of this application
+ *  The activity contains
+ *      an appbar with an options-menu
+ *      a BottomNavigationView with three options
+ *      a Floating Action Button
+ *      a Fragment
+ *
+ *  The BottomNavigationView allows the user to set which fragment to show in the activity
+ *  There are three fragments
+ *      Show all restaurants
+ *      Show nearby restaurants
+ *      Find a random restaurant
+ *  The fragment is responsible for handling the Floating action button click, The
+ *      Find a random restaurant-fragment doesn't need a floating action button so the button is hidden
+ *      in this fragment
+ *
+ * */
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener, MainActivityMVP.View {
 
     public static final String TAG = "mainactivity";
@@ -58,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        presenter.contextMenuItemSelected(item.getItemId());
+        presenter.menuItemSelected(item.getItemId());
         return super.onOptionsItemSelected(item);
     }
 

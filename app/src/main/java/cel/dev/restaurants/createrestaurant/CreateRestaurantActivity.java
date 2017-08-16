@@ -417,11 +417,13 @@ public class CreateRestaurantActivity extends AppCompatActivity implements Creat
         startActivityForResult(intent, LOCATION_ACTIVITY_REQUEST);
     }
 
+    /** stores state information in order for this activity
+     *  to save it's state when the activity is being hidden
+     * */
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putIntArray(getString(R.string.bundle_chosen_kitchen_types), CollectionUtils.enumToIntArr(presenter.getChosenKitchen()));
-        Log.d(TAG, "onSaveInstanceState: ");
         outState.putBoolean(getString(R.string.bundle_is_showing_choose_kitchen_dialog),
                 AndroidUtils.dialogFragmentIsShowing(chooseKitchenDialogFragment));
         if (location != null) {
@@ -429,6 +431,8 @@ public class CreateRestaurantActivity extends AppCompatActivity implements Creat
         }
     }
 
+    /** Restors the state saved in the method above
+     * */
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);

@@ -21,7 +21,6 @@ public class LocationUtils {
     public static final String TAG = "Loc util";
 
     public static void showRequireLocationDialog(Context context, final LocationRequestCallback requestCallback) {
-        Log.d(TAG, "showRequireLocationDialog: showing require location dialog");
         new AlertDialog.Builder(context).setTitle(R.string.require_location)
                 .setMessage(R.string.require_location_dialog_text)
                 .setPositiveButton(R.string.button_ok, new DialogInterface.OnClickListener() {
@@ -36,7 +35,6 @@ public class LocationUtils {
 
 
     public static void requestLocationPermission(Activity activity, int requestCode) {
-        Log.d(TAG, "requestLocationPermission: requesting location permission");
         ActivityCompat.requestPermissions(activity, PermissionUtils.LOCATION_PERMISSIONS, requestCode);
     }
 
@@ -48,13 +46,11 @@ public class LocationUtils {
     public static void requestLocation(Context context, OnSuccessListener<Location> successCallback,
                                        OnCompleteListener<Location> completeCallback, LocationRequestCallback onRequestCallback) {
         if (checkHasLocationPermission(context)) {
-            Log.d(TAG, "requestLocation: has location permission, creating fused service");
             LocationServices.getFusedLocationProviderClient(context)
                     .getLastLocation()
                     .addOnSuccessListener(successCallback)
                     .addOnCompleteListener(completeCallback);
         } else {
-            Log.d(TAG, "requestLocation: doesn't have location permission");
             showRequireLocationDialog(context, onRequestCallback);
         }
     }

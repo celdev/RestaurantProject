@@ -33,6 +33,6 @@ public interface MainActivityMVP {
 
         void loadFragment();
 
-        void contextMenuItemSelected(@IdRes int itemId);
+        void menuItemSelected(@IdRes int itemId);
     }
 }

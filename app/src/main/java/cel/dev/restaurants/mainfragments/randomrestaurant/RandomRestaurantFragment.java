@@ -39,7 +39,10 @@ import cel.dev.restaurants.utils.AndroidUtils;
 import cel.dev.restaurants.utils.CollectionUtils;
 import cel.dev.restaurants.utils.LocationUtils;
 
-
+/** This fragment displays a random restaurant and
+ *  allows the user to make certain choices in order to
+ *  find a random restaurant which satisfy their needs (i.e. location and budget)
+ * */
 public class RandomRestaurantFragment extends Fragment implements FABFragmentHandler, RandomRestaurantMVP.View, OnSuccessListener<Location>, OnCompleteListener<Location> {
 
 
@@ -102,8 +105,6 @@ public class RandomRestaurantFragment extends Fragment implements FABFragmentHan
         return view;
     }
 
-
-
     @Override
     public void showLoadingLocationDialog() {
         progressDialog = AndroidUtils.
@@ -135,10 +136,16 @@ public class RandomRestaurantFragment extends Fragment implements FABFragmentHan
         }
     }
 
+    /** This fragment doesn't need a FAB-button but
+     *  is required to implement this method since it will be contained in the MainActivity
+     * */
     @Override
     public void handleFABClick() {
     }
 
+    /** Displays text stating that no restaurants was found using the current settings
+     *  and allows the user to reset the settings and start over
+     * */
     @Override
     public void handleNoRestaurantsFound() {
         randomRestaurantButtonLayout.setVisibility(View.GONE);
@@ -146,13 +153,20 @@ public class RandomRestaurantFragment extends Fragment implements FABFragmentHan
         noRestaurantsLayout.setVisibility(View.VISIBLE);
     }
 
+    /** Sets the state of the view to display a restaurant
+     *  (hides messages about that no restaurants was found)
+     * */
     private void setRestaurantFound() {
         restaurantCard.setVisibility(View.VISIBLE);
         randomRestaurantButtonLayout.setVisibility(View.VISIBLE);
         noRestaurantsLayout.setVisibility(View.GONE);
     }
 
-
+    /** Injects a restaurant into the view
+     *  sets and creates the name, rating, location, button click listeners...
+     *  The view which displays the restaurant is the cardview used in the RecycleView in
+     *  the NearbyFragment and ShowRestaurants-fragment
+     * */
     @Override
     public void injectRestaurant(final Restaurant restaurant, RestaurantDAO restaurantDAO) {
         setRestaurantFound();
@@ -174,12 +188,21 @@ public class RandomRestaurantFragment extends Fragment implements FABFragmentHan
         });
     }
 
+    /** #################################################################################
+     *  #################################################################################
+     *  #################################################################################
+     *  #################################################################################
+     *  OnClick-Listeners for the buttons in the Restaurant-CardView
+     * */
     @OnClick(R.id.edit_restaurant_btn)
     public void editRestaurantClicked(View view) {
         presenter.editCurrentRestaurant();
     }
 
-
+    /** OnClick-handler for the delete restaurant button
+     *  Shows a dialog asking if the user wants to delete this restaurant
+     *  if so, deletes the restaurant, otherwise hides the dialog
+     * */
     @OnClick(R.id.delete_restaurant_btn)
     public void deleteRestaurantClicked(View view) {
         new AlertDialog.Builder(getContext())
@@ -202,7 +225,11 @@ public class RandomRestaurantFragment extends Fragment implements FABFragmentHan
                 .show();
     }
 
-
+    /** Expands the CardView which will show the presented restaurants information
+     *  and some buttons which previously wasn't shown
+     *  The expansion is done using an animation which expands the view during a
+     *  certain (small) time
+     * */
     @OnClick(R.id.open_restaurant_info_btn)
     public void expandClicked(View view) {
         if (expanded) {
@@ -225,6 +252,17 @@ public class RandomRestaurantFragment extends Fragment implements FABFragmentHan
     }
 
 
+    /** #################################################################################
+     *  #################################################################################
+     *  #################################################################################
+     *  OnClick-Listeners for the choices the user can make in order to alter the randomise
+     *  settings after being presented with a random restaurant
+     *  The choices the user can make is to try to find restaurants that are
+     *      Closer, cheaper, have other types of food, or just to find another restaurant
+     *      using the same settings as before
+     *  Each of these listeners passes a RandomChoice into the presenter which will
+     *  alter the settings and load a new restaurants using the new settings
+     * */
     @OnClick(R.id.restaurant_closer)
     public void showRestaurantThatIsCloserPressed(View view) {
         presenter.showNewRestaurant(RandomChoice.CLOSER);
@@ -251,6 +289,8 @@ public class RandomRestaurantFragment extends Fragment implements FABFragmentHan
         presenter.resetSettings();
     }
 
+    /** Callback for when the location service returns a location
+     * */
     @Override
     public void onSuccess(Location location) {
         if (location != null) {
@@ -261,6 +301,14 @@ public class RandomRestaurantFragment extends Fragment implements FABFragmentHan
         }
     }
 
+    /** Similar function to the onSuccess callback
+     *  The location service seems to have a bug on my phone
+     *  which result in the onSuccess retrieving a null location
+     *  However, this method (which is called directly after onSuccess)
+     *  always gets the location without any problems
+     *  If the location wasn't set in the onSuccess-method (=hasLocation will be false)
+     *  then use the location in this method
+     * */
     @Override
     public void onComplete(@NonNull Task<Location> task) {
         Location location = task.getResult();

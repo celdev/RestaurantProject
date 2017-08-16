@@ -5,6 +5,9 @@ import android.text.TextWatcher;
 
 import cel.dev.restaurants.createrestaurant.ImageFragment.ImageFragmentMVP;
 
+/** This class allows for the TextView on top of the image to be updated
+ *  with the text entered in the restaurant edittext field
+ * */
 class RestaurantNameTextWatcher implements TextWatcher {
 
     private ImageFragmentMVP.View hasTextView;

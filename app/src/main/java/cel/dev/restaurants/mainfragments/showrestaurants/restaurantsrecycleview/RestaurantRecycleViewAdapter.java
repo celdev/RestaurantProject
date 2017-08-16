@@ -50,7 +50,7 @@ public class RestaurantRecycleViewAdapter extends RecyclerView.Adapter<Restauran
                 .setKitchenType(context, restaurant.getKitchenTypes())
                 .setOnOpenListener(new RestaurantCardButtonListener.OnOpenPressedListener(holder, this, position))
                 .setOnFavoriteListener(new RestaurantCardButtonListener.OnFavoritePressedListener(holder, restaurant, restaurantDAO))
-                .setOnDeleteRestaurantListener(new RestaurantCardButtonListener.OnDeleteRestaurantListener(holder, this, restaurant))
+                .setOnDeleteRestaurantListener(new RestaurantCardButtonListener.OnDeleteRestaurantListener(holder, this))
                 .setOnShowLocationListener(new RestaurantCardButtonListener.OnShowRestaurantLocationListener(holder, this, restaurant))
                 .setOnEditRestaurantListener(new RestaurantCardButtonListener.OnEditRestaurantListener(holder, this, restaurant))
                 .collapseView();

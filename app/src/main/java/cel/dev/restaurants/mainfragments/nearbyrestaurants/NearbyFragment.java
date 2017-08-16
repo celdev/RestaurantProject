@@ -24,7 +24,13 @@ import cel.dev.restaurants.model.Restaurant;
 import cel.dev.restaurants.repository.RestaurantDAO;
 import cel.dev.restaurants.utils.PermissionUtils;
 
-
+/** This is the fragment which allows the user to explore restaurants which are nearby
+ *
+ *  This fragment extends the ListRestaurantsFragment which provides the basic functionality
+ *  to display a set of restaurants in a RecycleView
+ *
+ *  The handler of the Floating Action Button will open the Set Range Dialog
+ * */
 public class NearbyFragment extends ListRestaurantsFragment implements OnSuccessListener<Location>, ShowRestaurantsMVP.View, NearbyMVP.View {
 
     private static final int REQUEST_LOCATION = 1;
@@ -57,7 +63,9 @@ public class NearbyFragment extends ListRestaurantsFragment implements OnSuccess
     }
 
 
-
+    /** This is called when the location service returns a location
+     *  Uses this location to get restaurants which is close
+     * */
     @Override
     public void onSuccess(Location location) {
         if (location != null) {
@@ -93,6 +101,12 @@ public class NearbyFragment extends ListRestaurantsFragment implements OnSuccess
         }
     }
 
+    /** Uses the List of restaurants and the restaurantDAO (needed in order to get the image and set changes in the favorite status)
+     *  to create the adapter for the RecycleView
+     *
+     *  If this list of restaurants is empty an error message will be shown instead
+     *  with information about what the user can do in order to see more restaurants
+     * */
     @Override
     public void injectData(List<Restaurant> restaurants, RestaurantDAO restaurantDAO) {
         if (restaurants.isEmpty()) {
@@ -124,6 +138,12 @@ public class NearbyFragment extends ListRestaurantsFragment implements OnSuccess
     }
 
 
+    /** Shows a set range dialog
+     *  which allows the user to set the range (close <--> not very close)
+     *  of restaurants to consider nearby
+     *  When the range (using a SeekBar) is changed the nearby restaurants are updated directly
+     *  Which provides good feedback for the user in determining what is "close" and "not very close"
+     * */
     @Override
     public void showRangeDialog(double range) {
         final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());

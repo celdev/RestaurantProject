@@ -17,15 +17,16 @@ import cel.dev.restaurants.repository.KitchenTypeDAOImpl;
 import cel.dev.restaurants.repository.RestaurantDAO;
 import cel.dev.restaurants.repository.RestaurantDAOImpl;
 
+/** This implementation will
+ *  relieve the presenter of some of the "store data"-responsibilities
+ * */
 class CreateRestaurantRepositoryImpl implements CreateRestaurantMVP.Repository {
 
-    private final Context context;
     private List<KitchenType> chosenTypes = new ArrayList<>();
 
     private RestaurantDAO restaurantDAO;
 
     CreateRestaurantRepositoryImpl(Context context) {
-        this.context = context;
         restaurantDAO = new RestaurantDAOImpl(context);
     }
 
