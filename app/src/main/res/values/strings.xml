@@ -93,7 +93,7 @@
     <string name="about">About</string>
     <string name="reset_app">Reset application</string>
     <string name="about_dialog_title">About</string>
-    <string name="about_dialog_content">todo</string>
+
     <string name="delete_all_restaurants">Delete Restaurants?</string>
     <string name="are_you_sure_delete_all">Are you sure you want to delete all restaurants?</string>
     <string name="delete_button">Delete</string>
@@ -102,5 +102,20 @@
     <string name="no_restaurants_added">No restaurants has been added yet.\nTry adding some by pressing the plus button below.</string>
     <string name="no_restaurant_found_try_changing_area_size">No restaurants found.\nTry increasing the nearby area size\nor add more restaurants nearby.</string>
 
+
+    <string name="about_dialog_content"><b>Privacy policy</b>
+        \nThis application may use your camera if you want to add a custom picture to the restaurant.\nThis application uses your location in order to determine the location of restaurants and nearby restaurants.\nThe location service used may use Google Play Services in order to give an accurate location.
+        \nThe location you provide when creating each restaurant will be stored in your device. This information won\'t be shared with anyone. All data you add about restaurants will only be stored on your device.
+        \nThis application does not store any data that is unnecessary in order to provide you with the use cases of this application.
+        \nThe application also <b>only</b> stores the data you provide (i.e. images and location information) in your device.
+        \n<b><i>"Forget me"</i></b>
+        \nIf you want to delete all information you have provided this application, use the reset application
+        option in the menu.
+        \n
+        \n\n\n<b>Libraries</b>
+        \nThis application uses the Butter Knife library by Jake Wharton released under the <i>http://www.apache.org/licenses/LICENSE-2.0</i> licence.
+        \n
+
+    </string>
 
 </resources>
