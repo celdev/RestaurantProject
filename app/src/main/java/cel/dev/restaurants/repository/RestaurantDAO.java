@@ -36,4 +36,6 @@ public interface RestaurantDAO {
     Restaurant getRandomRestaurant(RandomiseSettings randomiseSettings);
 
     void deleteAllRestaurants();
+
+    void closeDB();
 }

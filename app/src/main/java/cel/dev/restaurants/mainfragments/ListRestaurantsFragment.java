@@ -32,7 +32,6 @@ public abstract class ListRestaurantsFragment extends Fragment implements FABFra
         recyclerView = (RecyclerView) view.findViewById(R.id.restaurants_recycle_view);
         noRestaurantsText = (TextView) view.findViewById(R.id.list_fragment_info_text);
         initializeViews();
-        initializePresenter();
         return view;
     }
 
@@ -48,10 +47,6 @@ public abstract class ListRestaurantsFragment extends Fragment implements FABFra
     public RecyclerView getRestaurantRecyclerView() {
         return recyclerView;
     }
-
-    /** Allows each fragment to initialize their own presenter
-     * */
-    public abstract void initializePresenter();
 
     /** Allows each fragment to initialize their own view information
      * */

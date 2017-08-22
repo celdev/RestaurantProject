@@ -27,4 +27,6 @@ public interface RestaurantCRUD {
     boolean removeRestaurant(Restaurant restaurant);
 
     void deleteAllRestaurants();
+
+    void close();
 }

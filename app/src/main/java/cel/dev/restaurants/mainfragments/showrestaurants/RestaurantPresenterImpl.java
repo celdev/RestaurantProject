@@ -30,4 +30,9 @@ class RestaurantPresenterImpl implements ShowRestaurantsMVP.Presenter {
     public List<Restaurant> getRestaurants() {
         return restaurantDAO.getAllRestaurants();
     }
+
+    @Override
+    public void onCloseFragment() {
+        restaurantDAO.closeDB();
+    }
 }

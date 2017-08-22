@@ -2,7 +2,6 @@ package cel.dev.restaurants.createrestaurant;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.widget.ImageView;
 
 import java.util.ArrayList;
@@ -64,5 +63,10 @@ class CreateRestaurantRepositoryImpl implements CreateRestaurantMVP.Repository {
         if (restaurant instanceof RestaurantCustomImage) {
             restaurant.injectImageOntoImageView(imageView, restaurantDAO);
         }
+    }
+
+    @Override
+    public void onClose() {
+        restaurantDAO.closeDB();
     }
 }

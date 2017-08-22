@@ -18,6 +18,7 @@ public interface ShowRestaurantsMVP {
 
         void onLoadFragment();
 
+        void onCloseFragment();
     }
 
 }

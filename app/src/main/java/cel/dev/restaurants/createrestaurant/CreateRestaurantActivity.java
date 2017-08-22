@@ -87,6 +87,7 @@ public class CreateRestaurantActivity extends AppCompatActivity implements Creat
     private Double[] location;
     private ActivityMode mode = ActivityMode.NEW;
     private ChooseKitchenDialogFragment chooseKitchenDialogFragment;
+    private AlertDialog cancelDialog;
 
     private boolean menuInflated;
 
@@ -352,22 +353,32 @@ public class CreateRestaurantActivity extends AppCompatActivity implements Creat
      * */
     @Override
     public void onBackPressed() {
-        new AlertDialog.Builder(this).setTitle(R.string.unsaved_information)
+        createAndShowCancelDialog();
+    }
+
+    private void createAndShowCancelDialog() {
+        cancelDialog = createCancelDialog();
+        cancelDialog.show();
+    }
+
+    private AlertDialog createCancelDialog() {
+        return new AlertDialog.Builder(this).setTitle(R.string.unsaved_information)
                 .setMessage(R.string.restaurant_not_saved_yet)
                 .setPositiveButton(R.string.stay, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
+                        cancelDialog = null;
                     }
                 })
                 .setNegativeButton(R.string.discard, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        cancelDialog = null;
                         CreateRestaurantActivity.super.onBackPressed();
                     }
-                }).create().show();
+                }).create();
     }
-
 
 
     /**
@@ -417,6 +428,23 @@ public class CreateRestaurantActivity extends AppCompatActivity implements Creat
         startActivityForResult(intent, LOCATION_ACTIVITY_REQUEST);
     }
 
+    /** This method is called when the activity is being shut down
+     *  call the presenter to preform on shutdown functionality.
+     *
+     *  dismisses any dialogs that may be showing
+     * */
+    @Override
+    protected void onDestroy() {
+        if (cancelDialog != null) {
+            cancelDialog.dismiss();
+        }
+        if (chooseKitchenDialogFragment != null) {
+            chooseKitchenDialogFragment.dismiss();
+        }
+        presenter.onCloseActivity();
+        super.onDestroy();
+    }
+
     /** stores state information in order for this activity
      *  to save it's state when the activity is being hidden
      * */
@@ -426,6 +454,7 @@ public class CreateRestaurantActivity extends AppCompatActivity implements Creat
         outState.putIntArray(getString(R.string.bundle_chosen_kitchen_types), CollectionUtils.enumToIntArr(presenter.getChosenKitchen()));
         outState.putBoolean(getString(R.string.bundle_is_showing_choose_kitchen_dialog),
                 AndroidUtils.dialogFragmentIsShowing(chooseKitchenDialogFragment));
+        outState.putBoolean(getString(R.string.bundle_is_showing_cancel_dialog), cancelDialog != null);
         if (location != null) {
             outState.putDoubleArray(getString(R.string.bundle_location), new double[]{location[0], location[1]});
         }
@@ -447,6 +476,9 @@ public class CreateRestaurantActivity extends AppCompatActivity implements Creat
         }
         if (savedInstanceState.getBoolean(getString(R.string.bundle_is_showing_choose_kitchen_dialog), false)) {
             showSelectKitchenDialog();
+        }
+        if (savedInstanceState.getBoolean(getString(R.string.bundle_is_showing_cancel_dialog), false)) {
+            createAndShowCancelDialog();
         }
         String key = getString(R.string.bundle_location);
         if(savedInstanceState.containsKey(key)) {

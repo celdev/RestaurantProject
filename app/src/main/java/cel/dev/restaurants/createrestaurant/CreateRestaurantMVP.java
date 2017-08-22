@@ -84,6 +84,8 @@ public interface CreateRestaurantMVP {
         long getRestaurantId();
 
         void injectImageOntoDrawable(ImageView imageView, Restaurant restaurant);
+
+        void onCloseActivity();
     }
 
     interface Repository {
@@ -103,6 +105,8 @@ public interface CreateRestaurantMVP {
         void setChosenFoodTypes(KitchenType[] kitchenTypes);
 
         void injectImageOntoImageView(ImageView imageView, Restaurant restaurant);
+
+        void onClose();
     }
 
 }

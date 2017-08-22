@@ -137,7 +137,7 @@ class CreateRestaurantPresenterImpl implements CreateRestaurantMVP.Presenter {
             Geocoder geocoder = new Geocoder(context);
             List<Address> fromLocation = geocoder.getFromLocation(latitude, longitude, 1);
             return fromLocation.get(0).getAddressLine(0);
-        } catch (IOException e) {
+        } catch (Exception e) {
             Log.d("create pres", "getLocationStringFromLatLng: ", e);
             return context.getString(R.string.error_getting_address);
         }
@@ -177,6 +177,11 @@ class CreateRestaurantPresenterImpl implements CreateRestaurantMVP.Presenter {
     @Override
     public void injectImageOntoDrawable(ImageView imageView, Restaurant restaurant) {
         repository.injectImageOntoImageView(imageView, restaurant);
+    }
+
+    @Override
+    public void onCloseActivity() {
+        repository.onClose();
     }
 
 }

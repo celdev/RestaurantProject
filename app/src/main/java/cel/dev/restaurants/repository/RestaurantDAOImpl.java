@@ -122,6 +122,11 @@ public class RestaurantDAOImpl implements RestaurantDAO {
         restaurantCRUD.deleteAllRestaurants();
     }
 
+    @Override
+    public void closeDB() {
+        restaurantCRUD.close();
+    }
+
     /** removes all restaurants from the list which's budgettypes are too expensive (according
      *  to the settings)
      * */

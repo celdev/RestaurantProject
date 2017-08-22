@@ -69,6 +69,7 @@
     <string name="save">Save</string>
     <string name="bundle_kitchen_type_list_view">KITCHEN_TYPE_LIST_VIEW</string>
     <string name="bundle_is_showing_choose_kitchen_dialog">IS_SHOWING_KITCHEN_DIALOG</string>
+    <string name="bundle_is_showing_cancel_dialog">IS_SHOWING_CANCEL_DIALOG</string>
     <string name="bundle_location">LOCATION_LAT_LON</string>
     <string name="error_no_location">Error: no location chosen</string>
     <string name="choose_range">Set nearby distance</string>
@@ -108,6 +109,9 @@
         \nThe location you provide when creating each restaurant will be stored in your device. This information won\'t be shared with anyone. All data you add about restaurants will only be stored on your device.
         \nThis application does not store any data that is unnecessary in order to provide you with the use cases of this application.
         \nThe application also <b>only</b> stores the data you provide (i.e. images and location information) in your device.
+		\n<b>Google APIs</b>
+		\nThis application uses Google\'s API for displaying a map and retrieving the address of a location.
+		\nBy using this application you agree to Google\'s terms of service https://www.google.com/intl/en/policies/terms/ and privacy policy https://www.google.com/policies/privacy/
         \n<b><i>"Forget me"</i></b>
         \nIf you want to delete all information you have provided this application, use the reset application
         option in the menu.

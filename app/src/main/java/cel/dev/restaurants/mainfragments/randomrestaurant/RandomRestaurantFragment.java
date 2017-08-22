@@ -93,16 +93,23 @@ public class RandomRestaurantFragment extends Fragment implements FABFragmentHan
     private RandomRestaurantMVP.Presenter presenter;
     private boolean expanded, hasLocation;
     private ProgressDialog progressDialog;
+    private AlertDialog deleteDialog;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_random_restaurant, container, false);
         ButterKnife.bind(this, view);
-        presenter = new PresenterImpl(this, getContext());
         handleNoRestaurantsFound();
-        presenter.onRequestingLocation();
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume: called");
+        presenter = new PresenterImpl(this, getContext());
+        presenter.onRequestingLocation();
     }
 
     @Override
@@ -169,6 +176,9 @@ public class RandomRestaurantFragment extends Fragment implements FABFragmentHan
      * */
     @Override
     public void injectRestaurant(final Restaurant restaurant, RestaurantDAO restaurantDAO) {
+        if (getContext() == null) {
+            return;
+        }
         setRestaurantFound();
         restaurantName.setText(restaurant.getName());
         restaurant.injectImageOntoImageView(restaurantImage, restaurantDAO);
@@ -205,7 +215,7 @@ public class RandomRestaurantFragment extends Fragment implements FABFragmentHan
      * */
     @OnClick(R.id.delete_restaurant_btn)
     public void deleteRestaurantClicked(View view) {
-        new AlertDialog.Builder(getContext())
+        deleteDialog = new AlertDialog.Builder(getContext())
                 .setTitle(R.string.delete_restaurant_dialog_title)
                 .setMessage(R.string.are_you_sure_delete)
                 .setPositiveButton(R.string.delete_restaurant, new DialogInterface.OnClickListener() {
@@ -221,8 +231,8 @@ public class RandomRestaurantFragment extends Fragment implements FABFragmentHan
                         dialog.dismiss();
                     }
                 })
-                .create()
-                .show();
+                .create();
+        deleteDialog.show();
     }
 
     /** Expands the CardView which will show the presented restaurants information
@@ -287,6 +297,21 @@ public class RandomRestaurantFragment extends Fragment implements FABFragmentHan
     public void resetSettingsPressed(View view) {
         hasLocation = false;
         presenter.resetSettings();
+    }
+
+    /** Called when the
+     * */
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (presenter != null) {
+            presenter.onCloseFragment();
+            presenter = null;
+        }
+        if (deleteDialog != null) {
+            deleteDialog.dismiss();
+            deleteDialog = null;
+        }
     }
 
     /** Callback for when the location service returns a location

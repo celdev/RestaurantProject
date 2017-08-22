@@ -43,6 +43,8 @@ public interface RandomRestaurantMVP {
         void showNewRestaurant(RandomChoice closer);
 
         void onRequestingLocation();
+
+        void onCloseFragment();
     }
 
 }

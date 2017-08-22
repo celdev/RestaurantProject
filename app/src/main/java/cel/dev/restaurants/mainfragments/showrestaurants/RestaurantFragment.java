@@ -28,10 +28,6 @@ public class RestaurantFragment extends ListRestaurantsFragment implements ShowR
     private ShowRestaurantsMVP.Presenter presenter;
 
 
-    @Override
-    public void initializePresenter() {
-        presenter = new RestaurantPresenterImpl(this, getContext());
-    }
 
 
     @Override
@@ -39,10 +35,18 @@ public class RestaurantFragment extends ListRestaurantsFragment implements ShowR
         getRestaurantRecyclerView().setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
     }
 
+
+    /** This method is called when the fragment enters the onResume lifecycle-event
+     *
+     *  Initialized the presenter if it isn't already initialized.
+     * */
     @Override
     public void onResume() {
         super.onResume();
-        presenter.onLoadFragment();
+        if (presenter == null) {
+            presenter = new RestaurantPresenterImpl(this, getContext());
+            presenter.onLoadFragment();
+        }
     }
 
     /** Uses the restaurants to create an adapter for the RecycleView
@@ -57,6 +61,19 @@ public class RestaurantFragment extends ListRestaurantsFragment implements ShowR
             hideNoRestaurantsMessage();
             RestaurantRecycleViewAdapter adapter = new RestaurantRecycleViewAdapter(restaurants, getContext(), restaurantDAO);
             getRestaurantRecyclerView().setAdapter(adapter);
+        }
+    }
+
+    /** Called when the fragment is being destroyed
+     *
+     *  Calls the presenter to preform closing fragment activities if the presenter isn't null
+     * */
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (presenter != null) {
+            presenter.onCloseFragment();
+            presenter = null;
         }
     }
 

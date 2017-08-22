@@ -70,6 +70,13 @@ public class RestaurantDB implements RestaurantCRUD {
         db.delete(RestaurantDbSchema.Table.NAME, null, null);
     }
 
+    @Override
+    public void close() {
+        if (db != null) {
+            db.close();
+        }
+    }
+
     /** Returns (if it exist) a restaurant by id
      * */
     @Override

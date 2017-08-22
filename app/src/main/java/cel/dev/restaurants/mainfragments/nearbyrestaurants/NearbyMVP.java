@@ -33,6 +33,8 @@ public interface NearbyMVP {
         void refreshList();
 
         int getRangeForSeekBar();
+
+        void onCloseFragment();
     }
 
 }

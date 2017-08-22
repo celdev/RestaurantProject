@@ -79,5 +79,10 @@ class NearbyPresenterImpl implements NearbyMVP.Presenter {
         view.requestLocation();
     }
 
+    @Override
+    public void onCloseFragment() {
+        restaurantDAO.closeDB();
+    }
+
 
 }

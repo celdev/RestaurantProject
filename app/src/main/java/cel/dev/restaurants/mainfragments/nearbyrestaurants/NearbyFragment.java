@@ -42,10 +42,14 @@ public class NearbyFragment extends ListRestaurantsFragment implements OnSuccess
 
     private NearbyMVP.Presenter presenter;
 
+
     @Override
-    public void initializePresenter() {
-        presenter = new NearbyPresenterImpl(this, getContext());
-        presenter.refreshList();
+    public void onResume() {
+        super.onResume();
+        if (presenter == null) {
+            presenter = new NearbyPresenterImpl(this, getContext());
+            presenter.refreshList();
+        }
     }
 
     @Override
@@ -115,6 +119,15 @@ public class NearbyFragment extends ListRestaurantsFragment implements OnSuccess
             hideNoRestaurantsMessage();
             RestaurantRecycleViewAdapter adapter = new RestaurantRecycleViewAdapter(restaurants, getContext(), restaurantDAO);
             getRestaurantRecyclerView().setAdapter(adapter);
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (presenter != null) {
+            presenter.onCloseFragment();
+            presenter = null;
         }
     }
 

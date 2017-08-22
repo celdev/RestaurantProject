@@ -155,6 +155,11 @@ class PresenterImpl implements RandomRestaurantMVP.Presenter {
         restaurantDAO.setRestaurantFavorite(restaurant);
     }
 
+    @Override
+    public void onCloseFragment() {
+        restaurantDAO.closeDB();
+    }
+
     /** Show the location of the current restaurant on a map
      * */
     @Override
