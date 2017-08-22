@@ -10,7 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import cel.dev.restaurants.R;
 import cel.dev.restaurants.model.BudgetType;
@@ -23,11 +25,18 @@ public class RestaurantRecycleViewAdapter extends RecyclerView.Adapter<Restauran
     private List<Restaurant> restaurants;
     private Context context;
     private final RestaurantDAO restaurantDAO;
+    private HashSet<Long> expandedRestaurants;
 
-    public RestaurantRecycleViewAdapter(List<Restaurant> restaurants, Context context, RestaurantDAO restaurantDAO) {
+    public RestaurantRecycleViewAdapter(List<Restaurant> restaurants, Context context, RestaurantDAO restaurantDAO, HashSet<Long> expandedRestaurants) {
         this.restaurants = restaurants;
         this.context = context;
         this.restaurantDAO = restaurantDAO;
+        Log.d("adapter", "RestaurantRecycleViewAdapter: expanded size = " + expandedRestaurants.size());
+        this.expandedRestaurants = expandedRestaurants;
+    }
+
+    public HashSet<Long> getExpandedRestaurants() {
+        return expandedRestaurants;
     }
 
     @Override
@@ -48,12 +57,17 @@ public class RestaurantRecycleViewAdapter extends RecyclerView.Adapter<Restauran
                 .setFavorite(restaurant.isFavorite())
                 .setBudgetType(context, BudgetType.sortBudgetType(restaurant.getBudgetTypes()))
                 .setKitchenType(context, restaurant.getKitchenTypes())
-                .setOnOpenListener(new RestaurantCardButtonListener.OnOpenPressedListener(holder, this, position))
+                .setOnOpenListener(new RestaurantCardButtonListener.OnOpenPressedListener(holder, this, position, restaurant.getId()))
                 .setOnFavoriteListener(new RestaurantCardButtonListener.OnFavoritePressedListener(holder, restaurant, restaurantDAO))
                 .setOnDeleteRestaurantListener(new RestaurantCardButtonListener.OnDeleteRestaurantListener(holder, this))
                 .setOnShowLocationListener(new RestaurantCardButtonListener.OnShowRestaurantLocationListener(holder, this, restaurant))
                 .setOnEditRestaurantListener(new RestaurantCardButtonListener.OnEditRestaurantListener(holder, this, restaurant))
                 .collapseView();
+        /*  Expands the view if it was expanded before rotation change
+        * */
+        if (expandedRestaurants.contains(restaurant.getId())) {
+            holder.toggleExpand();
+        }
     }
 
     @Override
@@ -71,8 +85,13 @@ public class RestaurantRecycleViewAdapter extends RecyclerView.Adapter<Restauran
      *  delete restaurant button
      * */
     @Override
-    public void onExpandChange(boolean expanded, int position) {
-        //notifyItemChanged(position);
+    public void onExpandChange(boolean expanded, int position, long restaurantId) {
+        Log.d("recycleview", "onExpandChange: expanded = " + expanded + " pos = " + position + " restaurant id = " + restaurantId);
+        if (expanded) {
+            expandedRestaurants.add(restaurantId);
+        } else {
+            expandedRestaurants.remove(restaurantId);
+        }
     }
 
     /** Creates and shows a dialog which askes the user if the user really wants
@@ -110,6 +129,7 @@ public class RestaurantRecycleViewAdapter extends RecyclerView.Adapter<Restauran
             Toast.makeText(context, R.string.error, Toast.LENGTH_SHORT).show();
         }
     }
+
 
     @Override
     public void onEditRestaurant(Restaurant restaurant) {

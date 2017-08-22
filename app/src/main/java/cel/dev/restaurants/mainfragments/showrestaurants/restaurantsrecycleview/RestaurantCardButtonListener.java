@@ -25,16 +25,18 @@ abstract class RestaurantCardButtonListener implements View.OnClickListener {
     static class OnOpenPressedListener extends RestaurantCardButtonListener {
         private final RecycleViewOnExpandChangeCallback callback;
         private final int position;
+        private final long restaurantId;
 
-        public OnOpenPressedListener(RestaurantViewHolder restaurantViewHolder, RecycleViewOnExpandChangeCallback callback, int position) {
+        public OnOpenPressedListener(RestaurantViewHolder restaurantViewHolder, RecycleViewOnExpandChangeCallback callback, int position, long restaurantId) {
             super(restaurantViewHolder);
             this.callback = callback;
             this.position = position;
+            this.restaurantId = restaurantId;
         }
 
         @Override
         public void onClick(View v) {
-            callback.onExpandChange(restaurantViewHolder.toggleExpand(), position);
+            callback.onExpandChange(restaurantViewHolder.toggleExpand(), position, restaurantId);
         }
     }
 

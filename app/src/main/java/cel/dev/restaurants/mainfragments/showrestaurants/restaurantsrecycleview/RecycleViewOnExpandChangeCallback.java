@@ -8,7 +8,7 @@ import cel.dev.restaurants.model.Restaurant;
  * */
 public interface RecycleViewOnExpandChangeCallback {
 
-    void onExpandChange(boolean expanded, int position);
+    void onExpandChange(boolean expanded, int position, long restaurantId);
 
     void onDeleteRestaurant(int adapterPos);
 

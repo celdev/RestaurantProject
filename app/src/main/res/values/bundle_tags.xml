@@ -3,4 +3,5 @@
     <string name="bundle_chosen_kitchen_types">CHOSEN_KITCHEN_TYPES</string>
     <string name="bundle_create_restaurant_image">RESTAURANT_IMAGE</string>
 
+    <string name="bundle_expanded_restaurants">EXPANDED_RESTAURANTS</string>
 </resources>

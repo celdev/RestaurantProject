@@ -55,6 +55,7 @@ public class CollectionUtils {
         return list;
     }
 
+
     /** turns an array of Kitchentypes into a String which can be shown
      *  e.g. [KitchenType.CAFE, KITCHENTYPE.STEAK] --> "Café, Steak"
      * */

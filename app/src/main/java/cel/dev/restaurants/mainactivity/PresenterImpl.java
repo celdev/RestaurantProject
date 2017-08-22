@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 
 import cel.dev.restaurants.R;
@@ -26,6 +27,7 @@ class PresenterImpl implements MainActivityMVP.Presenter {
     private final Context context;
 
     private FABFragmentHandler fabHandler;
+    private Fragment fragment;
 
     private int activeFragment;
     public static final String ACTIVE_FRAGMENT_KEY = "active_fragment";
@@ -63,6 +65,7 @@ class PresenterImpl implements MainActivityMVP.Presenter {
                 throw new RuntimeException("unhandled nav id " + fragmentId);
         }
         activeFragment = fragmentId;
+        this.fragment = fragment;
         return fragment;
     }
 
@@ -70,19 +73,31 @@ class PresenterImpl implements MainActivityMVP.Presenter {
      *  also sets the handler of the Floating Action Button press to the created fragment
      * */
     @Override
-    public boolean tabPressed(@IdRes int navId) {
+    public boolean tabPressed(@IdRes int navId, Fragment fragment) {
         switch (navId) {
             case R.id.nav_nearby:
                 view.hideShowFAB(true);
-                view.setFragment(createFragment(navId), R.drawable.ic_settings_black_24dp);
+                if (fragment == null) {
+                    view.setFragment(createFragment(navId), R.drawable.ic_settings_black_24dp);
+                } else {
+                    view.setFragment(fragment, R.drawable.ic_settings_black_24dp);
+                }
                 return true;
             case R.id.nav_find:
                 view.hideShowFAB(false);
-                view.setFragment(createFragment(navId), R.drawable.ic_filter_list_black_24dp);
+                if (fragment == null) {
+                    view.setFragment(createFragment(navId), R.drawable.ic_filter_list_black_24dp);
+                } else {
+                    view.setFragment(fragment, R.drawable.ic_filter_list_black_24dp);
+                }
                 return true;
             case R.id.nav_restaurants:
                 view.hideShowFAB(true);
-                view.setFragment(createFragment(navId), R.drawable.ic_add_black_24dp);
+                if (fragment == null) {
+                    view.setFragment(createFragment(navId), R.drawable.ic_add_black_24dp);
+                } else {
+                    view.setFragment(fragment, R.drawable.ic_add_black_24dp);
+                }
                 return true;
             default:
                 Log.e(TAG, "tabPressed: unhandled item id " + navId);
@@ -127,13 +142,21 @@ class PresenterImpl implements MainActivityMVP.Presenter {
     public void handleSavedInstanceState(Bundle savedInstanceState) {
         if (savedInstanceState != null) {
             activeFragment = savedInstanceState.getInt(ACTIVE_FRAGMENT_KEY);
+            restoreFragment(view.getCurrentFragment());
         } else {
             activeFragment = R.id.nav_restaurants;
         }
     }
 
+    private void restoreFragment(Fragment currentFragment) {
+        this.fabHandler = (FABFragmentHandler) currentFragment;
+        this.fragment = currentFragment;
+
+    }
+
+
     @Override
     public void loadFragment() {
-        tabPressed(activeFragment);
+        tabPressed(activeFragment, null);
     }
 }

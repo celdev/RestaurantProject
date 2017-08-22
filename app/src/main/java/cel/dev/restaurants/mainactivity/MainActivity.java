@@ -1,5 +1,6 @@
 package cel.dev.restaurants.mainactivity;
 
+import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.DrawableRes;
@@ -54,7 +55,14 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         presenter = new PresenterImpl(this, this);
         navigationView.setOnNavigationItemSelectedListener(this);
         presenter.handleSavedInstanceState(savedInstanceState);
-        presenter.loadFragment();
+        if (savedInstanceState == null) {
+            presenter.loadFragment();
+        }
+    }
+
+    @Override
+    public Fragment getCurrentFragment() {
+        return getSupportFragmentManager().findFragmentById(R.id.content);
     }
 
     @Override
@@ -97,6 +105,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 .create().show();
     }
 
+
+
     @Override
     public void handleAfterDeleteRestaurants() {
         navigationView.setSelectedItemId(R.id.nav_restaurants);
@@ -110,7 +120,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        return presenter.tabPressed(item.getItemId());
+        return presenter.tabPressed(item.getItemId(), null);
     }
 
     @OnClick(R.id.fab)

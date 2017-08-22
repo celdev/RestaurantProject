@@ -3,10 +3,13 @@ package cel.dev.restaurants.mainfragments.nearbyrestaurants;
 import android.Manifest;
 import android.content.DialogInterface;
 import android.location.Location;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.SeekBar;
 import android.widget.Toast;
@@ -14,7 +17,10 @@ import android.widget.Toast;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 
+import java.io.Serializable;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import cel.dev.restaurants.R;
 import cel.dev.restaurants.mainfragments.ListRestaurantsFragment;
@@ -34,6 +40,8 @@ import cel.dev.restaurants.utils.PermissionUtils;
 public class NearbyFragment extends ListRestaurantsFragment implements OnSuccessListener<Location>, ShowRestaurantsMVP.View, NearbyMVP.View {
 
     private static final int REQUEST_LOCATION = 1;
+    private static final String TAG = "nearbyfrag";
+
 
     public NearbyFragment() {}
     public static NearbyFragment newInstance() {
@@ -42,6 +50,8 @@ public class NearbyFragment extends ListRestaurantsFragment implements OnSuccess
 
     private NearbyMVP.Presenter presenter;
 
+    private HashSet<Long> expandedRestaurants = new HashSet<>();
+    private RestaurantRecycleViewAdapter adapter;
 
     @Override
     public void onResume() {
@@ -49,6 +59,23 @@ public class NearbyFragment extends ListRestaurantsFragment implements OnSuccess
         if (presenter == null) {
             presenter = new NearbyPresenterImpl(this, getContext());
             presenter.refreshList();
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putSerializable(getString(R.string.bundle_expanded_restaurants), adapter.getExpandedRestaurants());
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if (savedInstanceState != null) {
+            if (savedInstanceState.containsKey(getString(R.string.bundle_expanded_restaurants))) {
+                this.expandedRestaurants = (HashSet<Long>) savedInstanceState.getSerializable(getString(R.string.bundle_expanded_restaurants));
+                Log.d(TAG, "onActivityCreated: retrieved expanded restaurants");
+            }
         }
     }
 
@@ -117,7 +144,7 @@ public class NearbyFragment extends ListRestaurantsFragment implements OnSuccess
             showNoRestaurantsMessage(R.string.no_restaurant_found_try_changing_area_size);
         } else {
             hideNoRestaurantsMessage();
-            RestaurantRecycleViewAdapter adapter = new RestaurantRecycleViewAdapter(restaurants, getContext(), restaurantDAO);
+            adapter = new RestaurantRecycleViewAdapter(restaurants, getContext(), restaurantDAO, expandedRestaurants);
             getRestaurantRecyclerView().setAdapter(adapter);
         }
     }
