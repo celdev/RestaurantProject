@@ -7,14 +7,13 @@ import android.content.DialogInterface;
 import android.location.Location;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
 import cel.dev.restaurants.R;
-import cel.dev.restaurants.locationutils.LocationRequestCallback;
+import cel.dev.restaurants.uicontracts.LocationRequestCallback;
 
 /** This class contains some methods for extracting location related functionality from the
  *  fragments and activities.

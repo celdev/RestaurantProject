@@ -2,8 +2,7 @@ package cel.dev.restaurants.model;
 
 import android.widget.ImageView;
 
-import cel.dev.restaurants.repository.RestaurantDAO;
-import cel.dev.restaurants.repository.db.RestaurantCRUD;
+import cel.dev.restaurants.persistance.RestaurantDAO;
 
 /** Implementation of the Restaurant with a placeholder-image
  * */

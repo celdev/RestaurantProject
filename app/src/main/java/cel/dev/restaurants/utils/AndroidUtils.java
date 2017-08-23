@@ -19,9 +19,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cel.dev.restaurants.R;
-import cel.dev.restaurants.showrestaurantlocationactivity.ShowRestaurantLocationActivity;
-import cel.dev.restaurants.choosekitchendialog.ChooseKitchenDialogFragmentMVP;
-import cel.dev.restaurants.createrestaurant.CreateRestaurantActivity;
+import cel.dev.restaurants.activities.ShowRestaurantLocationActivity;
+import cel.dev.restaurants.uicontracts.dialog.ChooseKitchenDialogFragmentMVP;
+import cel.dev.restaurants.activities.CreateRestaurantActivity;
 import cel.dev.restaurants.model.Restaurant;
 
 /** This class contains a large amount of methods which provides some functionality which

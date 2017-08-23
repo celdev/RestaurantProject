@@ -121,5 +121,7 @@
         \n
 
     </string>
+    <string name="bundle_delete_all_restaurants_dialog">BUNDLE_DELETE_ALL_RESTAURANTS_DIALOG_SHOWING</string>
+    <string name="bundle_range_dialog_showing">BUNDLE_RANGE_DIALOG_SHOWING</string>
 
 </resources>

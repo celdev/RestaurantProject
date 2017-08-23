@@ -2,8 +2,7 @@ package cel.dev.restaurants.model;
 
 import android.widget.ImageView;
 
-import cel.dev.restaurants.repository.RestaurantDAO;
-import cel.dev.restaurants.repository.db.RestaurantCRUD;
+import cel.dev.restaurants.persistance.RestaurantDAO;
 
 /** This class represents a Restaurant in this application
  *  There is two different types of restaurants, one with a custom image (taken by the user)

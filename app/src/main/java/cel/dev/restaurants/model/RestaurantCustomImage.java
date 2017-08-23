@@ -3,7 +3,7 @@ package cel.dev.restaurants.model;
 import android.util.Log;
 import android.widget.ImageView;
 
-import cel.dev.restaurants.repository.RestaurantDAO;
+import cel.dev.restaurants.persistance.RestaurantDAO;
 
 
 /** Implementation of the the Restaurant which has a custom image (stored as a byte array)

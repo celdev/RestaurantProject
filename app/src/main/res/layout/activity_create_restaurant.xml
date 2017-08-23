@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
-    tools:context="cel.dev.restaurants.createrestaurant.CreateRestaurantActivity"
+    tools:context="cel.dev.restaurants.activities.CreateRestaurantActivity"
     >
     <!--    Using focusable and focusableInTouchMode = true to prevent the
             first EditText to gain focus upon startup of this activity
@@ -21,7 +21,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/restaurant_image_fragment"
-            android:name="cel.dev.restaurants.createrestaurant.ImageFragment.CreateRestaurantImageFragment"
+            android:name="cel.dev.restaurants.fragments.CreateRestaurantImageFragment"
             />
 
 
