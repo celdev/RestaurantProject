@@ -5,5 +5,8 @@ package cel.dev.restaurants.uicontracts;
  * */
 public interface FABFragmentHandler {
 
+    /** This method is called by the main activity and should handle functionality
+     *  when the floating action button is pressed
+     * */
     void handleFABClick();
 }
