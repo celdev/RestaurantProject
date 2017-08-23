@@ -1,4 +1,4 @@
-package cel.dev.restaurants.persistance.db;
+package cel.dev.restaurants.persistanceimpl.db;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -18,10 +18,13 @@ import cel.dev.restaurants.model.KitchenType;
 import cel.dev.restaurants.model.Restaurant;
 import cel.dev.restaurants.model.RestaurantCustomImage;
 import cel.dev.restaurants.model.RestaurantPlaceholderImage;
-import cel.dev.restaurants.persistance.db.RestaurantDbSchema.Table.Cols;
+import cel.dev.restaurants.persistance.db.RestaurantCRUD;
+import cel.dev.restaurants.persistanceimpl.db.RestaurantDBHelper;
+import cel.dev.restaurants.persistanceimpl.db.RestaurantDbSchema;
+import cel.dev.restaurants.persistanceimpl.db.RestaurantDbSchema.Table.Cols;
 import cel.dev.restaurants.utils.AndroidUtils;
 
-import static cel.dev.restaurants.persistance.db.RestaurantDbSchema.*;
+import static cel.dev.restaurants.persistanceimpl.db.RestaurantDbSchema.*;
 
 /** Implementation of the RestaurantCRUD contract
  * */
@@ -30,6 +33,9 @@ public class RestaurantDB implements RestaurantCRUD {
     private static final String TAG = "DBClass";
     private SQLiteDatabase db;
 
+    /** Retrieves a writable database and stores it in the
+     *  instance variable db
+     * */
     public RestaurantDB(Context context) {
         RestaurantDBHelper restaurantDBHelper = new RestaurantDBHelper(context);
         db = restaurantDBHelper.getWritableDatabase();
@@ -65,11 +71,15 @@ public class RestaurantDB implements RestaurantCRUD {
         return success;
     }
 
+    /** Deletes all restaurants by deleting the database
+     * */
     @Override
     public void deleteAllRestaurants() {
         db.delete(RestaurantDbSchema.Table.NAME, null, null);
     }
 
+    /** closes the database if it isn't null
+     * */
     @Override
     public void close() {
         if (db != null) {
@@ -99,6 +109,8 @@ public class RestaurantDB implements RestaurantCRUD {
     }
 
     /** returns all restaurants
+     *  The restaurants with a custom image won't have their image loaded now in order to save memory usage
+     *  The image has to be loaded by calling getImageOfRestaurant when the image is to be shown
      * */
     @Override
     public List<Restaurant> getAllRestaurants() {
@@ -160,6 +172,7 @@ public class RestaurantDB implements RestaurantCRUD {
     }
 
     /** Retrieves the image of a RestaurantCustomImage
+     *  throws an exception if the restaurant doesn't have an image
      * */
     @Override
     public byte[] getImageOfRestaurant(RestaurantCustomImage restaurantCustomImage) throws Exception {
@@ -184,13 +197,28 @@ public class RestaurantDB implements RestaurantCRUD {
     }
 
     /** removes the restaurant
+     *  returns true if the restaurant could be removed
      * */
     @Override
     public boolean removeRestaurant(Restaurant restaurant) {
         return 0 < db.delete(Table.NAME, Selections.SELECTION_ID, new String[]{"" + restaurant.getId()});
     }
 
-    /** returns all restaurant ids within a certain range of parameters lat and lon
+    /** Returns a List of restaurants within parameter range of
+     *  lat and lon
+     *
+     *  The range will be used to find all restaurants within a
+     *  box with the center at lat and lon
+     *  with the side length/width of 2 * range
+     *   _____<-- range
+     *  |     |
+     *  ##############
+     *  #            #
+     *  #     lat    #
+     *  #     lon    #
+     *  #            #
+     *  ##############
+     *  Every restaurant within this area will be returned
      * */
     @Override
     public List<Long> getRestaurantIdsByLocation(double lat, double lon, double range) {

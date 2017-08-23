@@ -11,7 +11,7 @@ import cel.dev.restaurants.uicontracts.FABFragmentHandler;
 import cel.dev.restaurants.fragments.RandomRestaurantFragment;
 import cel.dev.restaurants.fragments.NearbyFragment;
 import cel.dev.restaurants.fragments.RestaurantFragment;
-import cel.dev.restaurants.persistance.RestaurantDAOImpl;
+import cel.dev.restaurants.persistanceimpl.RestaurantDAOImpl;
 import cel.dev.restaurants.uicontracts.MainActivityMVP;
 
 /** This is the presenter of the MainActivity

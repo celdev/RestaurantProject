@@ -20,7 +20,7 @@ import cel.dev.restaurants.model.RestaurantCustomImage;
 import cel.dev.restaurants.model.RestaurantPlaceholderImage;
 import cel.dev.restaurants.R;
 import cel.dev.restaurants.persistance.RestaurantDAO;
-import cel.dev.restaurants.persistance.RestaurantDAOImpl;
+import cel.dev.restaurants.persistanceimpl.RestaurantDAOImpl;
 import cel.dev.restaurants.repositoryimpl.CreateRestaurantRepositoryImpl;
 import cel.dev.restaurants.uicontracts.CreateRestaurantMVP;
 import cel.dev.restaurants.utils.PictureUtils;

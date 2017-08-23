@@ -12,7 +12,7 @@ import cel.dev.restaurants.model.KitchenType;
 import cel.dev.restaurants.model.Restaurant;
 import cel.dev.restaurants.model.RestaurantCustomImage;
 import cel.dev.restaurants.persistance.RestaurantDAO;
-import cel.dev.restaurants.persistance.RestaurantDAOImpl;
+import cel.dev.restaurants.persistanceimpl.RestaurantDAOImpl;
 import cel.dev.restaurants.uicontracts.CreateRestaurantMVP;
 
 /** This implementation will

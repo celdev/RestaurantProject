@@ -1,4 +1,4 @@
-package cel.dev.restaurants.persistance;
+package cel.dev.restaurants.persistanceimpl;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
@@ -12,11 +12,12 @@ import java.util.Set;
 
 import cel.dev.restaurants.model.BudgetType;
 import cel.dev.restaurants.model.KitchenType;
+import cel.dev.restaurants.persistance.RestaurantDAO;
+import cel.dev.restaurants.persistanceimpl.db.RestaurantDB;
 import cel.dev.restaurants.view.RandomiseSettings;
 import cel.dev.restaurants.model.Restaurant;
 import cel.dev.restaurants.model.RestaurantCustomImage;
 import cel.dev.restaurants.persistance.db.RestaurantCRUD;
-import cel.dev.restaurants.persistance.db.RestaurantDB;
 import cel.dev.restaurants.utils.CollectionUtils;
 import cel.dev.restaurants.utils.PictureUtils;
 
@@ -27,30 +28,45 @@ public class RestaurantDAOImpl implements RestaurantDAO {
     public static final String TAG = "restaurantdao";
     private RestaurantCRUD restaurantCRUD;
 
+    /** Creates an implementation of the RestaurantCrud interface which will communicate with the database
+     * */
     public RestaurantDAOImpl(Context context) {
         restaurantCRUD = new RestaurantDB(context);
     }
 
+    /** Returns a restaurant by the id provided
+     *  will return null if a restaurant with this id doesn't exist
+     * */
+    @Nullable
     @Override
     public Restaurant getRestaurantById(long id) {
         return restaurantCRUD.getRestaurantById(id);
     }
 
+    /** Returns a list of all restaurants
+     * */
     @Override
     public List<Restaurant> getAllRestaurants() {
         return restaurantCRUD.getAllRestaurants();
     }
 
+    /** Tries to save or update the restaurant passed as a parameter
+     *  returns true of successful
+     * */
     @Override
     public boolean saveRestaurant(Restaurant restaurant) {
         return restaurantCRUD.saveOrUpdateRestaurant(restaurant);
     }
 
+    /** Removes a restaurant
+     * */
     @Override
     public boolean removeRestaurant(Restaurant restaurant) {
         return restaurantCRUD.removeRestaurant(restaurant);
     }
 
+    /** Retrieves the image of the restaurant and sets the image of the ImageView to that image
+     * */
     @Override
     public void injectImageOntoImageView(ImageView imageView, Restaurant restaurant) {
         if (restaurant instanceof RestaurantCustomImage) {
@@ -63,11 +79,29 @@ public class RestaurantDAOImpl implements RestaurantDAO {
         }
     }
 
+    /** stores the updated favorite state of the restaurant
+     * */
     @Override
     public void setRestaurantFavorite(Restaurant restaurant) {
         restaurantCRUD.setRestaurantFavorite(restaurant);
     }
 
+    /** Returns a List of restaurants within parameter range of
+     *  lat and lon
+     *
+     *  The range will be used to find all restaurants within a
+     *  box with the center at lat and lon
+     *  with the side length/width of 2 * range
+     *   _____<-- range
+     *  |     |
+     *  ##############
+     *  #            #
+     *  #     lat    #
+     *  #     lon    #
+     *  #            #
+     *  ##############
+     *  Every restaurant within this area will be returned
+     * */
     @Override
     public List<Restaurant> getRestaurantsByLocation(double lat, double lon, double range) {
         List<Long> restaurantIdsByLocation = restaurantCRUD.getRestaurantIdsByLocation(lat, lon, range);
@@ -81,6 +115,13 @@ public class RestaurantDAOImpl implements RestaurantDAO {
 
     /** Returns a Restaurant (or null if no restaurants were found)
      *  using the information in the randomise settings
+     *
+     *  depending on if the location information of the randomise settings is set
+     *  then the restaurants which will be shown till be restaurants close to the user
+     *  else all restaurants is used
+     *  The values in randomise settings determine which (if any)
+     *  budget types, kitchen types or restaurant ids which should be filtered out
+     *
      * */
     @Nullable
     @Override
@@ -113,11 +154,15 @@ public class RestaurantDAOImpl implements RestaurantDAO {
         }
     }
 
+    /** Deletes all restaurants
+     * */
     @Override
     public void deleteAllRestaurants() {
         restaurantCRUD.deleteAllRestaurants();
     }
 
+    /** Closes the database
+     * */
     @Override
     public void closeDB() {
         restaurantCRUD.close();
@@ -159,7 +204,7 @@ public class RestaurantDAOImpl implements RestaurantDAO {
         return true;
     }
 
-    /** returns false if the restaurant contains a kitchen type which isn't beeing filtered
+    /** returns false if the restaurant contains a kitchen type which isn't being filtered
      * */
     private boolean shouldFilterRestaurantByKitchenType(Restaurant restaurant, Set<KitchenType> kitchenTypes) {
         for (KitchenType kitchenType : restaurant.getKitchenTypes()) {

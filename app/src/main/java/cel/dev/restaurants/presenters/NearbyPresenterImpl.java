@@ -2,7 +2,7 @@ package cel.dev.restaurants.presenters;
 
 import android.content.Context;
 import cel.dev.restaurants.persistance.RestaurantDAO;
-import cel.dev.restaurants.persistance.RestaurantDAOImpl;
+import cel.dev.restaurants.persistanceimpl.RestaurantDAOImpl;
 import cel.dev.restaurants.uicontracts.NearbyMVP;
 import cel.dev.restaurants.utils.Values;
 

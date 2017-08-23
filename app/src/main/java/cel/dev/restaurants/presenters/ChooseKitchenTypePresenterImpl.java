@@ -21,20 +21,31 @@ public class ChooseKitchenTypePresenterImpl implements ChooseKitchenDialogFragme
     private ChooseKitchenDialogFragmentMVP.View view;
     private List<FoodTypeAndChosenStatus> foodTypeAndChosenStatuses;
 
+    /** Creates the List which will contain FoodTypeAndChosenStatus using all kitchen types and
+     *  a list of chosen kitchen types
+     * */
     public ChooseKitchenTypePresenterImpl(ChooseKitchenDialogFragmentMVP.View view, List<KitchenType> all, List<KitchenType> chosen) {
         this.view = view;
-        createArrays(all, chosen);
+        createChosenFoodTypeList(all, chosen);
     }
 
-    private void createArrays(List<KitchenType> all, List<KitchenType> chosen) {
+    /** Creates a List of FoodTypeAndChosenStatus
+     * */
+    private void createChosenFoodTypeList(List<KitchenType> all, List<KitchenType> chosen) {
         List<FoodTypeAndChosenStatus> statusList = new ArrayList<>(all.size());
+        //creates a set of the chosen KitchenTypes so that the contains()-method is faster
         Set<KitchenType> chosenSet = new HashSet<>(chosen);
+        //use all kitchen type to create the FoodTypeAndChosenStatus, the status will be set to
+        //true if the kitchen type is contained in the chosenSet (false if not)
         for (KitchenType kitchenType : all) {
             statusList.add(new FoodTypeAndChosenStatus(kitchenType, chosenSet.contains(kitchenType)));
         }
         foodTypeAndChosenStatuses = statusList;
     }
 
+    /** injects the FoodTypeAndChosenStatus into the view for using with the adapter for the
+     *  ListView
+     * */
     @Override
     public void createArrayAdapter() {
         view.injectArrayAdapter(foodTypeAndChosenStatuses);

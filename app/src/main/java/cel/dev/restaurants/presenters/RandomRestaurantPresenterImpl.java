@@ -11,7 +11,7 @@ import cel.dev.restaurants.model.BudgetType;
 import cel.dev.restaurants.view.RandomiseSettings;
 import cel.dev.restaurants.model.Restaurant;
 import cel.dev.restaurants.persistance.RestaurantDAO;
-import cel.dev.restaurants.persistance.RestaurantDAOImpl;
+import cel.dev.restaurants.persistanceimpl.RestaurantDAOImpl;
 import cel.dev.restaurants.uicontracts.RandomRestaurantMVP;
 import cel.dev.restaurants.utils.AndroidUtils;
 

@@ -1,18 +1,22 @@
-package cel.dev.restaurants.persistance.db;
+package cel.dev.restaurants.persistanceimpl.db;
 
-import cel.dev.restaurants.persistance.db.RestaurantDbSchema.Table.Cols;
+import cel.dev.restaurants.persistanceimpl.db.RestaurantDbSchema.Table.Cols;
 
-import static cel.dev.restaurants.persistance.db.RestaurantDbSchema.Table.Cols.BUDGET_TYPES;
-import static cel.dev.restaurants.persistance.db.RestaurantDbSchema.Table.Cols.FAVORITE;
-import static cel.dev.restaurants.persistance.db.RestaurantDbSchema.Table.Cols.HAS_IMAGE;
-import static cel.dev.restaurants.persistance.db.RestaurantDbSchema.Table.Cols.ID;
-import static cel.dev.restaurants.persistance.db.RestaurantDbSchema.Table.Cols.IMAGE;
-import static cel.dev.restaurants.persistance.db.RestaurantDbSchema.Table.Cols.KITCHEN_TYPES;
-import static cel.dev.restaurants.persistance.db.RestaurantDbSchema.Table.Cols.LOCATION_LATITUDE;
-import static cel.dev.restaurants.persistance.db.RestaurantDbSchema.Table.Cols.LOCATION_LONGITUDE;
-import static cel.dev.restaurants.persistance.db.RestaurantDbSchema.Table.Cols.NAME;
-import static cel.dev.restaurants.persistance.db.RestaurantDbSchema.Table.Cols.RATING;
+import static cel.dev.restaurants.persistanceimpl.db.RestaurantDbSchema.Table.Cols.BUDGET_TYPES;
+import static cel.dev.restaurants.persistanceimpl.db.RestaurantDbSchema.Table.Cols.FAVORITE;
+import static cel.dev.restaurants.persistanceimpl.db.RestaurantDbSchema.Table.Cols.HAS_IMAGE;
+import static cel.dev.restaurants.persistanceimpl.db.RestaurantDbSchema.Table.Cols.ID;
+import static cel.dev.restaurants.persistanceimpl.db.RestaurantDbSchema.Table.Cols.IMAGE;
+import static cel.dev.restaurants.persistanceimpl.db.RestaurantDbSchema.Table.Cols.KITCHEN_TYPES;
+import static cel.dev.restaurants.persistanceimpl.db.RestaurantDbSchema.Table.Cols.LOCATION_LATITUDE;
+import static cel.dev.restaurants.persistanceimpl.db.RestaurantDbSchema.Table.Cols.LOCATION_LONGITUDE;
+import static cel.dev.restaurants.persistanceimpl.db.RestaurantDbSchema.Table.Cols.NAME;
+import static cel.dev.restaurants.persistanceimpl.db.RestaurantDbSchema.Table.Cols.RATING;
 
+/** This class contains the schema for the Restaurants database
+ *  It also contains projections and selections used when interacting with the database
+ *  It also contains methods for generating the create and drop database SQL-queries
+ * */
 public class RestaurantDbSchema {
 
     /** This class contains Table name and column names
