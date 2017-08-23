@@ -14,11 +14,14 @@ public class PermissionUtils {
     public static final String[] CAMERA_PERMISSIONS = new String[]{Manifest.permission.CAMERA};
     public static final String[] LOCATION_PERMISSIONS = new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
 
+    /** return true if the application has permission to the permission passed as an argument
+     * */
     public static boolean hasPermissionTo(Context context, String permission) {
         return PackageManager.PERMISSION_GRANTED == ContextCompat.checkSelfPermission(context, permission);
     }
 
-
+    /** Returns true if result is PERMISSION_GRANTED
+     * */
     public static boolean isPermissionGranted(int result) {
         return result == PackageManager.PERMISSION_GRANTED;
     }

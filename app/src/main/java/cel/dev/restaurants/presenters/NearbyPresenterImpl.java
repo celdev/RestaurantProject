@@ -23,10 +23,11 @@ public class NearbyPresenterImpl implements NearbyMVP.Presenter {
     private Context context;
     private RestaurantDAO restaurantDAO;
 
-
-
     private double range;
 
+    /** Creates the DAO-object which will communicate with the database and provide this
+     *  object with restaurants
+     * */
     public NearbyPresenterImpl(NearbyMVP.View view, Context context) {
         this.view = view;
         this.context = context;
@@ -65,21 +66,32 @@ public class NearbyPresenterImpl implements NearbyMVP.Presenter {
         view.injectData(restaurantDAO.getRestaurantsByLocation(latitude, longitude, range), restaurantDAO);
     }
 
+    /** The view calls this method when the floating action button is pressed
+     *  calls the view to show the range dialog using the current saved range
+     * */
     @Override
     public void onFABPressed() {
         view.showRangeDialog(range);
     }
 
+    /** returns the range multiplied by the SEEK_BAR_PROGRESS_MODIFIER
+     *  to turn the range into a range of 1 to 100
+     * */
     @Override
     public int getRangeForSeekBar() {
         return (int)(range * SEEK_BAR_PROGRESS_MODIFIER);
     }
 
+    /** calls to the view to request the location of the user again
+     * */
     @Override
     public void refreshList() {
         view.requestLocation();
     }
 
+    /** called when the fragments onDestroy-method is called
+     *  calls the DAO to close the database
+     * */
     @Override
     public void onCloseFragment() {
         restaurantDAO.closeDB();

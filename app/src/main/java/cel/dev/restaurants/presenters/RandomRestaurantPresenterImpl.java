@@ -1,11 +1,14 @@
 package cel.dev.restaurants.presenters;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import java.util.HashSet;
 import java.util.Set;
 
+import cel.dev.restaurants.R;
 import cel.dev.restaurants.view.RandomChoice;
 import cel.dev.restaurants.model.BudgetType;
 import cel.dev.restaurants.view.RandomiseSettings;
@@ -23,7 +26,6 @@ import cel.dev.restaurants.utils.AndroidUtils;
  * */
 public class RandomRestaurantPresenterImpl implements RandomRestaurantMVP.Presenter {
 
-    private static final String TAG = "random presenter";
     private final RandomRestaurantMVP.View view;
     private final Context context;
 
@@ -33,6 +35,12 @@ public class RandomRestaurantPresenterImpl implements RandomRestaurantMVP.Presen
 
     private Set<Long> notThisRestaurantIds;
 
+    /** Creates the DAO-object which will communicate with the database and provide this
+     *  object with random restaurants
+     *
+     *  Initializes the Set of ids of restaurants to filter
+     *  initializes the randomise settings using this Set of Ids
+     * */
     public RandomRestaurantPresenterImpl(RandomRestaurantMVP.View view, Context context) {
         this.view = view;
         this.context = context;
@@ -41,11 +49,14 @@ public class RandomRestaurantPresenterImpl implements RandomRestaurantMVP.Presen
         initRandomiseSettings(notThisRestaurantIds);
     }
 
+    /** initializes the RandomiseSettings
+     * */
     private void initRandomiseSettings(Set<Long> notThisRestaurantIds) {
         randomiseSettings = new RandomiseSettings(notThisRestaurantIds);
     }
 
-    /** Asks the view to request the location
+    /** Asks the view to request the location of the user
+     *  shows the loading progress dialog while loading the location
      * */
     @Override
     public void onRequestingLocation() {
@@ -54,17 +65,25 @@ public class RandomRestaurantPresenterImpl implements RandomRestaurantMVP.Presen
     }
 
     /** Loads a random restaurant from the restaurantDAO
-     *  if this restaurant is null (a restaurant couldn't be found with the current settings)
+     *  and passes it into doShowRestaurant to show it
+     * */
+    @Override
+    public void loadRestaurant() {
+        restaurant = restaurantDAO.getRandomRestaurant(randomiseSettings);
+        doShowRestaurant(restaurant);
+    }
+
+
+    /** if this restaurant is null (a restaurant couldn't be found with the current settings)
      *  the view is set to present that no restaurants could be found and the user can reset the settings and try again
      *  otherwise the found restaurant is injected into the view
      * */
-    public void loadRestaurant() {
-        restaurant = restaurantDAO.getRandomRestaurant(randomiseSettings);
+    private void doShowRestaurant(Restaurant restaurant) {
         if (restaurant == null) {
             view.handleNoRestaurantsFound();
         } else {
             notThisRestaurantIds.add(restaurant.getId());
-            view.injectRestaurant(restaurant,restaurantDAO);
+            view.injectRestaurant(restaurant, restaurantDAO);
         }
     }
 
@@ -166,5 +185,33 @@ public class RandomRestaurantPresenterImpl implements RandomRestaurantMVP.Presen
     @Override
     public void showRestaurantLocation() {
         context.startActivity(AndroidUtils.createMapActivityIntentWithLatLong(context, restaurant.getLatitude(), restaurant.getLongitude()));
+    }
+
+    /** Saves the state of the randomise settings and which restaurant is being shown if these arn't null.
+     * */
+    @Override
+    public void saveState(Bundle outState) {
+        if (randomiseSettings != null) {
+            outState.putParcelable(context.getString(R.string.bundle_random_settings), randomiseSettings);
+        }
+        if (restaurant != null) {
+            outState.putLong(context.getString(R.string.bundle_restaurant_id), restaurant.getId());
+        }
+    }
+
+    /** This method allows for state to be recreated after an orientation change
+     *  the method parameters are used in order to recreate this state
+     * */
+    @Override
+    public void injectState(RandomiseSettings randomiseSettings, long restaurantId) {
+        this.randomiseSettings = randomiseSettings;
+        this.notThisRestaurantIds = randomiseSettings.getNotTheseRestaurantsById();
+        Restaurant restaurantById = restaurantDAO.getRestaurantById(restaurantId);
+        if (restaurantById != null) {
+            this.restaurant = restaurantById;
+            doShowRestaurant(restaurant);
+        } else {
+            loadRestaurant();
+        }
     }
 }

@@ -39,7 +39,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cel.dev.restaurants.presenters.CreateRestaurantPresenterImpl;
 import cel.dev.restaurants.fragments.ChooseKitchenDialogFragment;
-import cel.dev.restaurants.utils.FoodTypeToTextRenderer;
 import cel.dev.restaurants.uicontracts.dialog.OnChooseKitchenCallback;
 import cel.dev.restaurants.uicontracts.ImageFragmentMVP;
 import cel.dev.restaurants.model.BudgetType;
@@ -63,6 +62,9 @@ import cel.dev.restaurants.view.RestaurantNameTextWatcher;
  * */
 public class CreateRestaurantActivity extends AppCompatActivity implements CreateRestaurantMVP.View,
         OnChooseKitchenCallback, OnSuccessListener<Location>, OnCompleteListener<Location> {
+
+    private AlertDialog aboutDialog;
+    private AlertDialog errorDialog;
 
     /** Contains the values representing the two different modes of this activity
      *  This Activity is both used to create new restaurants and edit old restaurants
@@ -116,7 +118,11 @@ public class CreateRestaurantActivity extends AppCompatActivity implements Creat
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.context_about_app) {
-            AndroidUtils.showAboutDialog(this);
+            if (aboutDialog != null) {
+                aboutDialog.dismiss();
+                aboutDialog = null;
+            }
+            aboutDialog = AndroidUtils.showAboutDialog(this);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -250,7 +256,7 @@ public class CreateRestaurantActivity extends AppCompatActivity implements Creat
         if (kitchenTypes.size() == 0) {
             chosenKitchenText.setText(R.string.no_kitchen_chosen);
         } else {
-            chosenKitchenText.setText(FoodTypeToTextRenderer.foodTypesToString(this, kitchenTypes));
+            chosenKitchenText.setText(AndroidUtils.foodTypesToString(this, kitchenTypes));
         }
     }
 
@@ -275,6 +281,29 @@ public class CreateRestaurantActivity extends AppCompatActivity implements Creat
         return ratingBar.getRating();
     }
 
+    /** Creates and shows a dialog containing the error message
+     * */
+    @Override
+    public void createRestaurantError(@StringRes int validationMessage) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        if (errorDialog != null) {
+            errorDialog.dismiss();
+            errorDialog = null;
+        }
+        errorDialog = builder.setTitle(R.string.error_creating_restaurant)
+                .setMessage(validationMessage)
+                .setPositiveButton(R.string.button_ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .create();
+        errorDialog.show();
+    }
+
+
+
     /** converts checked checkboxes into BudgetType objects
      *  if no budgettype is chosen null will be returned
      * */
@@ -298,24 +327,6 @@ public class CreateRestaurantActivity extends AppCompatActivity implements Creat
             return null;
         }
         return budgetTypes.toArray(new BudgetType[budgetTypes.size()]);
-    }
-
-
-
-    /** Creates and shows a dialog containing the error message
-     * */
-    @Override
-    public void createRestaurantError(@StringRes int validationMessage) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(R.string.error_creating_restaurant)
-                .setMessage(validationMessage)
-                .setPositiveButton(R.string.button_ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                })
-                .create().show();
     }
 
     /** Called when the creation and saving of the restaurant has finished successfully
@@ -539,6 +550,15 @@ public class CreateRestaurantActivity extends AppCompatActivity implements Creat
     protected void onDestroy() {
         if (cancelDialog != null) {
             cancelDialog.dismiss();
+            cancelDialog = null;
+        }
+        if (aboutDialog != null) {
+            aboutDialog.dismiss();
+            aboutDialog = null;
+        }
+        if (errorDialog != null) {
+            errorDialog.dismiss();
+            errorDialog = null;
         }
         if (chooseKitchenDialogFragment != null) {
             chooseKitchenDialogFragment.dismiss();

@@ -10,6 +10,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,6 +42,7 @@ import cel.dev.restaurants.uicontracts.RandomRestaurantMVP;
 import cel.dev.restaurants.utils.AndroidUtils;
 import cel.dev.restaurants.utils.CollectionUtils;
 import cel.dev.restaurants.utils.LocationUtils;
+import cel.dev.restaurants.view.RandomiseSettings;
 
 /** This fragment displays a random restaurant and
  *  allows the user to make certain choices in order to
@@ -51,6 +53,7 @@ public class RandomRestaurantFragment extends Fragment implements FABFragmentHan
 
     private static final int REQUEST_LOCATION = 1;
     private static final String TAG = "random rest";
+    private RandomState randomState;
 
     public RandomRestaurantFragment() {
     }
@@ -115,6 +118,12 @@ public class RandomRestaurantFragment extends Fragment implements FABFragmentHan
 
     /** If the presenter is null create a new presenter
      *
+     *  if the randomState instance variable isn't null then we can use it to recreate
+     *  the state of the presenter after an orientation change
+     *  the randomise settings and the id of the previoulsy shown restaurant is
+     *  injected into the presenter
+     *
+     *  if the randomState is null then
      *  Ask the presenter to retrieve the location of the user
      * */
     @Override
@@ -123,7 +132,11 @@ public class RandomRestaurantFragment extends Fragment implements FABFragmentHan
         if (presenter == null) {
             presenter = new RandomRestaurantPresenterImpl(this, getContext());
         }
-        presenter.onRequestingLocation();
+        if (randomState != null) {
+            presenter.injectState(randomState.randomiseSettings, randomState.restaurantId);
+        } else {
+            presenter.onRequestingLocation();
+        }
     }
 
     /** Creates and shows the loading location progress dialog
@@ -351,6 +364,29 @@ public class RandomRestaurantFragment extends Fragment implements FABFragmentHan
         presenter.resetSettings();
     }
 
+    /** This method is called before the onResume method in which the presenter is
+     *  created. This is a problem since the presenter needs to be able to retrieve
+     *  the state that may be saved in the bundle
+     *  In order to allow this the state is temporarily created and stored in the
+     *  randomState instance variable (which may be null if state couldn't be restored)
+     *  In the onResume method this variable can be used to pass the state into the presenter
+     *  in order to recreate the state
+     * */
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        randomState = createRandomStateFromBundle(savedInstanceState);
+    }
+
+    /** This method passes the bundle to the presenter so it can save the state of the
+     *  random settings and which restaurant (if any) that is currently being shown
+     * */
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        presenter.saveState(outState);
+    }
+
     /** Called when the fragment is being destroyed
      *  If the presenter isn't null then the presenter will be called to
      *  preform closing functionality (such as closing the database)
@@ -399,7 +435,56 @@ public class RandomRestaurantFragment extends Fragment implements FABFragmentHan
         } else {
             Toast.makeText(getContext(), R.string.error_getting_location, Toast.LENGTH_SHORT).show();
         }
+    }
+
+    /** This creates a RandomState object containing the information needed to recreate the
+     *  state of the presenter after an orientation change
+     *
+     *  The state that is needed in order to recreate the state is the RandomiseSettings which
+     *  implements parcelable, it also needs the id of the current restaurant to show
+     *  If this information is stored in the bundle then this method will return an object
+     *  containing this information
+     *  otherwise the method will return null and the state can't be recreated
+     *  (or there was no state saved)
+     * */
+    @Nullable
+    private RandomState createRandomStateFromBundle(Bundle bundle) {
+        if (bundle != null) {
+            long id = -1;
+            RandomiseSettings randomiseSettings = null;
+            if (bundle.containsKey(getString(R.string.bundle_random_settings))) {
+                try {
+                    randomiseSettings = bundle.getParcelable(getString(R.string.bundle_random_settings));
+                } catch (Exception e) {
+                    Log.e("randomrest", "loadState: ", e);
+                }
+            }
+            if (bundle.containsKey(getString(R.string.bundle_restaurant_id))) {
+                id = bundle.getLong(getString(R.string.bundle_restaurant_id));
+            }
+            if (id != -1 && randomiseSettings != null) {
+                return new RandomState(randomiseSettings, id);
+            }
+        }
+        return null;
+    }
 
 
+    /** This method allows the passing of state after an recreation due to an
+     *  orientation change
+     *  Since the saved instance bundle is available in activityCreated
+     *  and the presenter is created in onResume there has to be a way to pass
+     *  the state to a later part of the lifecycle
+     *  The relevant state is saved in this class and used to recreate the state
+     *  in the presenter in the onResume method
+     * */
+    private class RandomState {
+        private RandomiseSettings randomiseSettings;
+        private long restaurantId;
+
+        public RandomState(RandomiseSettings randomiseSettings, long restaurantId) {
+            this.randomiseSettings = randomiseSettings;
+            this.restaurantId = restaurantId;
+        }
     }
 }

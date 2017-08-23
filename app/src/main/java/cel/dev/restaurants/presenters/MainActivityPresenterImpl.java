@@ -37,7 +37,9 @@ public class MainActivityPresenterImpl implements MainActivityMVP.Presenter {
         this.context = context;
     }
 
-
+    /** called by the view when the floating action button is pressed
+     *  calls the current active fragment to handle the click
+     * */
     @Override
     public void fabPressed() {
         fabHandler.handleFABClick();
@@ -70,6 +72,8 @@ public class MainActivityPresenterImpl implements MainActivityMVP.Presenter {
 
     /** Creates and sets the fragment depending on which button was pressed
      *  also sets the handler of the Floating Action Button press to the created fragment
+     *
+     *  if a fragment is passed in this fragment is used instead of recreating the fragment
      * */
     @Override
     public boolean tabPressed(@IdRes int navId, Fragment fragment) {
@@ -137,6 +141,10 @@ public class MainActivityPresenterImpl implements MainActivityMVP.Presenter {
         outState.putInt(ACTIVE_FRAGMENT_KEY, activeFragment);
     }
 
+    /** This method provides functionality to save which fragment was active when
+     *  the onSaveInstanceState-method is called
+     *  so that the active fragment can be recreated after e.g. an orientation change
+     * */
     @Override
     public void handleSavedInstanceState(Bundle savedInstanceState) {
         if (savedInstanceState != null) {
@@ -147,13 +155,33 @@ public class MainActivityPresenterImpl implements MainActivityMVP.Presenter {
         }
     }
 
+    /** Restores the fragment passed as a parameter by passing it into the tabPressed method
+     *  which sets the active fragment and changes the icon and handler of the floating action button
+     * */
     private void restoreFragment(Fragment currentFragment) {
         this.fabHandler = (FABFragmentHandler) currentFragment;
         this.fragment = currentFragment;
+        tabPressed(getTabIdOfFragment(fragment), fragment);
+    }
 
+    /** returns the nav bar id which corresponds to the fragment
+     * */
+    private int getTabIdOfFragment(Fragment fragment) {
+        if (fragment instanceof RestaurantFragment) {
+            return R.id.nav_restaurants;
+        }
+        if (fragment instanceof NearbyFragment) {
+            return R.id.nav_nearby;
+        }
+        if (fragment instanceof RandomRestaurantFragment) {
+            return R.id.nav_find;
+        }
+        return R.id.nav_restaurants;
     }
 
 
+    /** Loads the fragment with (nav bar) id = activeFragment
+     * */
     @Override
     public void loadFragment() {
         tabPressed(activeFragment, null);

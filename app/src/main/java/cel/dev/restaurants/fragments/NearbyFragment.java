@@ -43,6 +43,7 @@ public class NearbyFragment extends ListRestaurantsFragment implements OnSuccess
 
     private static final int REQUEST_LOCATION = 1;
     private static final String TAG = "nearbyfrag";
+    private AlertDialog permissionDialog;
 
 
     public NearbyFragment() {}
@@ -238,6 +239,7 @@ public class NearbyFragment extends ListRestaurantsFragment implements OnSuccess
 
     /** If the presenter isn't null, this will call the presenter to preform closing
      *  functionality
+     *  hides any dialogs that may be showing
      * */
     @Override
     public void onDestroy() {
@@ -245,6 +247,14 @@ public class NearbyFragment extends ListRestaurantsFragment implements OnSuccess
         if (presenter != null) {
             presenter.onCloseFragment();
             presenter = null;
+        }
+        if (rangeDialog != null) {
+            rangeDialog.dismiss();
+            rangeDialog = null;
+        }
+        if (permissionDialog != null) {
+            permissionDialog.dismiss();
+            permissionDialog = null;
         }
     }
 
@@ -257,10 +267,16 @@ public class NearbyFragment extends ListRestaurantsFragment implements OnSuccess
 
     /** Shows a dialog that staes that the application needs location permission in
      *  order for this functionality of the application to work.
+     *
+     *  stores the dialog in a variable so it can be dismissed in onDestroy
      * */
     @Override
     public void showGetLocationPermissionDialog() {
-        new AlertDialog.Builder(getContext())
+        if (permissionDialog != null) {
+            permissionDialog.dismiss();
+            permissionDialog = null;
+        }
+        permissionDialog = new AlertDialog.Builder(getContext())
                 .setTitle(R.string.need_location_permission)
                 .setMessage(R.string.needs_location_permission)
                 .setPositiveButton(R.string.button_ok, new DialogInterface.OnClickListener() {
@@ -269,7 +285,8 @@ public class NearbyFragment extends ListRestaurantsFragment implements OnSuccess
                         requestLocationPermission();
                         dialog.dismiss();
                     }
-                }).create().show();
+                }).create();
+        permissionDialog.show();
     }
 
 

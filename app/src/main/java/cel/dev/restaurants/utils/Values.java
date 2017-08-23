@@ -1,6 +1,8 @@
 package cel.dev.restaurants.utils;
 
 /** This class contains some constants used in the application
+ *  These are stored here and not in xml since some parts that may need to access these
+ *  doesn't have (easy) access to a Context
  * */
 public class Values {
 
@@ -12,7 +14,6 @@ public class Values {
     public static final float MINIMUM_RANGE_VALUE = 0.001f;
 
     public static final String SHARED_PREFERENCES = "cel.dev.restaurants";
-
 
     public static class RandomiserDefaults {
 

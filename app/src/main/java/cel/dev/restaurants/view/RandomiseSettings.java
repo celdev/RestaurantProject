@@ -1,5 +1,7 @@
 package cel.dev.restaurants.view;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
 import java.util.Collections;
@@ -21,7 +23,7 @@ import cel.dev.restaurants.utils.Values;
  *      KitchenTypes
  *      Id of restaurants
  * */
-public class RandomiseSettings {
+public class RandomiseSettings implements Parcelable{
 
     private boolean useLocation;
     private double range;
@@ -32,13 +34,48 @@ public class RandomiseSettings {
 
     private Set<Long> notTheseRestaurantsById;
 
-
     public RandomiseSettings(Set<Long> notTheseRestaurantsById) {
         this.range = Values.RandomiserDefaults.DEFAULT_RANGE;
         this.budgetTypes = new HashSet<>();
         this.kitchenTypes = new HashSet<>();
         this.notTheseRestaurantsById = notTheseRestaurantsById;
     }
+
+    /** method for creating a RandomiseSettings from a parcel
+     * */
+    protected RandomiseSettings(Parcel in) {
+        useLocation = in.readByte() != 0;
+        range = in.readDouble();
+        latitude = in.readDouble();
+        longitude = in.readDouble();
+    }
+
+    /** method for converting the object into a parcel
+     * */
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeByte((byte) (useLocation ? 1 : 0));
+        dest.writeDouble(range);
+        dest.writeDouble(latitude);
+        dest.writeDouble(longitude);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<RandomiseSettings> CREATOR = new Creator<RandomiseSettings>() {
+        @Override
+        public RandomiseSettings createFromParcel(Parcel in) {
+            return new RandomiseSettings(in);
+        }
+
+        @Override
+        public RandomiseSettings[] newArray(int size) {
+            return new RandomiseSettings[size];
+        }
+    };
 
     /** Injects a location into the random settings
      *  and sets the settings to use this location to filter restaurants

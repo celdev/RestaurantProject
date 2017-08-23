@@ -20,6 +20,7 @@ import java.util.List;
 
 import cel.dev.restaurants.R;
 import cel.dev.restaurants.activities.ShowRestaurantLocationActivity;
+import cel.dev.restaurants.model.KitchenType;
 import cel.dev.restaurants.uicontracts.dialog.ChooseKitchenDialogFragmentMVP;
 import cel.dev.restaurants.activities.CreateRestaurantActivity;
 import cel.dev.restaurants.model.Restaurant;
@@ -32,6 +33,7 @@ public class AndroidUtils {
     public static final String TAG = "android utils";
 
     /** Tints the color of the drawable
+     *  uses different methods depending on android version
      * */
     public static Drawable tintDrawable(Context context, Drawable drawable, @ColorRes int color) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -82,7 +84,9 @@ public class AndroidUtils {
     }
 
 
-    /** Show a progressdialog
+    /** Creates and returns a progress dialog
+     * @param cancleable if the dialog should be cancelable
+     * @param title the title of the dialog
      * */
     public static ProgressDialog createProgressDialog(Context context,
                                                       @StringRes int title,
@@ -93,8 +97,10 @@ public class AndroidUtils {
         return progressDialog;
     }
 
-    public static void showAboutDialog(Context context) {
-        new AlertDialog.Builder(context)
+    /** Creates and shows the about dialog
+     * */
+    public static AlertDialog showAboutDialog(Context context) {
+        AlertDialog aboutDiag = new AlertDialog.Builder(context)
                 .setTitle(R.string.about_dialog_title)
                 .setView(R.layout.about_dialog)
                 .setPositiveButton(R.string.button_ok, new DialogInterface.OnClickListener() {
@@ -102,7 +108,23 @@ public class AndroidUtils {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
                     }
-                }).create().show();
+                }).create();
+        aboutDiag.show();
+        return aboutDiag;
+    }
+
+    /** Translates a list of KitchenTypes into a String containing the value of the
+     *  string res id of the KitchenType separated by a comma
+     * */
+    public static String foodTypesToString(Context context, final List<KitchenType> kitchenTypes) {
+        StringBuilder text = new StringBuilder();
+        for (int i = 0; i < kitchenTypes.size(); i++) {
+            text.append(context.getString(kitchenTypes.get(i).getStringResId()));
+            if (i + 1 != kitchenTypes.size()) {
+                text.append(", ");
+            }
+        }
+        return text.toString();
     }
 
     /** Utils for turning a List<Enum> into a format which allows it to be stored in the database
@@ -116,6 +138,8 @@ public class AndroidUtils {
      * */
     public static class DBUtils {
 
+        /** turns an array of enum into a string which contains each enums ordinal separated by comma
+         * */
         public static <T extends Enum> String enumsToString(T[] enums) {
             String ret = "";
             for (int i = 0; i < enums.length; i++) {
@@ -127,6 +151,16 @@ public class AndroidUtils {
             return ret;
         }
 
+        /** does the oppostive of enumsToString above
+         *  takes in a String of integers separated by a comma and which Enum to transform these integers into
+         *
+         *  enum E {
+         *      A,B,C
+         *  }
+         *  and the string
+         *  "0,1,1"
+         *  would produce a List containing E.A, E.B, E.B
+         * */
         public static <T extends Enum> List<T> stringToEnum(String enumString, Class<T> clazz) throws Exception {
             List<T> list = new ArrayList<>();
             String[] split = enumString.split(",");

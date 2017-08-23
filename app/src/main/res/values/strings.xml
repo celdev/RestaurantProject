@@ -125,5 +125,9 @@
     <string name="bundle_range_dialog_showing">BUNDLE_RANGE_DIALOG_SHOWING</string>
     <string name="error_taking_picture">Error taking picture</string>
     <string name="error_croping_image">Error cropping image</string>
+    <string name="bundle_latitude">BUNDLE_LATITUDE</string>
+    <string name="bundle_longitude">BUNDLE_LONGITUDE</string>
+    <string name="bundle_restaurant_id">BUNDLE_RESTAURANT_ID</string>
+    <string name="bundle_random_settings">BUNDLE_RANDOM_SETTINGS</string>
 
 </resources>

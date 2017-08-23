@@ -22,6 +22,10 @@ public class LocationUtils {
 
     public static final String TAG = "Loc util";
 
+    /** Shows a dialog which states that this functionality requires location permissions
+     *  when the dialog is dismissed it calls to the LocationRequestCallback which can try to request
+     *  the permission again
+     * */
     public static void showRequireLocationDialog(Context context, final LocationRequestCallback requestCallback) {
         new AlertDialog.Builder(context).setTitle(R.string.require_location)
                 .setMessage(R.string.require_location_dialog_text)
@@ -36,17 +40,23 @@ public class LocationUtils {
     }
 
 
+    /** Request the location permission
+     * */
     public static void requestLocationPermission(Activity activity, int requestCode) {
         ActivityCompat.requestPermissions(activity, PermissionUtils.LOCATION_PERMISSIONS, requestCode);
     }
 
 
+    /** checks if the application has location permission
+     * */
     public static boolean checkHasLocationPermission(Context context) {
         return PermissionUtils.hasPermissionTo(context, Manifest.permission.ACCESS_FINE_LOCATION);
     }
 
     /** requests the location if the user has given location permission
      *  else the request location dialog will be shown
+     *  The callbacks for the onSuccess och onComplete events will be set to the listeners passed
+     *  as parameters
      * */
     public static void requestLocation(Context context, OnSuccessListener<Location> successCallback,
                                        OnCompleteListener<Location> completeCallback, LocationRequestCallback onRequestCallback) {

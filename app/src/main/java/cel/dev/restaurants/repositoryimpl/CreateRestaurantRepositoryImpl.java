@@ -24,21 +24,32 @@ public class CreateRestaurantRepositoryImpl implements CreateRestaurantMVP.Repos
 
     private RestaurantDAO restaurantDAO;
 
+    /** Creates the restaurantDAO object which will communicate with the database
+     * */
     public CreateRestaurantRepositoryImpl(Context context) {
         restaurantDAO = new RestaurantDAOImpl(context);
     }
 
+    /** Returns the all KitchenTypes as a list
+     * */
     @Override
     public List<KitchenType> getKitchenTypes() {
         return Arrays.asList(KitchenType.values());
     }
 
 
+    /** return the chosen kitchen types
+     * */
     @Override
     public List<KitchenType> chosenFoodTypes() {
         return chosenTypes;
     }
 
+    /** If chosen is true
+     *  adds the Kitchen type if it isn't already added
+     *  if false
+     *  tries to remove the KitchenType from the list of chosen types
+     * */
     @Override
     public void chooseFoodType(KitchenType kitchenType, boolean chosen) {
         if (!chosenTypes.contains(kitchenType) && chosen) {
@@ -48,17 +59,25 @@ public class CreateRestaurantRepositoryImpl implements CreateRestaurantMVP.Repos
         }
     }
 
+    /** Return a restaurant with the id passed as a parameter
+     *  will return null if there isn't a restaurant with this id
+     * */
     @Override
     @Nullable
     public Restaurant getRestaurant(long id) {
         return restaurantDAO.getRestaurantById(id);
     }
 
+    /** adds all KitchenTypes from the parameter array to the List of chosen KitchenTypes
+     * */
     @Override
     public void setChosenFoodTypes(KitchenType[] kitchenTypes) {
         chosenTypes.addAll(Arrays.asList(kitchenTypes));
     }
 
+
+    /** Retrieves the image of the restaurant and adds it onto the ImageView
+     * */
     @Override
     public void injectImageOntoImageView(ImageView imageView, Restaurant restaurant) {
         if (restaurant instanceof RestaurantCustomImage) {
@@ -66,6 +85,8 @@ public class CreateRestaurantRepositoryImpl implements CreateRestaurantMVP.Repos
         }
     }
 
+    /** Calls the DAO to close the database
+     * */
     @Override
     public void onClose() {
         restaurantDAO.closeDB();

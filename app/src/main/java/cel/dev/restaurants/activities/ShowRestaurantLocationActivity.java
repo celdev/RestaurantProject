@@ -3,6 +3,7 @@ package cel.dev.restaurants.activities;
 import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -53,6 +54,7 @@ public class ShowRestaurantLocationActivity extends FragmentActivity implements 
     private LatLng location;
     @BindView(R.id.map_bottom_button)
     Button mapButton;
+    private AlertDialog aboutDialog;
 
     /** Called when the activity is being created.
      *  Checks the mode of the activity by checking if the activity was started by
@@ -87,11 +89,16 @@ public class ShowRestaurantLocationActivity extends FragmentActivity implements 
 
     /** Called when the user presses an item in the options menu
      *  if the item is context_about_app the about dialog will be shown.
+     *  the dialog is saved in an instance variable so it can be dismissed in onDestroy
      * */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.context_about_app) {
-            AndroidUtils.showAboutDialog(this);
+            if (aboutDialog != null) {
+                aboutDialog.dismiss();
+                aboutDialog = null;
+            }
+            aboutDialog = AndroidUtils.showAboutDialog(this);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -228,6 +235,16 @@ public class ShowRestaurantLocationActivity extends FragmentActivity implements 
             finish();
         } else {
             super.onBackPressed();
+        }
+    }
+
+    /** Dismisses the about dialog if it isn't null
+     * */
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (aboutDialog != null) {
+            aboutDialog.dismiss();
         }
     }
 

@@ -5,6 +5,7 @@ import android.graphics.drawable.Drawable;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.animation.Animation;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RatingBar;
@@ -167,18 +168,43 @@ public class RestaurantViewHolder extends RecyclerView.ViewHolder {
     }
 
     /** Expands the view by starting the ExpandableLayoutAnimation
+     * The cardview is invalidated on AnimationEnd in order to make sure that the new height is respected
      * */
     private void expandView() {
         expanded = true;
-        expandableLayout.startAnimation(new ExpandableLayoutAnimation(expandableLayout, true));
+        ExpandableLayoutAnimation animation = new ExpandableLayoutAnimation(expandableLayout, true);
+        animation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {}
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                cardView.invalidate();
+            }
+            @Override
+            public void onAnimationRepeat(Animation animation) {}
+        });
+        expandableLayout.startAnimation(animation);
     }
 
     /** Collapses the view by starting the ExpandLayoutAnimation (with the constructor param
      *  expand to false which will cause the animation to collapse instead of expand
+     * The cardview is invalidated on AnimationEnd in order to make sure that the new height is respected
      * */
     public void collapseView() {
         expanded = false;
-        expandableLayout.startAnimation(new ExpandableLayoutAnimation(expandableLayout, false));
+        ExpandableLayoutAnimation animation = new ExpandableLayoutAnimation(expandableLayout, false);
+        animation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {}
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                cardView.invalidate();
+            }
+            @Override
+            public void onAnimationRepeat(Animation animation) {}
+        });
+        expandableLayout.startAnimation(animation);
+
     }
 
     /** Returns the restaurantImage ImageView

@@ -35,6 +35,8 @@ public abstract class RestaurantCardButtonListener implements View.OnClickListen
             this.restaurantId = restaurantId;
         }
 
+        /** calls to the callback (the adapter) to handle on expand change
+         * */
         @Override
         public void onClick(View v) {
             callback.onExpandChange(super.restaurantViewHolder.toggleExpand(), position, restaurantId);
@@ -55,6 +57,10 @@ public abstract class RestaurantCardButtonListener implements View.OnClickListen
             this.restaurantDAO = restaurantDAO;
         }
 
+        /** Toggles the favorite state in the restaurant
+         *  calls to the viewholder to update the icon
+         *  calls to the DAO to save the new favorite state
+         * */
         @Override
         public void onClick(View v) {
             boolean favorite = restaurant.isFavorite();
@@ -76,6 +82,8 @@ public abstract class RestaurantCardButtonListener implements View.OnClickListen
             this.callback = callback;
         }
 
+        /** calls to the callback (adapter) to handle the delete restaurant functionality
+         * */
         @Override
         public void onClick(View v) {
             callback.onDeleteRestaurant(super.restaurantViewHolder.getAdapterPosition());
@@ -95,6 +103,8 @@ public abstract class RestaurantCardButtonListener implements View.OnClickListen
             this.restaurant = restaurant;
         }
 
+        /** calls to the callback (adapter) to handle show restaurant location functionality for this restaurant
+         * */
         @Override
         public void onClick(View v) {
             callback.onShowRestaurantLocation(restaurant);
@@ -114,6 +124,8 @@ public abstract class RestaurantCardButtonListener implements View.OnClickListen
             this.restaurant = restaurant;
         }
 
+        /** calls to the callback (adapter) to handle edit restaurant functionality for this restaurant
+         * */
         @Override
         public void onClick(View v) {
             callback.onEditRestaurant(restaurant);

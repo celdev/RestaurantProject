@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     @BindView(R.id.fab) FloatingActionButton fab;
     private boolean menuInflated = false;
     private AlertDialog deleteAllDialog;
+    private AlertDialog aboutDialog;
 
     /** Sets the layout to the layout defined in activity_main
      *  Binds Butterknife to this so that the @BindView above works
@@ -96,10 +97,16 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     }
 
     /** Shows the about dialog
+     * if the dialog isn't null then dismiss it.
+     * the dialog is saved in an instance variable so it can be dismissed in onDestroy
      * */
     @Override
     public void showAboutDialog() {
-        AndroidUtils.showAboutDialog(this);
+        if (aboutDialog != null) {
+            aboutDialog.dismiss();
+            aboutDialog = null;
+        }
+        aboutDialog = AndroidUtils.showAboutDialog(this);
     }
 
     /** This method is called when the user clicks an item in the options menu.
@@ -163,6 +170,10 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         if (deleteAllDialog != null) {
             deleteAllDialog.dismiss();
             deleteAllDialog = null;
+        }
+        if (aboutDialog != null) {
+            aboutDialog.dismiss();
+            aboutDialog = null;
         }
     }
 
