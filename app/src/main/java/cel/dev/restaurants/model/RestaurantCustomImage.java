@@ -7,6 +7,12 @@ import cel.dev.restaurants.persistance.RestaurantDAO;
 
 
 /** Implementation of the the Restaurant which has a custom image (stored as a byte array)
+ *
+ *  Has two constructors, one is used when the image should be passed around and one is used
+ *  when the image should be retrieved when it's needed.
+ *
+ *  This is done so e.g. the database will return 100 restaurants, 100 restaurant images doesn't have
+ *  to be stored in memory when only ~3 restaurants can be shown at the same time.
  * */
 public class RestaurantCustomImage extends Restaurant {
 
@@ -32,6 +38,8 @@ public class RestaurantCustomImage extends Restaurant {
         }
     }
 
+    /** returns the image stored as a byte array
+     * */
     public byte[] getImageByteArray() {
         return image;
     }

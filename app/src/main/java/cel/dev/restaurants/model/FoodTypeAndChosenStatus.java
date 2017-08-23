@@ -28,13 +28,15 @@ public class FoodTypeAndChosenStatus {
     }
 
 
+    /** returns true if the kitchen types are equal
+     *  no kitchen type should be represented in two objects of this clas
+     *  for one restaurant
+     * */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         FoodTypeAndChosenStatus that = (FoodTypeAndChosenStatus) o;
-
         return kitchenType.equals(that.kitchenType);
 
     }

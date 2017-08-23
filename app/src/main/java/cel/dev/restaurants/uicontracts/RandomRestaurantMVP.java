@@ -1,6 +1,6 @@
 package cel.dev.restaurants.uicontracts;
 
-import cel.dev.restaurants.model.RandomChoice;
+import cel.dev.restaurants.view.RandomChoice;
 import cel.dev.restaurants.model.Restaurant;
 import cel.dev.restaurants.persistance.RestaurantDAO;
 

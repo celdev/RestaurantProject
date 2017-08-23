@@ -14,45 +14,64 @@ import java.util.HashSet;
 import java.util.List;
 
 import cel.dev.restaurants.R;
+import cel.dev.restaurants.adapters.viewholders.RestaurantViewHolder;
 import cel.dev.restaurants.model.BudgetType;
 import cel.dev.restaurants.model.Restaurant;
 import cel.dev.restaurants.persistance.RestaurantDAO;
 import cel.dev.restaurants.utils.AndroidUtils;
+import cel.dev.restaurants.view.RestaurantCardButtonListener;
 
-public class RestaurantRecycleViewAdapter extends RecyclerView.Adapter<RestaurantViewHolder> implements RecycleViewOnExpandChangeCallback {
+/** This is the RecycleViewAdapter for the RecycleView which shows CardViews
+ *  containing information about restaurants.
+ *
+ *  The class also implements the RecycleViewEventCallback which allows the listeners of the
+ *  different buttons in each CardView to callback to the adapter since the adapter needs to know
+ *  about some of these changes and also to avoid having the listeners do tasks such as
+ *  starting new activities
+ * */
+public class RestaurantRecycleViewCardViewAdapter extends RecyclerView.Adapter<RestaurantViewHolder> implements RecycleViewCardViewEventCallback {
 
     private List<Restaurant> restaurants;
     private Context context;
     private final RestaurantDAO restaurantDAO;
     private HashSet<Long> expandedRestaurants;
 
-    public RestaurantRecycleViewAdapter(List<Restaurant> restaurants, Context context, RestaurantDAO restaurantDAO, HashSet<Long> expandedRestaurants) {
+    public RestaurantRecycleViewCardViewAdapter(List<Restaurant> restaurants, Context context, RestaurantDAO restaurantDAO, HashSet<Long> expandedRestaurants) {
         this.restaurants = restaurants;
         this.context = context;
         this.restaurantDAO = restaurantDAO;
-        Log.d("adapter", "RestaurantRecycleViewAdapter: expanded size = " + expandedRestaurants.size());
         this.expandedRestaurants = expandedRestaurants;
     }
 
+    /** Returns the HashSet<Long> containing the id of each restaurant which information is expanded.
+     * */
     public HashSet<Long> getExpandedRestaurants() {
         return expandedRestaurants;
     }
 
+    /** Create a new RestaurantViewHolder using the restaurant_card_layout layout file.
+     * */
     @Override
     public RestaurantViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.restaurant_card_layout, parent, false);
         return new RestaurantViewHolder(view);
     }
 
-    /** Binds the information in the restaurant to the view
+    /** Binds the information in the restaurant to the ViewHolder
      *  @param position the restaurant's position in the restaurants array
+     *
+     *  The listeners of the buttons in the view are initialized and some will use this
+     *  class as a callback for handling some tasks, such as deleting the restaurant
+     *
+     *  if the restaurnt's Id exists in the expandedRestaurants HashSet then the restaurants information
+     *  should be expanded.
      * */
     @Override
     public void onBindViewHolder(RestaurantViewHolder holder, int position) {
         final Restaurant restaurant = restaurants.get(position);
-        restaurant.injectImageOntoImageView(holder.restaurantImage, restaurantDAO);
+        restaurant.injectImageOntoImageView(holder.getRestaurantImage(), restaurantDAO);
         holder.setRestaurantName(restaurant.getName())
-                .setRating(context, restaurant.getRating())
+                .setRating(restaurant.getRating())
                 .setFavorite(restaurant.isFavorite())
                 .setBudgetType(context, BudgetType.sortBudgetType(restaurant.getBudgetTypes()))
                 .setKitchenType(context, restaurant.getKitchenTypes())
@@ -69,6 +88,8 @@ public class RestaurantRecycleViewAdapter extends RecyclerView.Adapter<Restauran
         }
     }
 
+    /** Returns the size of the List containing the restaurants
+     * */
     @Override
     public int getItemCount() {
         return restaurants.size();
@@ -85,7 +106,6 @@ public class RestaurantRecycleViewAdapter extends RecyclerView.Adapter<Restauran
      * */
     @Override
     public void onExpandChange(boolean expanded, int position, long restaurantId) {
-        Log.d("recycleview", "onExpandChange: expanded = " + expanded + " pos = " + position + " restaurant id = " + restaurantId);
         if (expanded) {
             expandedRestaurants.add(restaurantId);
         } else {
@@ -123,6 +143,9 @@ public class RestaurantRecycleViewAdapter extends RecyclerView.Adapter<Restauran
                 .show();
     }
 
+    /** Tries to remove the restaurant from the database
+     *  If unable a Toast displaying a message that it couldn't will be shown
+     * */
     private void removeRestaurant(Restaurant restaurant) {
         if (!restaurantDAO.removeRestaurant(restaurant)) {
             Toast.makeText(context, R.string.error, Toast.LENGTH_SHORT).show();
@@ -130,11 +153,17 @@ public class RestaurantRecycleViewAdapter extends RecyclerView.Adapter<Restauran
     }
 
 
+    /** Callback for when the user wants to edit a restaurant.
+     *  Creates an edit-restaurant Intent and starts the activity.
+     * */
     @Override
     public void onEditRestaurant(Restaurant restaurant) {
         context.startActivity(AndroidUtils.createEditRestaurantActivityIntent(context, restaurant));
     }
 
+    /** Callback for when the user wants to show a restaurants location
+     *  Creates the show location intent and starts the activity
+     * */
     @Override
     public void onShowRestaurantLocation(Restaurant restaurant) {
         context.startActivity(AndroidUtils.createMapActivityIntentWithLatLong(context, restaurant.getLatitude(), restaurant.getLongitude()));

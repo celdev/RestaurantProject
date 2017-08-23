@@ -55,6 +55,11 @@ public class CreateRestaurantImageFragment extends Fragment implements ImageFrag
     public CreateRestaurantImageFragment(){}
 
 
+    /** inflates the fragment_create_restaurant_image layout and binds Butterknife to this
+     *  so that the above @BindView works.
+     *
+     *  Handles savedInstance in order to retrieve a previously taken image after an orientation change
+     * */
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -81,22 +86,35 @@ public class CreateRestaurantImageFragment extends Fragment implements ImageFrag
         super.onDetach();
     }
 
+    /** Returns the image of the ImageView
+     *  When the image of the ImageView is set then the instance variable restaurantImage
+     *  is also set. restaurantImage will be null if the placeholder image is being used
+     *  (in case that the user hasn't taken an image or has deleted the taken image)
+     * */
     @Nullable
     @Override
     public Bitmap getImage() {
         return restaurantImage;
     }
 
+    /** Sets the text of the TextView which rests above the ImageView
+     * */
     @Override
     public void setText(String text) {
         placeHolderWhite.setText(text);
     }
 
+    /** Returns the Image of the ImageView as an drawable
+     * */
     @Override
     public Drawable getRestaurantImageDrawable() {
         return restaurantImageView.getDrawable();
     }
 
+    /** Sets the image of the ImageView
+     *  also stores this image in the instance variable restaurant image and
+     *  show the controllers for rotating and deleting the taken image.
+     * */
     @Override
     public void setRestaurantImage(Bitmap image) {
         restaurantImage = image;
@@ -104,20 +122,32 @@ public class CreateRestaurantImageFragment extends Fragment implements ImageFrag
         showImageControls(true);
     }
 
+    /** Returns the ImageView
+     * */
     @Override
     public ImageView getRestaurantImageView() {
         return restaurantImageView;
     }
 
+    /** Returns true if the application has camera permissions
+     * */
     @Override
     public boolean hasCameraPermission() {
         return PermissionUtils.hasPermissionTo(getActivity(), Manifest.permission.CAMERA);
     }
 
+    /** Show/hides the image control layout, containing controlls for rotating the image
+     *  and deleting the image
+     *
+     *  @param show determine if the layout should be hidden or shown
+     * */
     private void showImageControls(boolean show) {
         imageControlLayout.setVisibility(show ? View.VISIBLE : View.INVISIBLE);
     }
 
+    /** this method is called when the rotate image button is pressed, rotates
+     *  the image by 90 degrees and sets the resulting image as the image of the ImageView
+     * */
     @OnClick(R.id.rotate_image_btn)
     void rotateImage(View view) {
         setRestaurantImage(PictureUtils.rotateBitmap(restaurantImage, 90));
@@ -139,20 +169,48 @@ public class CreateRestaurantImageFragment extends Fragment implements ImageFrag
         showImageControls(false);
     }
 
+    /** This method will be called when the take photo button is pressed
+     *  calls the presenter to handle this event.
+     * */
     @OnClick(R.id.take_restaurant_picture_btn)
     void takePicture(View view) {
         presenter.onTakePictureButtonClicked();
     }
 
+
+    /** This method is called when this fragment receives a result from another activity
+     *  If the requestCode is the REQUEST_IMAGE_CAPTURE and the result is ok
+     *  that means that the result contains an image which has to be cropped in order to be saved later
+     *
+     *  if the requestCode is IMAGE_CROP and the result is ok
+     *  then it means that the result contains an cropped image which can be displayed in the ImageView
+     *  and saved later.
+     *
+     *  If the resultCode isn't RESULT_OK in either case a Toast containing an error message
+     *  will be shown.
+     * */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            startRestaurantImageCrop(data.getData());
-        } else if (requestCode == IMAGE_CROP && resultCode == RESULT_OK) {
-            setRestaurantImage((Bitmap) data.getExtras().get("data"));
+        if (requestCode == REQUEST_IMAGE_CAPTURE) {
+            if (resultCode == RESULT_OK) {
+                startRestaurantImageCrop(data.getData());
+            } else {
+                Toast.makeText(getActivity(),R.string.error_taking_picture, Toast.LENGTH_LONG).show();
+            }
+        } else {
+            if (requestCode == IMAGE_CROP ) {
+                if (resultCode == RESULT_OK) {
+                    setRestaurantImage((Bitmap) data.getExtras().get("data"));
+                } else {
+                    Toast.makeText(getActivity(),R.string.error_croping_image, Toast.LENGTH_LONG).show();
+                }
+            }
         }
     }
 
+    /** launches an implicit Intent for taking a picture, requesting the result
+     *  using the REQUEST_IMAGE_CAPUTRE requestCode.
+     * */
     @Override
     public void takePictureWithCamera() {
         startActivityForResult(new Intent(MediaStore.ACTION_IMAGE_CAPTURE), REQUEST_IMAGE_CAPTURE);

@@ -1,7 +1,9 @@
-package cel.dev.restaurants.adapters;
+package cel.dev.restaurants.view;
 
 import android.view.View;
 
+import cel.dev.restaurants.adapters.RecycleViewCardViewEventCallback;
+import cel.dev.restaurants.adapters.viewholders.RestaurantViewHolder;
 import cel.dev.restaurants.model.Restaurant;
 import cel.dev.restaurants.persistance.RestaurantDAO;
 
@@ -11,9 +13,9 @@ import cel.dev.restaurants.persistance.RestaurantDAO;
  *  in part to allow for avoiding to pass DAO-objects into each ViewHolder but also
  *  in order to update the RecycleView after a change (e.g. when a restaurant has been deleted)
  * */
-abstract class RestaurantCardButtonListener implements View.OnClickListener {
-    RestaurantViewHolder restaurantViewHolder;
-    RestaurantCardButtonListener(RestaurantViewHolder restaurantViewHolder) {
+public abstract class RestaurantCardButtonListener implements View.OnClickListener {
+    private RestaurantViewHolder restaurantViewHolder;
+    private RestaurantCardButtonListener(RestaurantViewHolder restaurantViewHolder) {
         this.restaurantViewHolder = restaurantViewHolder;
     }
 
@@ -21,12 +23,12 @@ abstract class RestaurantCardButtonListener implements View.OnClickListener {
     /** This listeners expands/collapses the CardView in order to show/hide some information
      *  in the card
      * */
-    static class OnOpenPressedListener extends RestaurantCardButtonListener {
-        private final RecycleViewOnExpandChangeCallback callback;
+    public static class OnOpenPressedListener extends RestaurantCardButtonListener {
+        private final RecycleViewCardViewEventCallback callback;
         private final int position;
         private final long restaurantId;
 
-        public OnOpenPressedListener(RestaurantViewHolder restaurantViewHolder, RecycleViewOnExpandChangeCallback callback, int position, long restaurantId) {
+        public OnOpenPressedListener(RestaurantViewHolder restaurantViewHolder, RecycleViewCardViewEventCallback callback, int position, long restaurantId) {
             super(restaurantViewHolder);
             this.callback = callback;
             this.position = position;
@@ -35,19 +37,19 @@ abstract class RestaurantCardButtonListener implements View.OnClickListener {
 
         @Override
         public void onClick(View v) {
-            callback.onExpandChange(restaurantViewHolder.toggleExpand(), position, restaurantId);
+            callback.onExpandChange(super.restaurantViewHolder.toggleExpand(), position, restaurantId);
         }
     }
 
     /** This listeners will toggle the favorite status of the restaurant
      *  when the favorite button is pressed in the CardView
      * */
-    static class OnFavoritePressedListener extends RestaurantCardButtonListener {
+    public static class OnFavoritePressedListener extends RestaurantCardButtonListener {
 
         private Restaurant restaurant;
         private final RestaurantDAO restaurantDAO;
 
-        OnFavoritePressedListener(RestaurantViewHolder restaurantViewHolder, Restaurant restaurant, RestaurantDAO restaurantDAO) {
+        public OnFavoritePressedListener(RestaurantViewHolder restaurantViewHolder, Restaurant restaurant, RestaurantDAO restaurantDAO) {
             super(restaurantViewHolder);
             this.restaurant = restaurant;
             this.restaurantDAO = restaurantDAO;
@@ -57,7 +59,7 @@ abstract class RestaurantCardButtonListener implements View.OnClickListener {
         public void onClick(View v) {
             boolean favorite = restaurant.isFavorite();
             restaurant.setFavorite(!favorite);
-            restaurantViewHolder.setFavorite(restaurant.isFavorite());
+            super.restaurantViewHolder.setFavorite(restaurant.isFavorite());
             restaurantDAO.setRestaurantFavorite(restaurant);
         }
     }
@@ -65,29 +67,29 @@ abstract class RestaurantCardButtonListener implements View.OnClickListener {
     /** This Listener will call the callback in the adapter
      *  which will show a dialog asking if the user really wants to delete this restaurant
      * */
-    static class OnDeleteRestaurantListener extends RestaurantCardButtonListener {
+    public static class OnDeleteRestaurantListener extends RestaurantCardButtonListener {
 
-        private final RecycleViewOnExpandChangeCallback callback;
+        private final RecycleViewCardViewEventCallback callback;
 
-        OnDeleteRestaurantListener(RestaurantViewHolder restaurantViewHolder, RecycleViewOnExpandChangeCallback callback) {
+        public OnDeleteRestaurantListener(RestaurantViewHolder restaurantViewHolder, RecycleViewCardViewEventCallback callback) {
             super(restaurantViewHolder);
             this.callback = callback;
         }
 
         @Override
         public void onClick(View v) {
-            callback.onDeleteRestaurant(restaurantViewHolder.getAdapterPosition());
+            callback.onDeleteRestaurant(super.restaurantViewHolder.getAdapterPosition());
         }
     }
 
     /** This listener will show the location of the restaurant
      * */
-    static class OnShowRestaurantLocationListener extends RestaurantCardButtonListener {
+    public static class OnShowRestaurantLocationListener extends RestaurantCardButtonListener {
 
-        private final RecycleViewOnExpandChangeCallback callback;
+        private final RecycleViewCardViewEventCallback callback;
         private final Restaurant restaurant;
 
-        OnShowRestaurantLocationListener(RestaurantViewHolder restaurantViewHolder, RecycleViewOnExpandChangeCallback callback, Restaurant restaurant) {
+        public OnShowRestaurantLocationListener(RestaurantViewHolder restaurantViewHolder, RecycleViewCardViewEventCallback callback, Restaurant restaurant) {
             super(restaurantViewHolder);
             this.callback = callback;
             this.restaurant = restaurant;
@@ -101,12 +103,12 @@ abstract class RestaurantCardButtonListener implements View.OnClickListener {
 
     /** This listener will open the activity in order to allow the user to edit this restaurant
      * */
-    static class OnEditRestaurantListener extends RestaurantCardButtonListener {
+    public static class OnEditRestaurantListener extends RestaurantCardButtonListener {
 
-        private final RecycleViewOnExpandChangeCallback callback;
+        private final RecycleViewCardViewEventCallback callback;
         private final Restaurant restaurant;
 
-        OnEditRestaurantListener(RestaurantViewHolder restaurantViewHolder, RecycleViewOnExpandChangeCallback callback, Restaurant restaurant) {
+        public OnEditRestaurantListener(RestaurantViewHolder restaurantViewHolder, RecycleViewCardViewEventCallback callback, Restaurant restaurant) {
             super(restaurantViewHolder);
             this.callback = callback;
             this.restaurant = restaurant;

@@ -10,7 +10,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,10 +30,11 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cel.dev.restaurants.R;
 import cel.dev.restaurants.uicontracts.LocationRequestCallback;
-import cel.dev.restaurants.model.RandomChoice;
+import cel.dev.restaurants.view.RandomChoice;
 import cel.dev.restaurants.presenters.RandomRestaurantPresenterImpl;
 import cel.dev.restaurants.uicontracts.FABFragmentHandler;
-import cel.dev.restaurants.adapters.ExpandableLayoutAnimation;
+import cel.dev.restaurants.utils.PermissionUtils;
+import cel.dev.restaurants.view.ExpandableLayoutAnimation;
 import cel.dev.restaurants.model.Restaurant;
 import cel.dev.restaurants.persistance.RestaurantDAO;
 import cel.dev.restaurants.uicontracts.RandomRestaurantMVP;
@@ -98,6 +98,12 @@ public class RandomRestaurantFragment extends Fragment implements FABFragmentHan
     private ProgressDialog progressDialog;
     private AlertDialog deleteDialog;
 
+
+    /** Inflates the fragment_random_restaurant layout file and binds Butterknife to this so
+     *  that the @BindView etc. above works.
+     *  sets the state to no restaurants found which sets
+     *  some of the views visibility-status to the appropriate value
+     * */
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -107,14 +113,21 @@ public class RandomRestaurantFragment extends Fragment implements FABFragmentHan
         return view;
     }
 
+    /** If the presenter is null create a new presenter
+     *
+     *  Ask the presenter to retrieve the location of the user
+     * */
     @Override
     public void onResume() {
         super.onResume();
-        Log.d(TAG, "onResume: called");
-        presenter = new RandomRestaurantPresenterImpl(this, getContext());
+        if (presenter == null) {
+            presenter = new RandomRestaurantPresenterImpl(this, getContext());
+        }
         presenter.onRequestingLocation();
     }
 
+    /** Creates and shows the loading location progress dialog
+     * */
     @Override
     public void showLoadingLocationDialog() {
         progressDialog = AndroidUtils.
@@ -122,6 +135,9 @@ public class RandomRestaurantFragment extends Fragment implements FABFragmentHan
         progressDialog.show();
     }
 
+    /** Request the location of the user using the LocationUtils
+     *  if the application doesn't have location permission then the permission will be requested
+     * */
     @Override
     public void requestLocation() {
         LocationUtils.requestLocation(getContext(), this, this, new LocationRequestCallback() {
@@ -132,11 +148,26 @@ public class RandomRestaurantFragment extends Fragment implements FABFragmentHan
         });
     }
 
+    /** Handles the result of the location permission request
+     *  if the result is ok then the location will be requested again
+     *
+     *  else a toast will be shown with an error message
+     *  and the location permission will be requested again
+     * */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (PermissionUtils.isPermissionGranted(grantResults[0])) {
+            if (requestCode == REQUEST_LOCATION) {
+                requestLocation();
+            }else {
+                Toast.makeText(getActivity(), R.string.no_location_permission, Toast.LENGTH_SHORT).show();
+                requestLocation();
+            }
+        }
     }
 
+    /** hides the progress dialog (loading location)
+     * */
     @Override
     public void hideLoadingDialog() {
         if (progressDialog != null) {
@@ -207,6 +238,9 @@ public class RandomRestaurantFragment extends Fragment implements FABFragmentHan
      *  #################################################################################
      *  OnClick-Listeners for the buttons in the Restaurant-CardView
      * */
+
+    /** Calls the presenter to handle the edit-restaurant button clicked event
+     * */
     @OnClick(R.id.edit_restaurant_btn)
     public void editRestaurantClicked(View view) {
         presenter.editCurrentRestaurant();
@@ -254,11 +288,15 @@ public class RandomRestaurantFragment extends Fragment implements FABFragmentHan
         }
     }
 
+    /** Calls the presenter to handle the favorite button click event
+     * */
     @OnClick(R.id.favorite_restaurant_btn)
     public void favoriteThisRestaurantClicked(View view) {
         presenter.favoriteRestaurantClicked();
     }
 
+    /** calls the presenter to handle the show restaurant location button click event
+     * */
     @OnClick(R.id.show_restaurant_location_btn)
     public void showLocationClicked(View view) {
         presenter.showRestaurantLocation();
@@ -276,33 +314,46 @@ public class RandomRestaurantFragment extends Fragment implements FABFragmentHan
      *  Each of these listeners passes a RandomChoice into the presenter which will
      *  alter the settings and load a new restaurants using the new settings
      * */
+    /** Calls the presenter to show a restaurant that is closer
+     * */
     @OnClick(R.id.restaurant_closer)
     public void showRestaurantThatIsCloserPressed(View view) {
         presenter.showNewRestaurant(RandomChoice.CLOSER);
     }
 
+    /** calls the presneter to show a restaurant that is cheaper
+     * */
     @OnClick(R.id.restaurant_cheaper)
     public void showRestaurantThatIsCheaperPressed(View view) {
         presenter.showNewRestaurant(RandomChoice.CHEAPER);
     }
 
+    /** calls the presenter to show a restaurant that servers different food than the current one
+     * */
     @OnClick(R.id.restaurant_different_food)
     public void showRestaurantDifferentFoodType(View view) {
         presenter.showNewRestaurant(RandomChoice.DIFFERENT_FOOD);
     }
 
+    /** Calls the presenter to show a restaurant without any new filtering settings
+     * */
     @OnClick(R.id.just_a_different_restaurant)
     public void showADifferentRestaurant(View view) {
         presenter.showNewRestaurant(RandomChoice.NO_CHANGE);
     }
 
+    /** calls the presenter to reset the settings and to start over
+     *  showing an random restaurant without any filters
+     * */
     @OnClick(R.id.reset_settings_button)
     public void resetSettingsPressed(View view) {
         hasLocation = false;
         presenter.resetSettings();
     }
 
-    /** Called when the
+    /** Called when the fragment is being destroyed
+     *  If the presenter isn't null then the presenter will be called to
+     *  preform closing functionality (such as closing the database)
      * */
     @Override
     public void onDestroy() {

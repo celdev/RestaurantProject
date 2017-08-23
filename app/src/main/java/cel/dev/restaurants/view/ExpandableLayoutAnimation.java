@@ -1,4 +1,4 @@
-package cel.dev.restaurants.adapters;
+package cel.dev.restaurants.view;
 
 import android.view.View;
 import android.view.ViewGroup;

@@ -160,7 +160,10 @@ public class ShowRestaurantLocationActivity extends FragmentActivity implements 
      *  the bundle contained a location and the map was initialized
      *
      *  The onMapReady checks if the location has been set (as an instance variable)
-     *  if so then the onMapReady will
+     *  if so then the onMapReady will use this location to set the marker
+     *
+     *  This ensures the marker is always set regardless of the order of execution of
+     *  handleBundle and onMapReady
      * */
     private void handleBundle(Bundle args) {
         double latitude = args.getDouble(DATA_LATITUDE, defaultValue);
@@ -175,6 +178,11 @@ public class ShowRestaurantLocationActivity extends FragmentActivity implements 
         }
     }
 
+    /** This method inflates the options menu
+     *  the menuInflated boolean checks if the menu has already been inflated and makes
+     *  sure the menu isn't inflated more than once
+     *  since this method is called each time the menu is used
+     * */
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         if (!menuInflated) {
@@ -223,6 +231,8 @@ public class ShowRestaurantLocationActivity extends FragmentActivity implements 
         }
     }
 
+    /** Represents the two different modes this activity is used fore
+     * */
     private enum MapActivityMode {
 
         SHOW_LOCATION,

@@ -34,11 +34,13 @@ public enum KitchenType {
         this.stringResId = stringResId;
     }
 
-
     public int getStringResId() {
         return stringResId;
     }
 
+    /** Converts a List of KitchenTypes into an integer array containing each of these KitchenTypes
+     * ordinals
+     * */
     public static int[] toIntegerArray(List<KitchenType> kitchenTypes) {
         int[] ordinals = new int[kitchenTypes.size()];
         for (int i = 0; i < kitchenTypes.size(); i++) {
@@ -47,6 +49,10 @@ public enum KitchenType {
         return ordinals;
     }
 
+    /** Does the opposite of toIntegerArray above
+     *  Converts an integer array (which should contain integer which are ordinals of values of this class)
+     *  into a List och KitchenType
+     * */
     public static List<KitchenType> fromParcel(int[] ordinals) {
         List<KitchenType> kitchenTypes = new ArrayList<>(ordinals.length);
         for (Integer ordinal : ordinals) {

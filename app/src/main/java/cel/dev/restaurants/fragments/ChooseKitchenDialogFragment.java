@@ -25,6 +25,22 @@ import cel.dev.restaurants.R;
 import cel.dev.restaurants.presenters.ChooseKitchenTypePresenterImpl;
 import cel.dev.restaurants.uicontracts.dialog.ChooseKitchenDialogFragmentMVP;
 
+/** This is the DialogFragment which will list the chosen KitchenTypes and allow
+ *  the user to choose and deselect kitchen types.
+ *
+ *  In order to be able to callback changes of chosen status to the activity
+ *  the activity overrides the onAttach-method which allows the fragment to create an connection to
+ *  the containing activity. This Activity must implement OnChooseKitchenCallback which is used
+ *  to communicate the chosen status changes from the listview-adapter to the activity.
+ *
+ *  In order to determine if this DialogFragment is showing it has a boolean called shown which is
+ *  set to true when the dialog is showing and false when the dialog has been dismissed.
+ *
+ *  ChooseKitchenDialogFragmentMVP.View extends the interface HasShownStatus which allows the
+ *  containing activity to determine if this DialogFragment is showing
+ *  This can be used to determine if the Choose Kitchen Dialog should be shown when the activity is
+ *  recreated after an orientation change
+ * */
 public class ChooseKitchenDialogFragment extends DialogFragment implements ChooseKitchenDialogFragmentMVP.View {
 
     private static final String CHOSEN_FOOD_TYPE_ARG = "CHOSEN";
@@ -92,6 +108,8 @@ public class ChooseKitchenDialogFragment extends DialogFragment implements Choos
     }
 
     /** Callback for when a Kitchen type has been selected or deselected
+     *  Sends this change to the onChooseKitchenCallback (which is the containing activity)
+     *  callback, this allows the change to be recorded by the containing activity.
      * */
     @Override
     public void onFoodTypeChosenChange(FoodTypeAndChosenStatus foodTypeAndChosenStatus) {
@@ -127,6 +145,8 @@ public class ChooseKitchenDialogFragment extends DialogFragment implements Choos
         shown = true;
     }
 
+    /** Sets the shown boolean to false
+     * */
     @Override
     public void onDismiss(DialogInterface dialog) {
         shown = false;
@@ -148,6 +168,8 @@ public class ChooseKitchenDialogFragment extends DialogFragment implements Choos
         dismiss();
     }
 
+    /** Returns true if the dialog is showing, false if it's not showing.
+     * */
     @Override
     public boolean getDialogIsShowing() {
         return shown;

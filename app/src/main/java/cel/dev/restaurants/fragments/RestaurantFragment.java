@@ -12,13 +12,13 @@ import java.util.List;
 import cel.dev.restaurants.R;
 import cel.dev.restaurants.activities.CreateRestaurantActivity;
 import cel.dev.restaurants.uicontracts.ListRestaurantsFragment;
-import cel.dev.restaurants.adapters.RestaurantRecycleViewAdapter;
+import cel.dev.restaurants.adapters.RestaurantRecycleViewCardViewAdapter;
 import cel.dev.restaurants.model.Restaurant;
 import cel.dev.restaurants.persistance.RestaurantDAO;
 import cel.dev.restaurants.presenters.RestaurantPresenterImpl;
 import cel.dev.restaurants.uicontracts.ShowRestaurantsMVP;
 
-/** This fragment shows all restaurants
+/** This fragment shows all restaurants using a RecycleView-list
  * */
 public class RestaurantFragment extends ListRestaurantsFragment implements ShowRestaurantsMVP.View{
 
@@ -32,32 +32,37 @@ public class RestaurantFragment extends ListRestaurantsFragment implements ShowR
 
     private ShowRestaurantsMVP.Presenter presenter;
     private HashSet<Long> expandedRestaurants = new HashSet<>();
-    private RestaurantRecycleViewAdapter adapter;
+    private RestaurantRecycleViewCardViewAdapter adapter;
 
+    /** Initializes the LayoutManager for the RecycleView
+     * */
     @Override
     public void initializeViews() {
         getRestaurantRecyclerView().setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
     }
 
+    /** Stores which restaurants (id) which information is expanded so that their information
+     *  can be expanded after e.g. an orientation change
+     * */
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        Log.d(TAG, "onSaveInstanceState: size of expanded on save = " + adapter.getExpandedRestaurants().size());
         outState.putSerializable(getString(R.string.bundle_expanded_restaurants), adapter.getExpandedRestaurants());
     }
 
+    /** This method is similar to onRestoreInstanceState
+     *  If any restaurant info was expanded when the onSaveInstanceState was called then the ids of
+     *  these restaurants was stored and can be used to expand those restaurants information in the
+     *  adapters
+     */
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        Log.d(TAG, "onActivityCreated: called");
         if (savedInstanceState != null) {
-            Log.d(TAG, "onActivityCreated: instancestate not null");
             if (savedInstanceState.containsKey(getString(R.string.bundle_expanded_restaurants))) {
-                Log.d(TAG, "onActivityCreated: contains key");
                 this.expandedRestaurants = (HashSet<Long>) savedInstanceState.getSerializable(getString(R.string.bundle_expanded_restaurants));
             }
         }
-        Log.d(TAG, "onActivityCreated: expanded size = " + expandedRestaurants.size());
     }
 
     /** This method is called when the fragment enters the onResume lifecycle-event
@@ -85,7 +90,7 @@ public class RestaurantFragment extends ListRestaurantsFragment implements ShowR
             showNoRestaurantsMessage(R.string.no_restaurants_added);
         } else {
             hideNoRestaurantsMessage();
-            adapter = new RestaurantRecycleViewAdapter(restaurants, getContext(), restaurantDAO, expandedRestaurants);
+            adapter = new RestaurantRecycleViewCardViewAdapter(restaurants, getContext(), restaurantDAO, expandedRestaurants);
             getRestaurantRecyclerView().setAdapter(adapter);
         }
     }

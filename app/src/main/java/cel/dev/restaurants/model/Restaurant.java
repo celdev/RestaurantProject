@@ -47,29 +47,6 @@ public abstract class Restaurant {
 
     public abstract void injectImageOntoImageView(ImageView imageView, RestaurantDAO restaurantDAO);
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Restaurant that = (Restaurant) o;
-
-        return id == that.id;
-
-    }
-
-    @Override
-    public int hashCode() {
-        int result;
-        long temp;
-        result = (int) (id ^ (id >>> 32));
-        temp = Double.doubleToLongBits(latitude);
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(longitude);
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
-        return result;
-    }
-
     public long getId() {
         return id;
     }

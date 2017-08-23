@@ -1,4 +1,4 @@
-package cel.dev.restaurants.model;
+package cel.dev.restaurants.view;
 
 import android.support.annotation.NonNull;
 
@@ -7,6 +7,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import cel.dev.restaurants.model.BudgetType;
+import cel.dev.restaurants.model.KitchenType;
 import cel.dev.restaurants.utils.Values;
 
 

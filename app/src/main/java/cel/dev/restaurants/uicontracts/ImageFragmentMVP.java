@@ -30,7 +30,6 @@ public interface ImageFragmentMVP {
 
         void requestCameraPermission();
 
-
     }
 
     interface Presenter {

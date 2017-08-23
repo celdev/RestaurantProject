@@ -6,9 +6,9 @@ import android.support.annotation.NonNull;
 import java.util.HashSet;
 import java.util.Set;
 
-import cel.dev.restaurants.model.RandomChoice;
+import cel.dev.restaurants.view.RandomChoice;
 import cel.dev.restaurants.model.BudgetType;
-import cel.dev.restaurants.model.RandomiseSettings;
+import cel.dev.restaurants.view.RandomiseSettings;
 import cel.dev.restaurants.model.Restaurant;
 import cel.dev.restaurants.persistance.RestaurantDAO;
 import cel.dev.restaurants.persistance.RestaurantDAOImpl;

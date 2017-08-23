@@ -2,6 +2,10 @@ package cel.dev.restaurants.view;
 
 import cel.dev.restaurants.R;
 
+
+/** This class contains @StringRes for errors that may occur
+ *  when trying to create a restaurant
+ * */
 public class CreateRestaurantValidationErrors {
 
     public static final int ERROR_NO_BUDGET = R.string.no_budget_chosen;

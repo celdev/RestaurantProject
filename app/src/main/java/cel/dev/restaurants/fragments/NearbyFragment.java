@@ -15,17 +15,19 @@ import android.widget.SeekBar;
 import android.widget.Toast;
 
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 
 import java.util.HashSet;
 import java.util.List;
 
 import cel.dev.restaurants.R;
+import cel.dev.restaurants.adapters.RestaurantRecycleViewCardViewAdapter;
 import cel.dev.restaurants.uicontracts.ListRestaurantsFragment;
 import cel.dev.restaurants.presenters.NearbyPresenterImpl;
 import cel.dev.restaurants.uicontracts.NearbyMVP;
 import cel.dev.restaurants.uicontracts.ShowRestaurantsMVP;
-import cel.dev.restaurants.adapters.RestaurantRecycleViewAdapter;
 import cel.dev.restaurants.model.Restaurant;
 import cel.dev.restaurants.persistance.RestaurantDAO;
 import cel.dev.restaurants.utils.PermissionUtils;
@@ -37,7 +39,7 @@ import cel.dev.restaurants.utils.PermissionUtils;
  *
  *  The handler of the Floating Action Button will open the Set Range Dialog
  * */
-public class NearbyFragment extends ListRestaurantsFragment implements OnSuccessListener<Location>, ShowRestaurantsMVP.View, NearbyMVP.View {
+public class NearbyFragment extends ListRestaurantsFragment implements OnSuccessListener<Location>, ShowRestaurantsMVP.View, NearbyMVP.View, OnCompleteListener<Location> {
 
     private static final int REQUEST_LOCATION = 1;
     private static final String TAG = "nearbyfrag";
@@ -51,10 +53,11 @@ public class NearbyFragment extends ListRestaurantsFragment implements OnSuccess
     private NearbyMVP.Presenter presenter;
 
     private HashSet<Long> expandedRestaurants = new HashSet<>();
-    private RestaurantRecycleViewAdapter adapter;
+    private RestaurantRecycleViewCardViewAdapter adapter;
 
     private AlertDialog rangeDialog;
     private boolean shouldShowRangeDialog;
+    private Location location;
 
     /** Creates the presenter if it isn't null and calls to refresh the list
      *  Also checks if the range dialog should be shown and calls the presenter to show it if so.
@@ -109,16 +112,21 @@ public class NearbyFragment extends ListRestaurantsFragment implements OnSuccess
 
 
 
+    /** Initializes the layoutmanager of the recycle view*/
     @Override
     public void initializeViews() {
         getRestaurantRecyclerView().setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
     }
 
+    /** Passes the handling of the floating action button click to the presenter
+     * */
     @Override
     public void handleFABClick() {
         presenter.onFABPressed();
     }
 
+    /** Request location permissions
+     * */
     public void requestLocationPermission() {
         ActivityCompat.requestPermissions(getActivity(), PermissionUtils.LOCATION_PERMISSIONS, REQUEST_LOCATION);
     }
@@ -126,21 +134,64 @@ public class NearbyFragment extends ListRestaurantsFragment implements OnSuccess
 
     /** This is called when the location service returns a location
      *  Uses this location to get restaurants which is close
+     *
+     *  For some reason there seems to be a bug in which the location is null
+     *  However, the onComplete-method below gets the location just a few milliseconds later
+     *  without a problem.
+     *
+     *  Using the onError-listener for the location service doesn't show anything when this bug(?)
+     *  happens
+     *
+     *  If the location isn't null then the instance variable location will be set
+     *  which the onComplete-method can use for checking if the onSuccess was in fact successful
+     *
      * */
     @Override
     public void onSuccess(Location location) {
         if (location != null) {
+            this.location = location;
             presenter.getRestaurantsAndInject(location.getLatitude(), location.getLongitude());
+        }
+    }
+
+    /** This method is called after the onSuccess method above
+     *  There seems to be a bug in the FusedLocationService which causes the onSuccess
+     *  to fail (location = null) for no apparent reason.
+     *
+     *  This method instead gets the result from the Task<Location> which, during my testing
+     *  hasn't failed like onSuccess.
+     *  This method passes the location into the onSuccess-method above if
+     *      * the location isn't null
+     *      * the location wasn't set by the onSuccess-method (it didn't fail)
+     *  If the location is null then an error has occurred and a Toast will be shown.
+     * */
+    @Override
+    public void onComplete(@NonNull Task<Location> task) {
+        Location location = task.getResult();
+        if (location != null) {
+            if (this.location == null) {
+                onSuccess(location);
+            }
         } else {
             Toast.makeText(getActivity(), R.string.error_getting_location, Toast.LENGTH_SHORT).show();
         }
     }
 
+    /** Returns true if the application has location permission
+     * */
     @Override
     public boolean checkHasLocationPermission() {
         return PermissionUtils.hasPermissionTo(getContext(), Manifest.permission.ACCESS_FINE_LOCATION);
     }
 
+    /** Handles the request location permission results
+     *  if the result is ok and the requestcode is the one used when requesting the permission then
+     *  the application will attempt to retrieve the users location and use this to refresh the list
+     *  of nearby restaurants
+     *
+     *  ifthe result ins't ok then a dialog stating that the location permission is needed for this
+     *  use case of the application
+     * */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (PermissionUtils.isPermissionGranted(grantResults[0])) {
@@ -152,11 +203,17 @@ public class NearbyFragment extends ListRestaurantsFragment implements OnSuccess
         }
     }
 
+    /** Request the location of the user using FusedLocationService
+     *  adds this object as an listener for the onSuccess-event and the onComplete-event
+     *  since onSuccess sometimes fail for no apparent reason
+     * */
     @Override
     public void requestLocation() {
         if (checkHasLocationPermission()) {
             LocationServices.getFusedLocationProviderClient(getActivity())
-                    .getLastLocation().addOnSuccessListener(getActivity(), this);
+                    .getLastLocation()
+                    .addOnSuccessListener(getActivity(), this)
+                    .addOnCompleteListener(this);
         } else {
             showGetLocationPermissionDialog();
         }
@@ -174,11 +231,14 @@ public class NearbyFragment extends ListRestaurantsFragment implements OnSuccess
             showNoRestaurantsMessage(R.string.no_restaurant_found_try_changing_area_size);
         } else {
             hideNoRestaurantsMessage();
-            adapter = new RestaurantRecycleViewAdapter(restaurants, getContext(), restaurantDAO, expandedRestaurants);
+            adapter = new RestaurantRecycleViewCardViewAdapter(restaurants, getContext(), restaurantDAO, expandedRestaurants);
             getRestaurantRecyclerView().setAdapter(adapter);
         }
     }
 
+    /** If the presenter isn't null, this will call the presenter to preform closing
+     *  functionality
+     * */
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -188,11 +248,16 @@ public class NearbyFragment extends ListRestaurantsFragment implements OnSuccess
         }
     }
 
+    /** Calls the presenter to refresh which restaurants is considered close
+     * */
     @Override
     public void refreshNearbyList() {
         presenter.refreshList();
     }
 
+    /** Shows a dialog that staes that the application needs location permission in
+     *  order for this functionality of the application to work.
+     * */
     @Override
     public void showGetLocationPermissionDialog() {
         new AlertDialog.Builder(getContext())
@@ -247,19 +312,17 @@ public class NearbyFragment extends ListRestaurantsFragment implements OnSuccess
             rangeBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                 @Override
                 public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                    //changes in the seekbar will immediately be used to refresh the range of which
+                    //restaurants is to be considered close
+                    //this range is also saved directly
+                    //this allows the user to see how which restaurants is nearby changes when changing the progress of the seekbar
                     presenter.saveRange(progress);
                     refreshNearbyList();
                 }
-
                 @Override
-                public void onStartTrackingTouch(SeekBar seekBar) {
-
-                }
-
+                public void onStartTrackingTouch(SeekBar seekBar) {}
                 @Override
-                public void onStopTrackingTouch(SeekBar seekBar) {
-
-                }
+                public void onStopTrackingTouch(SeekBar seekBar) {}
             });
         }
         rangeDialog.show();

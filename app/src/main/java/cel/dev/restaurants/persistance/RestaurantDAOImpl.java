@@ -12,7 +12,7 @@ import java.util.Set;
 
 import cel.dev.restaurants.model.BudgetType;
 import cel.dev.restaurants.model.KitchenType;
-import cel.dev.restaurants.model.RandomiseSettings;
+import cel.dev.restaurants.view.RandomiseSettings;
 import cel.dev.restaurants.model.Restaurant;
 import cel.dev.restaurants.model.RestaurantCustomImage;
 import cel.dev.restaurants.persistance.db.RestaurantCRUD;

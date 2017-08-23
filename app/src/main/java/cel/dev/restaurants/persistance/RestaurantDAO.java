@@ -4,8 +4,7 @@ import android.widget.ImageView;
 
 import java.util.List;
 
-import cel.dev.restaurants.model.BudgetType;
-import cel.dev.restaurants.model.RandomiseSettings;
+import cel.dev.restaurants.view.RandomiseSettings;
 import cel.dev.restaurants.model.Restaurant;
 
 /** This interface contains the contract which the RestaurantDAO should implement

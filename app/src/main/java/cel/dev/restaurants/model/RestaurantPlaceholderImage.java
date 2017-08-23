@@ -15,6 +15,8 @@ public class RestaurantPlaceholderImage extends Restaurant {
         this.placeholderImageRes = placeholderImageRes;
     }
 
+    /** This will "inject" the placeholder image into the ImageView
+     * */
     @Override
     public void injectImageOntoImageView(ImageView imageView, RestaurantDAO restaurantDAO) {
         imageView.setImageDrawable(imageView.getResources().getDrawable(placeholderImageRes, imageView.getContext().getTheme()));

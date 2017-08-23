@@ -16,16 +16,15 @@ public class RestaurantNameTextWatcher implements TextWatcher {
         this.hasTextView = hasTextView;
     }
 
-    @Override
-    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-    }
 
     @Override
-    public void onTextChanged(CharSequence s, int start, int before, int count) {
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {}
 
-    }
-
+    /** When text has been entered/changed in the edittext the contents of the
+     *  edittext will be passed to the setText method of the imagefragment view
+     * */
     @Override
     public void afterTextChanged(Editable s) {
         hasTextView.setText(s.toString());

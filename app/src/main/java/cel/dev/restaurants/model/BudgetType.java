@@ -26,6 +26,8 @@ public enum BudgetType {
         this.order = order;
     }
 
+    /** Converts a BudgetType to a @StringRes int value
+     * */
     @StringRes
     public static Integer budgetTypeToString(BudgetType budgetType) {
         switch (budgetType) {
@@ -41,6 +43,8 @@ public enum BudgetType {
         throw new RuntimeException("IllegalBudgetType");
     }
 
+    /** Sorts the BudgetType in the order CHEAP, NORMAL, EXPENSIVE, VERY_EXPENSIVE
+     * */
     public static BudgetType[] sortBudgetType(BudgetType[] toSort) {
         Arrays.sort(toSort, new Comparator<BudgetType>() {
             @Override
