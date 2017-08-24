@@ -1,7 +1,6 @@
 package cel.dev.restaurants.activities;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -37,7 +36,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import cel.dev.restaurants.presenters.CreateRestaurantPresenterImpl;
+import cel.dev.restaurants.presenterimpl.CreateRestaurantPresenterImpl;
 import cel.dev.restaurants.fragments.ChooseKitchenDialogFragment;
 import cel.dev.restaurants.uicontracts.dialog.OnChooseKitchenCallback;
 import cel.dev.restaurants.uicontracts.ImageFragmentMVP;
@@ -163,14 +162,6 @@ public class CreateRestaurantActivity extends AppCompatActivity implements Creat
         if (mode.equals(ActivityMode.EDIT)) {
             createRestaurantButton.setText(R.string.save);
         }
-    }
-
-    /** Called when the user want's to cancel the creation of this restaurant
-     *  Finishes this activity
-     * */
-    @Override
-    public void onCancelCreateRestaurantPressed() {
-        finish();
     }
 
     /** When the custom Location activity returns a value this method will retrieve the values
@@ -337,6 +328,8 @@ public class CreateRestaurantActivity extends AppCompatActivity implements Creat
         finish();
     }
 
+    /** Shows the String with the @StringRes id of the parameter as a message in a Toast
+     * */
     @Override
     public void showError(@StringRes int errorResCode) {
         Toast.makeText(this, errorResCode, Toast.LENGTH_SHORT).show();
@@ -623,9 +616,5 @@ public class CreateRestaurantActivity extends AppCompatActivity implements Creat
         }
     }
 
-    @Override
-    public Context getViewContext() {
-        return this;
-    }
 }
 

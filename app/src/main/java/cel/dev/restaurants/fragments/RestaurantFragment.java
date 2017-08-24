@@ -15,7 +15,7 @@ import cel.dev.restaurants.uicontracts.ListRestaurantsFragment;
 import cel.dev.restaurants.adapters.RestaurantRecycleViewCardViewAdapter;
 import cel.dev.restaurants.model.Restaurant;
 import cel.dev.restaurants.persistance.RestaurantDAO;
-import cel.dev.restaurants.presenters.RestaurantPresenterImpl;
+import cel.dev.restaurants.presenterimpl.RestaurantPresenterImpl;
 import cel.dev.restaurants.uicontracts.ShowRestaurantsMVP;
 
 /** This fragment shows all restaurants using a RecycleView-list

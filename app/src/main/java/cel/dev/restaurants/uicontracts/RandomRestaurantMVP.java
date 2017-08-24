@@ -8,19 +8,35 @@ import cel.dev.restaurants.model.Restaurant;
 import cel.dev.restaurants.persistance.RestaurantDAO;
 import cel.dev.restaurants.view.RandomiseSettings;
 
+/** This is the MVP contract for the random (find) restaurant use case
+ * */
 public interface RandomRestaurantMVP {
 
     interface View {
 
-
+        /** Request the location of the user using the LocationUtils
+         *  if the application doesn't have location permission then the permission will be requested
+         * */
         void requestLocation();
 
+        /** hides the progress dialog (loading location)
+         * */
         void hideLoadingDialog();
 
+        /** Displays text stating that no restaurants was found using the current settings
+         *  and allows the user to reset the settings and start over
+         * */
         void handleNoRestaurantsFound();
 
+        /** Injects a restaurant into the view
+         *  sets and creates the name, rating, location, button click listeners...
+         *  The view which displays the restaurant is the cardview used in the RecycleView in
+         *  the NearbyFragment and ShowRestaurants-fragment
+         * */
         void injectRestaurant(Restaurant restaurant, RestaurantDAO restaurantDAO);
 
+        /** Creates and shows the loading location progress dialog
+         * */
         void showLoadingLocationDialog();
 
     }

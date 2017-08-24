@@ -32,7 +32,7 @@ import butterknife.OnClick;
 import cel.dev.restaurants.R;
 import cel.dev.restaurants.uicontracts.LocationRequestCallback;
 import cel.dev.restaurants.view.RandomChoice;
-import cel.dev.restaurants.presenters.RandomRestaurantPresenterImpl;
+import cel.dev.restaurants.presenterimpl.RandomRestaurantPresenterImpl;
 import cel.dev.restaurants.uicontracts.FABFragmentHandler;
 import cel.dev.restaurants.utils.PermissionUtils;
 import cel.dev.restaurants.view.ExpandableLayoutAnimation;
@@ -390,6 +390,8 @@ public class RandomRestaurantFragment extends Fragment implements FABFragmentHan
     /** Called when the fragment is being destroyed
      *  If the presenter isn't null then the presenter will be called to
      *  preform closing functionality (such as closing the database)
+     *
+     *  closes any dialogs that may be showing
      * */
     @Override
     public void onDestroy() {
@@ -397,6 +399,10 @@ public class RandomRestaurantFragment extends Fragment implements FABFragmentHan
         if (presenter != null) {
             presenter.onCloseFragment();
             presenter = null;
+        }
+        if (progressDialog != null) {
+            progressDialog.dismiss();
+            progressDialog = null;
         }
         if (deleteDialog != null) {
             deleteDialog.dismiss();

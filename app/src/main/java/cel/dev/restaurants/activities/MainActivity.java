@@ -2,7 +2,6 @@ package cel.dev.restaurants.activities;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -19,7 +18,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cel.dev.restaurants.R;
-import cel.dev.restaurants.presenters.MainActivityPresenterImpl;
+import cel.dev.restaurants.presenterimpl.MainActivityPresenterImpl;
 import cel.dev.restaurants.uicontracts.MainActivityMVP;
 import cel.dev.restaurants.utils.AndroidUtils;
 

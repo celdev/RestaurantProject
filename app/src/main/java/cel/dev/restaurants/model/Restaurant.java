@@ -99,6 +99,8 @@ public abstract class Restaurant {
         this.kitchenTypes = kitchenTypes;
     }
 
+    /** Returns true if the id of the restaurant id is set to NOT_SAVED_ID
+     * */
     public static boolean restaurantHasIdSet(Restaurant restaurant) {
         return restaurant.getId() != NOT_SAVED_ID;
     }

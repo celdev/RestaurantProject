@@ -21,7 +21,9 @@ public interface MainActivityMVP {
         /***/
         void handleAfterDeleteRestaurants();
 
-
+        /** Sets the fragment and the icon of the floating action button to the
+         *  fragment and drawable res id passed as parameters
+         * */
         void setFragment(Fragment fragment, @DrawableRes int fabIconDrawableId);
 
         /** hides or shows the floating action button depending on the param show
@@ -71,6 +73,8 @@ public interface MainActivityMVP {
          * */
         void loadFragment();
 
+        /** handles the press on an item in the options dialog
+         * */
         void menuItemSelected(@IdRes int itemId);
 
     }

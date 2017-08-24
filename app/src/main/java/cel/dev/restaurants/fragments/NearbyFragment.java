@@ -25,7 +25,7 @@ import java.util.List;
 import cel.dev.restaurants.R;
 import cel.dev.restaurants.adapters.RestaurantRecycleViewCardViewAdapter;
 import cel.dev.restaurants.uicontracts.ListRestaurantsFragment;
-import cel.dev.restaurants.presenters.NearbyPresenterImpl;
+import cel.dev.restaurants.presenterimpl.NearbyPresenterImpl;
 import cel.dev.restaurants.uicontracts.NearbyMVP;
 import cel.dev.restaurants.uicontracts.ShowRestaurantsMVP;
 import cel.dev.restaurants.model.Restaurant;

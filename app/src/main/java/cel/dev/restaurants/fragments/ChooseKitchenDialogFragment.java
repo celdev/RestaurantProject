@@ -22,7 +22,7 @@ import cel.dev.restaurants.model.FoodTypeAndChosenStatus;
 import cel.dev.restaurants.uicontracts.dialog.OnChooseKitchenCallback;
 import cel.dev.restaurants.model.KitchenType;
 import cel.dev.restaurants.R;
-import cel.dev.restaurants.presenters.ChooseKitchenTypePresenterImpl;
+import cel.dev.restaurants.presenterimpl.ChooseKitchenTypePresenterImpl;
 import cel.dev.restaurants.uicontracts.dialog.ChooseKitchenDialogFragmentMVP;
 
 /** This is the DialogFragment which will list the chosen KitchenTypes and allow

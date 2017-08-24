@@ -1,4 +1,4 @@
-package cel.dev.restaurants.adapters.viewholders;
+package cel.dev.restaurants.adapters.viewholder;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;

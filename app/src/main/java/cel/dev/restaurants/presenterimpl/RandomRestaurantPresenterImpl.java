@@ -1,9 +1,8 @@
-package cel.dev.restaurants.presenters;
+package cel.dev.restaurants.presenterimpl;
 
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import java.util.HashSet;
 import java.util.Set;

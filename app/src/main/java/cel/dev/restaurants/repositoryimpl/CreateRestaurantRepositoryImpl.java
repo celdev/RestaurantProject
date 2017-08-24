@@ -75,6 +75,14 @@ public class CreateRestaurantRepositoryImpl implements CreateRestaurantMVP.Repos
         chosenTypes.addAll(Arrays.asList(kitchenTypes));
     }
 
+    /** This method tries to save or update the restaurant passed as an argument
+     *  returns true if the save or update was successful
+     * */
+    @Override
+    public boolean saveRestaurant(Restaurant restaurant) {
+        return restaurantDAO.saveRestaurant(restaurant);
+    }
+
 
     /** Retrieves the image of the restaurant and adds it onto the ImageView
      * */

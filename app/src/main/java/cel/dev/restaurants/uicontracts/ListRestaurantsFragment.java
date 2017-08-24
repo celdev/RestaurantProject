@@ -18,6 +18,9 @@ import cel.dev.restaurants.R;
  *
  *  Contains functionality for showing an error message if no restaurants were found to show
  *  in the RecycleView
+ *
+ *  The class provides an abstract method which child classes must implement which allows them
+ *  to initialize view information
  * */
 public abstract class ListRestaurantsFragment extends Fragment implements FABFragmentHandler {
 
@@ -25,6 +28,12 @@ public abstract class ListRestaurantsFragment extends Fragment implements FABFra
 
     private RecyclerView recyclerView;
     private TextView noRestaurantsText;
+
+
+    /** The fragments extending this class will use the fragment_restaurant layout file to show restaurants in a RecycleView
+     *  Initializes the view which will show that no restaurants was found which can be shown and hidded
+     *  using the hideNoRestaurantsMessage and showNoRestaurantsMessage methods
+     * */
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -35,15 +44,22 @@ public abstract class ListRestaurantsFragment extends Fragment implements FABFra
         return view;
     }
 
+    /** This method shows the message passed as a StringRes id in the no restaurants view and
+     *  sets the view to visible
+     * */
     public void showNoRestaurantsMessage(@StringRes int message) {
         noRestaurantsText.setText(message);
         noRestaurantsText.setVisibility(View.VISIBLE);
     }
 
+    /** This method hides the no restaurants found view (should be used when restaurants has been found)
+     * */
     public void hideNoRestaurantsMessage() {
         noRestaurantsText.setVisibility(View.GONE);
     }
 
+    /** Returns the recycle view
+     * */
     public RecyclerView getRestaurantRecyclerView() {
         return recyclerView;
     }

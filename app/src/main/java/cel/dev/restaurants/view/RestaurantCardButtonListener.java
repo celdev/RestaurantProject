@@ -3,7 +3,7 @@ package cel.dev.restaurants.view;
 import android.view.View;
 
 import cel.dev.restaurants.adapters.RecycleViewCardViewEventCallback;
-import cel.dev.restaurants.adapters.viewholders.RestaurantViewHolder;
+import cel.dev.restaurants.adapters.viewholder.RestaurantViewHolder;
 import cel.dev.restaurants.model.Restaurant;
 import cel.dev.restaurants.persistance.RestaurantDAO;
 

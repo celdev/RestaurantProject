@@ -14,7 +14,7 @@ import java.util.HashSet;
 import java.util.List;
 
 import cel.dev.restaurants.R;
-import cel.dev.restaurants.adapters.viewholders.RestaurantViewHolder;
+import cel.dev.restaurants.adapters.viewholder.RestaurantViewHolder;
 import cel.dev.restaurants.model.BudgetType;
 import cel.dev.restaurants.model.Restaurant;
 import cel.dev.restaurants.persistance.RestaurantDAO;

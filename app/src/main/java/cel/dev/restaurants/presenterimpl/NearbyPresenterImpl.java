@@ -1,4 +1,4 @@
-package cel.dev.restaurants.presenters;
+package cel.dev.restaurants.presenterimpl;
 
 import android.content.Context;
 import cel.dev.restaurants.persistance.RestaurantDAO;

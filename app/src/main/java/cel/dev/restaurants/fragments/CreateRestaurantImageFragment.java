@@ -25,7 +25,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cel.dev.restaurants.R;
-import cel.dev.restaurants.presenters.ImageFragmentPresenterImpl;
+import cel.dev.restaurants.presenterimpl.ImageFragmentPresenterImpl;
 import cel.dev.restaurants.uicontracts.ImageFragmentMVP;
 import cel.dev.restaurants.utils.PermissionUtils;
 import cel.dev.restaurants.utils.PictureUtils;
