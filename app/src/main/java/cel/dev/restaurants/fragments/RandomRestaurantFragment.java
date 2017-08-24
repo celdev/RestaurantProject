@@ -98,6 +98,7 @@ public class RandomRestaurantFragment extends Fragment implements FABFragmentHan
 
     private RandomRestaurantMVP.Presenter presenter;
     private boolean expanded, hasLocation;
+    private boolean firstLoadedRestaurant = true;
     private ProgressDialog progressDialog;
     private AlertDialog deleteDialog;
 
@@ -220,6 +221,9 @@ public class RandomRestaurantFragment extends Fragment implements FABFragmentHan
      *  sets and creates the name, rating, location, button click listeners...
      *  The view which displays the restaurant is the cardview used in the RecycleView in
      *  the NearbyFragment and ShowRestaurants-fragment
+     *
+     *  also expands the info layout if this restaurant is the first restaurant loaded
+     *  since this fragment was loaded and the layout was shown previously
      * */
     @Override
     public void injectRestaurant(final Restaurant restaurant, RestaurantDAO restaurantDAO) {
@@ -243,6 +247,10 @@ public class RandomRestaurantFragment extends Fragment implements FABFragmentHan
                 getContext().startActivity(AndroidUtils.createEditRestaurantActivityIntent(getContext(), restaurant));
             }
         });
+        if (firstLoadedRestaurant && randomState != null && randomState.expanded) {
+            firstLoadedRestaurant = false;
+            openRestaurantBtn.callOnClick();
+        }
     }
 
     /** #################################################################################
@@ -315,6 +323,17 @@ public class RandomRestaurantFragment extends Fragment implements FABFragmentHan
         presenter.showRestaurantLocation();
     }
 
+    /**
+     * */
+    @Override
+    public void setFavoriteIcon(boolean favorite) {
+        if (favorite) {
+            restaurantFavoriteBtn.setImageDrawable(AndroidUtils.tintDrawable(getContext(), favoriteFull, R.color.favorite));
+        } else {
+            restaurantFavoriteBtn.setImageDrawable(favoriteEmpty);
+        }
+    }
+
 
     /** #################################################################################
      *  #################################################################################
@@ -385,6 +404,7 @@ public class RandomRestaurantFragment extends Fragment implements FABFragmentHan
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         presenter.saveState(outState);
+        outState.putBoolean(getString(R.string.bundle_restaurant_expanded), expanded);
     }
 
     /** Called when the fragment is being destroyed
@@ -452,6 +472,8 @@ public class RandomRestaurantFragment extends Fragment implements FABFragmentHan
      *  containing this information
      *  otherwise the method will return null and the state can't be recreated
      *  (or there was no state saved)
+     *
+     *  also saves the expanded state so it can be restored
      * */
     @Nullable
     private RandomState createRandomStateFromBundle(Bundle bundle) {
@@ -469,7 +491,7 @@ public class RandomRestaurantFragment extends Fragment implements FABFragmentHan
                 id = bundle.getLong(getString(R.string.bundle_restaurant_id));
             }
             if (id != -1 && randomiseSettings != null) {
-                return new RandomState(randomiseSettings, id);
+                return new RandomState(randomiseSettings, id, bundle.getBoolean(getString(R.string.bundle_restaurant_expanded), false));
             }
         }
         return null;
@@ -487,10 +509,12 @@ public class RandomRestaurantFragment extends Fragment implements FABFragmentHan
     private class RandomState {
         private RandomiseSettings randomiseSettings;
         private long restaurantId;
+        private boolean expanded;
 
-        public RandomState(RandomiseSettings randomiseSettings, long restaurantId) {
+        public RandomState(RandomiseSettings randomiseSettings, long restaurantId, boolean expanded) {
             this.randomiseSettings = randomiseSettings;
             this.restaurantId = restaurantId;
+            this.expanded = expanded;
         }
     }
 }

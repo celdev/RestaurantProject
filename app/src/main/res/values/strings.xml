@@ -130,5 +130,6 @@
     <string name="bundle_longitude">BUNDLE_LONGITUDE</string>
     <string name="bundle_restaurant_id">BUNDLE_RESTAURANT_ID</string>
     <string name="bundle_random_settings">BUNDLE_RANDOM_SETTINGS</string>
+    <string name="bundle_restaurant_expanded">BUNDLE_RESTAURANT_EXPANDED</string>
 
 </resources>

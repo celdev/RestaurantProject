@@ -39,6 +39,9 @@ public interface RandomRestaurantMVP {
          * */
         void showLoadingLocationDialog();
 
+        /** Sets the favorite icon to the correct drawable
+         * */
+        void setFavoriteIcon(boolean favorite);
     }
 
     interface Presenter {

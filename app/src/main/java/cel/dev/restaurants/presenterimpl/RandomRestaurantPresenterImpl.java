@@ -167,11 +167,13 @@ public class RandomRestaurantPresenterImpl implements RandomRestaurantMVP.Presen
     }
 
     /** changes the favorite status of the restaurant
+     *  also updates the icon
      * */
     @Override
     public void favoriteRestaurantClicked() {
         restaurant.setFavorite(!restaurant.isFavorite());
         restaurantDAO.setRestaurantFavorite(restaurant);
+        view.setFavoriteIcon(restaurant.isFavorite());
     }
 
     @Override
